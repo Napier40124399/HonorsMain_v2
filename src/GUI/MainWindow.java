@@ -1,8 +1,11 @@
 package GUI;
 
 import java.awt.EventQueue;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 
+import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -62,6 +65,7 @@ public class MainWindow
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(c.getDarkBlue());
 		frame.setLayout(null);
+		frame.setTitle("Launcher");
 		
 		//Components
 		comboType = new JComboBox();
