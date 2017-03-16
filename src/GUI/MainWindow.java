@@ -3,6 +3,7 @@ package GUI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import javax.swing.JTextField;
 import Components.Colors;
 import Components.CompBuilder;
 import Components.FileChooser;
+import FileIO.LoadDefaults;
 
 public class MainWindow
 {
@@ -37,6 +39,10 @@ public class MainWindow
 	private JTextField txtThreads;
 	private JTextField txtDelay;
 	private JCheckBox boxTaurus;
+	//Menu
+	private JMenuItem mntmSettings;
+	private JMenuItem mntmSaveSettings;
+	private JMenuItem mntmLoadSettings;
 	//Draw Settings
 	private JPanel separator1;
 	private JTextField txtDrawDelay;
@@ -52,6 +58,8 @@ public class MainWindow
 	private CompBuilder build;
 	private Colors c = new Colors();
 	private ArrayList<SimulationWindow> simulations = new ArrayList<SimulationWindow>();
+	private LoadDefaults load = new LoadDefaults();
+	private SettingsWindow settingsWindow;
 
 	public static void main(String[] args)
 	{
@@ -74,6 +82,7 @@ public class MainWindow
 	public MainWindow()
 	{
 		build = new CompBuilder();
+		settingsWindow = new SettingsWindow();
 		initialize();
 	}
 
@@ -97,13 +106,22 @@ public class MainWindow
 		mnFile.setForeground(Color.white);
 		menuBar.add(mnFile);
 		
-		JMenuItem mntmLoadSettings = new JMenuItem("Load Settings");
+		mntmLoadSettings = new JMenuItem("Load Settings");
 		mntmLoadSettings.setFont(new Font("Verdana", Font.PLAIN, 20));
 		mnFile.add(mntmLoadSettings);
 		
-		JMenuItem mntmSaveSettings = new JMenuItem("Save Settings");
+		mntmSaveSettings = new JMenuItem("Save Settings");
 		mntmSaveSettings.setFont(new Font("Verdana", Font.PLAIN, 20));
 		mnFile.add(mntmSaveSettings);
+		
+		JMenu mnEdit = new JMenu("Edit");
+		mnEdit.setFont(new Font("Verdana", Font.PLAIN, 20));
+		mnEdit.setForeground(Color.white);
+		menuBar.add(mnEdit);
+		
+		mntmSettings = new JMenuItem("Settings");
+		mntmSettings.setFont(new Font("Verdana", Font.PLAIN, 20));
+		mnEdit.add(mntmSettings);
 		
 		//Components
 		comboType = new JComboBox();
@@ -177,7 +195,21 @@ public class MainWindow
 		labels.add(new JLabel("Serialization Settings"));
 		labels.add(new JLabel("Draw Settings"));
 		labels.add(new JLabel("Global Settings"));
-		
+
+		labels.get(0).setToolTipText("Defines IPD logic for cell.");
+		labels.get(1).setToolTipText("Square root  of the quantity of cells in the simulation.");
+		labels.get(2).setToolTipText("Mutation quantity, value will be multiplied by 0,001.");
+		labels.get(3).setToolTipText("Distance over which cells are considered neighboors.");
+		labels.get(4).setToolTipText("Amount of generations to run the simulation for.");
+		labels.get(5).setToolTipText("Iterations per generation.");
+		labels.get(6).setToolTipText("Amount of threads the simulation will use.");
+		labels.get(7).setToolTipText("Delay between each generation. May allow clearer visuals.");
+		labels.get(8).setToolTipText("Activate or deactivate taurus logic.");
+		labels.get(9).setToolTipText("Draw the lattice state every X generations.");
+		labels.get(10).setToolTipText("Amplify lattice by this value when drawing.\nEffectively makes simulation window equal to scale * cell quantity.");
+		labels.get(11).setToolTipText("Activate or deactivatethe save functionality. This will output serliazed data.");
+		labels.get(12).setToolTipText("Save every X generations.");
+		labels.get(13).setToolTipText("Save file location.");
 		
 		for(JLabel lbl : labels)
 		{
@@ -224,7 +256,16 @@ public class MainWindow
 				settings[12] = txtSerializeDelay.getText();
 				settings[13] = txtSerializePath.getText();
 				
-				simulations.add(new SimulationWindow(settings));
+				simulations.add(new SimulationWindow(settings, new Point(frame.getX()+frame.getWidth(), frame.getY())));
+			}
+		});
+		
+		//Menu
+		mntmSettings.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				settingsWindow.setVisible(true, new Point(frame.getX()+frame.getWidth(), frame.getY()));
 			}
 		});
 	}

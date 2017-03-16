@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -69,7 +70,7 @@ public class SimulationWindow
 	private Colors c = new Colors();
 	private CompBuilder builder = new CompBuilder();
 
-	public SimulationWindow(String[] settings)
+	public SimulationWindow(String[] settings, Point p)
 	{
 		cellType = Integer.parseInt(settings[0]);
 		cellQ = Integer.parseInt(settings[1]);
@@ -77,13 +78,13 @@ public class SimulationWindow
 		size = cellQ * drawScale;
 
 		panelPos = (size - panelWidth) / 2;
-		initialize();
+		initialize(p);
 	}
 
-	private void initialize()
+	private void initialize(Point p)
 	{
 		frame = new JFrame();
-		frame.setBounds(100, 100, size + 6, size + 46);
+		frame.setBounds(p.x, p.y, size + 6, size + 46);
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
@@ -102,13 +103,11 @@ public class SimulationWindow
 			@Override
 			protected void paintComponent(Graphics g)
 			{
-				/*
 				int R = (int) (Math.random() * 255);
 				int G = (int) (Math.random() * 255);
 				int B = (int) (Math.random() * 255);
 				g.setColor(new Color(R, G, B));
-				 */
-				g.setColor(new Color(0,191,255));
+				//g.setColor(new Color(0,191,255));
 				g.fillRect(0, 0, size, size);
 				compPanel.setBounds(compPanel.getX(), compPanel.getY(), compPanel.getWidth(),
 						compPanel.getHeight() + 1);
@@ -123,7 +122,7 @@ public class SimulationWindow
 		buildSettingsPanel();
 		addActionListeners();
 
-		Timer timer = new Timer(1000, new ActionListener()
+		Timer timer = new Timer(5000, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
@@ -150,6 +149,34 @@ public class SimulationWindow
 					settingsShowing = true;
 					compPanel.repaint();
 				}
+			}
+		});
+		btnplay.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		btnPause.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		btnStop.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				
+			}
+		});
+		btnGraph.addActionListener(new ActionListener()
+		{
+			public void actionPerformed(ActionEvent e)
+			{
+				
 			}
 		});
 	}
@@ -205,6 +232,9 @@ public class SimulationWindow
 		simVarsPanel();
 		visualsPanel();
 		optimizePanel();
+		
+		txtDelay.setText("10");
+		txtDrawDelay.setText("");
 	}
 
 	private void pdVarsPanel()
@@ -270,6 +300,11 @@ public class SimulationWindow
 			txtR.setBounds(120, 40, 60, 30);
 			txtP.setBounds(30, 75, 60, 30);
 			txtS.setBounds(120, 75, 60, 30);
+			
+			txtT.setText("1.5");
+			txtR.setText("1");
+			txtP.setText("0");
+			txtS.setText("0");
 		} else
 		{
 			JLabel lblDynTop = new JLabel();
@@ -295,6 +330,8 @@ public class SimulationWindow
 
 			boxDynamicTopology.setBounds(120, 40, 55, 40);
 			txtMaxNodes.setBounds(120, 75, 55, 30);
+			
+			txtMaxNodes.setText("18");
 		}
 	}
 
