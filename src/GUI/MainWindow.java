@@ -237,7 +237,7 @@ public class MainWindow
 		txtDistance.setText("1");
 		txtGenerations.setText("0");
 		txtIterations.setText("51");
-		txtThreads.setText("6");
+		txtThreads.setText(Runtime.getRuntime().availableProcessors()+"");
 		txtDelay.setText("10");
 		txtDrawDelay.setText("2");
 		txtDrawScale.setText("10");
