@@ -33,6 +33,7 @@ public class SimulationWindow
 	private JButton btnplay;
 	private JButton btnPause;
 	private JButton btnStop;
+	private JButton btnGraph;
 	private JLabel lblGenCount;
 	// PD vars
 	private JTextField txtT;
@@ -86,6 +87,7 @@ public class SimulationWindow
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.setVisible(true);
 		frame.setResizable(false);
+		frame.setTitle("Simulation Window");
 		frame.setLayout(null);
 		frame.getContentPane().setBackground(Color.red);
 
@@ -100,10 +102,13 @@ public class SimulationWindow
 			@Override
 			protected void paintComponent(Graphics g)
 			{
+				/*
 				int R = (int) (Math.random() * 255);
 				int G = (int) (Math.random() * 255);
 				int B = (int) (Math.random() * 255);
 				g.setColor(new Color(R, G, B));
+				 */
+				g.setColor(new Color(0,191,255));
 				g.fillRect(0, 0, size, size);
 				compPanel.setBounds(compPanel.getX(), compPanel.getY(), compPanel.getWidth(),
 						compPanel.getHeight() + 1);
@@ -182,11 +187,19 @@ public class SimulationWindow
 		btnStop.setRolloverIcon(new ImageIcon("res\\stopHover.png"));
 		btnStop.setBounds(120, 5, 40, 40);
 		
+		btnGraph = new JButton();
+		btnGraph.setBorder(BorderFactory.createEmptyBorder());
+		btnGraph.setContentAreaFilled(false);
+		compPanel.add(btnGraph);
+		btnGraph.setIcon(new ImageIcon("res\\settings.png"));
+		btnGraph.setRolloverIcon(new ImageIcon("res\\settingsHover.png"));
+		btnGraph.setBounds(340, 5, 40, 40);
+		
 		lblGenCount = new JLabel();
 		lblGenCount.setText("GEN 0");
 		builder.buildLabel(lblGenCount);
 		compPanel.add(lblGenCount);
-		lblGenCount.setBounds(170, 0, 80, 40);
+		lblGenCount.setBounds(170, 5, 80, 40);
 		
 		pdVarsPanel();
 		simVarsPanel();
@@ -298,7 +311,7 @@ public class SimulationWindow
 		lblTitle.setText("Sim Vars");
 		builder.buildLabel(lblTitle);
 		panel.add(lblTitle);
-		lblTitle.setBounds(50, 0, 100, 40);
+		lblTitle.setBounds(40, 0, 100, 40);
 
 		JLabel lblItPerGen = new JLabel();
 		lblItPerGen.setText("It / Gen");
