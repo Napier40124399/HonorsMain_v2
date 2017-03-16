@@ -51,6 +51,7 @@ public class MainWindow
 	//Instances
 	private CompBuilder build;
 	private Colors c = new Colors();
+	private ArrayList<SimulationWindow> simulations = new ArrayList<SimulationWindow>();
 
 	public static void main(String[] args)
 	{
@@ -207,7 +208,23 @@ public class MainWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
+				String[] settings = new String[14];
+				settings[0] = comboType.getSelectedIndex()+"";
+				settings[1] = txtCellQ.getText();
+				settings[2] = txtMutation.getText();
+				settings[3] = txtDistance.getText();
+				settings[4] = txtGenerations.getText();
+				settings[5] = txtIterations.getText();
+				settings[6] = txtThreads.getText();
+				settings[7] = txtDelay.getText();
+				settings[8] = boxTaurus.isSelected()+"";
+				settings[9] = txtDrawDelay.getText();
+				settings[10] = txtDrawScale.getText();
+				settings[11] = boxSerialize.isSelected()+"";
+				settings[12] = txtSerializeDelay.getText();
+				settings[13] = txtSerializePath.getText();
 				
+				simulations.add(new SimulationWindow(settings));
 			}
 		});
 	}

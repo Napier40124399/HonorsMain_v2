@@ -6,10 +6,9 @@ import javax.swing.JFrame;
 
 public class SimulationWindow
 {
-
 	private JFrame frame;
 
-	public SimulationWindow()
+	public SimulationWindow(String[] settings)
 	{
 		initialize();
 	}
@@ -19,7 +18,8 @@ public class SimulationWindow
 	{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setVisible(true);
 	}
 
 }
