@@ -135,7 +135,7 @@ public class CompBuilder
 	{
 		combo.setFont(new Font("Verdana", Font.BOLD, 20));
 		combo.setForeground(Color.white);
-		combo.setBackground(c.getDarkGreen());
+		combo.setBackground(c.getDarkBlue());
 		combo.setFocusable(false);
 		
 		Border rounded = new LineBorder(Color.white, 2, true);
