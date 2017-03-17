@@ -19,12 +19,11 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Cells.Cell;
-import Cells.Cell_Hard;
 import Components.Colors;
 import Components.CompBuilder;
 import Components.FileChooser;
 import FileIO.LoadDefaults;
+import MultiThreading.SplitTask;
 
 public class MainWindow
 {
@@ -86,8 +85,8 @@ public class MainWindow
 		build = new CompBuilder();
 		settingsWindow = new SettingsWindow();
 		initialize();
-		Cell c = new Cell_Hard();
-		c.doFitness();
+		SplitTask sp = new SplitTask();
+		sp.splitTasks(10973, 3);
 	}
 
 	private void initialize()

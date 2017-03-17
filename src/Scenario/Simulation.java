@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import Cells.Cell;
 import DataCenter.Bridge;
+import MultiThreading.SplitTask;
 
 public class Simulation implements Runnable
 {
@@ -16,6 +17,7 @@ public class Simulation implements Runnable
 	{
 		this.bridge = bridge;
 		cells = bridge.getCell_ArrayList();
+		sp.splitTasks(cells, bridge.getSim_Threads());
 	}
 	
 	@Override
@@ -53,12 +55,19 @@ public class Simulation implements Runnable
 	
 	private void multiThread()
 	{
-		sp.splitCores(cells, bridge.getSim_Threads(), bridge, 1);
-		sp.splitCores(cells, bridge.getSim_Threads(), bridge, 2);
-		sp.splitCores(cells, bridge.getSim_Threads(), bridge, 4);
-		sp.splitCores(cells, bridge.getSim_Threads(), bridge, 3);
+		sp.threadFitness();
+		sp.threadNewGen();
+		sp.threadMutation();
+		sp.threadUpdate();
 	}
 	
-	private void checkSave(){}
+	private void checkSave()
+	{
+		if(bridge.getSim_Save() && bridge.getSim_CurGen() == bridge.getSim_SaveDelay())
+		{
+			bridge.setSim_CurGen(0);
+			//Handle save logic here
+		}
+	}
 	
 }
