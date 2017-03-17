@@ -3,20 +3,25 @@ package Scenario;
 import java.util.ArrayList;
 
 import Cells.Cell;
+import Cells.Cell_Hard;
 import DataCenter.Bridge;
 import MultiThreading.SplitTask;
 
 public class Simulation implements Runnable
 {
+	//Threads
+	private Thread t;
 	//Instances
 	private Bridge bridge;
 	private SplitTask sp = new SplitTask();
 	private ArrayList<Cell> cells;
+	private Draw draw;
 	
-	public Simulation(Bridge bridge)
+	public Simulation(Bridge bridge, Draw draw)
 	{
 		this.bridge = bridge;
-		cells = bridge.getCell_ArrayList();
+		cells = makeCells(bridge.getCell_Quantity());
+		bridge.setCell_ArrayList(cells);
 		sp.splitTasks(cells, bridge.getSim_Threads());
 	}
 	
@@ -49,16 +54,44 @@ public class Simulation implements Runnable
 	private void simulate()
 	{
 		multiThread();
+		//singleThread();
 		bridge.setSim_CurGen(bridge.getSim_CurGen() + 1);
 		checkSave();
 	}
 	
+	private void singleThread()
+	{
+		for(Cell ce : cells)
+		{
+			ce.doFitness();
+		}
+		for(Cell ce : cells)
+		{
+			ce.doNewGeneration();
+		}
+		for(Cell ce : cells)
+		{
+			ce.doMutationLogic();
+		}
+		for(Cell ce : cells)
+		{
+			ce.doUpdateCell();
+		}
+		try
+		{
+			Thread.sleep(bridge.getSim_Delay());
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
 	private void multiThread()
 	{
-		sp.threadFitness();
-		sp.threadNewGen();
-		sp.threadMutation();
-		sp.threadUpdate();
+		sp.threadTask(0);
+		sp.threadTask(1);
+		sp.threadTask(2);
+		sp.threadTask(3);
 	}
 	
 	private void checkSave()
@@ -70,4 +103,24 @@ public class Simulation implements Runnable
 		}
 	}
 	
+	private ArrayList<Cell> makeCells(int quantity)
+	{
+		ArrayList<Cell> cells = new ArrayList<Cell>();
+		for(int i = 0; i < quantity; i++)
+		{
+			for(int j = 0; j < quantity; j++)
+			{
+				cells.add(new Cell_Hard());
+				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
+			}
+		}
+		
+		return cells;
+	}
+	
+	public void start()
+	{
+		t = new Thread(this);
+		t.start();
+	}
 }

@@ -58,6 +58,7 @@ public class Cell
 		this.bridge = bridge;
 		
 		c = Color.black;
+		hc_NextGenR = hc_R;
 		pos_Coords = new Point2D.Double(pos_X, pos_Y);
 	}
 	
@@ -68,7 +69,7 @@ public class Cell
 	
 	public void doNeighboors()
 	{
-		cell_Neighboors.clear();
+		cell_Neighboors = new ArrayList<Cell>();
 
 		ArrayList<Cell> temp = bridge.getCell_ArrayList();
 		int distance = (int) bridge.getCell_NeiDistance();

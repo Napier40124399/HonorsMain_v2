@@ -68,12 +68,11 @@ public class Bridge
 	private int draw_Delay;
 	private int draw_Scale;
 
-	public void setUp(ArrayList<Cell> cell_ArrayList, int cell_Quantity, int cell_ColorMode, int cell_ItPerGen,
+	public void setUp(int cell_Quantity, int cell_ColorMode, int cell_ItPerGen,
 			int cell_MaxGen, int cell_NeiDistance, Float cell_Mutation, Float pd_T, Float pd_R, Float pd_P, Float pd_S,
 			Boolean pd_Taurus, int nn_MaxNodes, Boolean sim_Save, String sim_SavePath, int sim_SaveDelay,
 			int sim_Threads, int sim_Delay, int draw_Delay, int draw_Scale)
 	{
-		this.cell_ArrayList		= cell_ArrayList;
 		this.cell_Quantity		= cell_Quantity;
 		this.cell_ColorMode		= cell_ColorMode;
 		this.cell_ItPerGen		= cell_ItPerGen;

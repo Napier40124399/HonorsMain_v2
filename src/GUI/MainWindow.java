@@ -85,8 +85,6 @@ public class MainWindow
 		build = new CompBuilder();
 		settingsWindow = new SettingsWindow();
 		initialize();
-		SplitTask sp = new SplitTask();
-		sp.splitTasks(10973, 3);
 	}
 
 	private void initialize()
@@ -275,16 +273,16 @@ public class MainWindow
 	
 	private void placeHolders()
 	{
-		comboType.setSelectedIndex(2);
-		txtCellQ.setText("100");
-		txtMutation.setText("10");
+		comboType.setSelectedIndex(0);
+		txtCellQ.setText("500");
+		txtMutation.setText("0.01");
 		txtDistance.setText("1");
 		txtGenerations.setText("0");
-		txtIterations.setText("51");
-		txtThreads.setText(Runtime.getRuntime().availableProcessors()+"");
+		txtIterations.setText("1");
+		txtThreads.setText((Runtime.getRuntime().availableProcessors()-1)+"");
 		txtDelay.setText("10");
 		txtDrawDelay.setText("2");
-		txtDrawScale.setText("10");
+		txtDrawScale.setText("3");
 		txtSerializeDelay.setText("10");
 		txtSerializePath.setText("Not saving");
 	}

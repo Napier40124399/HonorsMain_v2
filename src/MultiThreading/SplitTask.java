@@ -8,6 +8,7 @@ import DataCenter.Bridge;
 public class SplitTask
 {
 	private ArrayList<Threading> threads;
+	private ArrayList<Thread> running;
 
 	public void splitTasks(ArrayList<Cell> cells, int threadCount)
 	{
@@ -26,35 +27,26 @@ public class SplitTask
 		}
 	}
 	
-	public void threadFitness()
+	public void threadTask(int step)
 	{
+		running = new ArrayList<Thread>();
 		for(Threading t : threads)
 		{
-			t.runStep(0);
+			running.add(t.runStep(step));
 		}
-	}
-	
-	public void threadNewGen()
-	{
-		for(Threading t : threads)
+		for(Thread t : running)
 		{
-			t.runStep(1);
+			t.start();
 		}
-	}
-	
-	public void threadMutation()
-	{
-		for(Threading t : threads)
+		for(Thread t : running)
 		{
-			t.runStep(2);
-		}
-	}
-	
-	public void threadUpdate()
-	{
-		for(Threading t : threads)
-		{
-			t.runStep(3);
+			try
+			{
+				t.join();
+			} catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 }

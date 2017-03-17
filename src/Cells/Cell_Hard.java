@@ -62,10 +62,19 @@ public class Cell_Hard extends Cell
 		if (getCell_PotentialParents().size() > 0)
 		{
 			setHc_NextGenR(getCell_PotentialParents().get(((int) (Math.random() * (getCell_PotentialParents().size()))))
-					.getHc_NextGenR());
-		}
+					.getHc_R());
+		}else{setHc_NextGenR(getHc_R());}
 	}
 
+	@Override
+	public void doMutationLogic()
+	{
+		if(Math.random() < getBridge().getCell_Mutation())
+		{
+			setHc_NextGenR(!getHc_NextGenR());
+		}
+	}
+	
 	@Override
 	public void doUpdateCell()
 	{
