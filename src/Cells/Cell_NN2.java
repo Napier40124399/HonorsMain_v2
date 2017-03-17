@@ -30,7 +30,7 @@ public class Cell_NN2 extends Cell
 	}
 
 	@Override
-	public void setFitness()
+	public void doFitness()
 	{
 		cooped = 0;
 		for (Cell ce : neighboors)
@@ -56,7 +56,7 @@ public class Cell_NN2 extends Cell
 	}
 
 	@Override
-	public void setNewGeneration()
+	public void doNewGeneration()
 	{
 		/**
 		 * One of two ways, either manualy copy a network or use cloneable.
@@ -85,7 +85,7 @@ public class Cell_NN2 extends Cell
 	}
 	
 	@Override
-	public void updateCell()
+	public void doUpdateCell()
 	{
 		color1();
 		color2();
@@ -123,7 +123,7 @@ public class Cell_NN2 extends Cell
 	}
 
 	@Override
-	public void mutationLogic()
+	public void doM0utationLogic()
 	{
 		// More to come!!
 		w.mutate(bridge.getMutation());

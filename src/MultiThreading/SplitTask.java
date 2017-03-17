@@ -12,18 +12,22 @@ public class SplitTask
 
 	public void splitTasks(ArrayList<Cell> cells, int threadCount)
 	{
-		Float f = new Float(cells.size() / threadCount);
-		threads = new ArrayList<Threading>();
-		int temp = 0;
-		for (int i = 0; i < threadCount; i++)
+		System.out.println("split");
+		if(threadCount > 1)
 		{
-			int start = (int) (i * f);
-			int end = (int) ((i + 1) * f);
-			if(i == threadCount-1)
+			Float f = new Float(cells.size() / threadCount);
+			threads = new ArrayList<Threading>();
+			int temp = 0;
+			for (int i = 0; i < threadCount; i++)
 			{
-				end = cells.size();
+				int start = (int) (i * f);
+				int end = (int) ((i + 1) * f);
+				if(i == threadCount-1)
+				{
+					end = cells.size();
+				}
+				threads.add(new Threading(start, end, cells));
 			}
-			threads.add(new Threading(start, end, cells));
 		}
 	}
 	

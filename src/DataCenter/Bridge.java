@@ -55,6 +55,7 @@ public class Bridge
 	private Boolean pd_Taurus;
 	// Neural Network Variables
 	private int nn_MaxNodes;
+	private Boolean nn_DynTop;
 	// Simulation Variables
 	private Boolean sim_Running;
 	private Boolean sim_Paused;
@@ -67,6 +68,9 @@ public class Bridge
 	// Draw Variables
 	private int draw_Delay;
 	private int draw_Scale;
+	
+	//Internal Logic Variables
+	private Boolean fireThreadChange = false;
 
 	public void setUp(int cell_Quantity, int cell_ColorMode, int cell_ItPerGen,
 			int cell_MaxGen, int cell_NeiDistance, Float cell_Mutation, Float pd_T, Float pd_R, Float pd_P, Float pd_S,
@@ -293,6 +297,10 @@ public class Bridge
 
 	public void setSim_Threads(int sim_Threads)
 	{
+		if(this.sim_Threads != sim_Threads)
+		{
+			fireThreadChange = true;
+		}
 		this.sim_Threads = sim_Threads;
 	}
 
@@ -334,5 +342,25 @@ public class Bridge
 	public void setDraw_Scale(int draw_Scale)
 	{
 		this.draw_Scale = draw_Scale;
+	}
+
+	public Boolean getFireThreadChange()
+	{
+		return fireThreadChange;
+	}
+
+	public void setFireThreadChange(Boolean fireThreadChange)
+	{
+		this.fireThreadChange = fireThreadChange;
+	}
+
+	public Boolean getNn_DynTop()
+	{
+		return nn_DynTop;
+	}
+
+	public void setNn_DynTop(Boolean nn_DynTop)
+	{
+		this.nn_DynTop = nn_DynTop;
 	}
 }

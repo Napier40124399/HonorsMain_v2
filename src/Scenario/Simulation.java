@@ -52,11 +52,16 @@ public class Simulation implements Runnable
 	
 	private void simulate()
 	{
-		if(bridge.getSim_Threads() == 1)
+		if(bridge.getSim_Threads() <= 1)
 		{
 			singleThread();
 		}else
 		{
+			if(bridge.getFireThreadChange())
+			{
+				sp.splitTasks(cells, bridge.getSim_Threads());
+				bridge.setFireThreadChange(false);
+			}
 			multiThread();
 		}
 		bridge.setSim_CurGen(bridge.getSim_CurGen() + 1);

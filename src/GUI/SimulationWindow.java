@@ -158,6 +158,7 @@ public class SimulationWindow
 		txtItPerGen.setText(bridge.getCell_ItPerGen()+"");
 		txtMutation.setText(bridge.getCell_Mutation()+"");
 		txtDrawDelay.setText(bridge.getDraw_Delay()+"");
+		txtSerDelay.setText("10");
 		//txtDrawScale.setText(bridge.getDraw_Scale()+"");
 	}
 
@@ -184,13 +185,16 @@ public class SimulationWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(bridge.getSim_Paused())
-				{
-					bridge.setSim_Paused(false);
-				}else
+				if(!bridge.getSim_Running())
 				{
 					bridge.setSim_Running(true);
 					simulation.start();
+				}else
+				{
+					if(bridge.getSim_Paused())
+					{
+						bridge.setSim_Paused(false);
+					}
 				}
 			}
 		});
@@ -208,8 +212,11 @@ public class SimulationWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				bridge.setSim_Running(false);
-				simPanel.repaint();
+				if(bridge.getSim_Running() == true)
+				{
+					bridge.setSim_Running(false);
+					simPanel.repaint();
+				}
 			}
 		});
 		btnGraph.addActionListener(new ActionListener()
@@ -533,6 +540,7 @@ public class SimulationWindow
 		bridge.setDraw_Delay(Integer.parseInt(txtDrawDelay.getText()));
 		bridge.setSim_Delay(Integer.parseInt(txtDelay.getText()));
 		bridge.setSim_SaveDelay(Integer.parseInt(txtSerDelay.getText()));
+		bridge.setSim_Threads(Integer.parseInt(txtThreads.getText()));
 		
 		if(cellType == 0 || cellType == 1)
 		{
@@ -543,7 +551,7 @@ public class SimulationWindow
 		}else if(cellType == 2)
 		{
 			bridge.setNn_MaxNodes(Integer.parseInt(txtMaxNodes.getText()));
-			//bridge.setNn_DynTop(boxDynamicTopology.isSelected());
+			bridge.setNn_DynTop(boxDynamicTopology.isSelected());
 		}
 	}
 
