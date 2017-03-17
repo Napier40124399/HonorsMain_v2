@@ -23,8 +23,8 @@ import Cells.Cell;
 import Components.Colors;
 import Components.CompBuilder;
 import DataCenter.Bridge;
-import Scenario.Draw;
 import Scenario.Simulation;
+import Visuals.Draw;
 
 public class SimulationWindow
 {
@@ -75,7 +75,7 @@ public class SimulationWindow
 	private Colors c = new Colors();
 	private CompBuilder builder = new CompBuilder();
 	private Simulation simulation;
-	private Draw draw;
+	private Draw d;
 	private Bridge bridge;
 
 	public SimulationWindow(String[] settings, Point p)
@@ -94,8 +94,8 @@ public class SimulationWindow
 				Integer.parseInt(settings[12]), Integer.parseInt(settings[6]), Integer.parseInt(settings[7]),
 				Integer.parseInt(settings[9]), Integer.parseInt(settings[10]));
 
-		draw = new Draw();
-		simulation = new Simulation(bridge, draw);
+		d = new Draw(bridge);
+		simulation = new Simulation(bridge);
 		initialize(p);
 	}
 
@@ -121,15 +121,7 @@ public class SimulationWindow
 			@Override
 			protected void paintComponent(Graphics g)
 			{
-				if (bridge.getSim_Running())
-				{
-					for (Cell c : bridge.getCell_ArrayList())
-					{
-						g.setColor(c.getC());
-						g.fillRect(c.getPos_X() * bridge.getDraw_Scale(), c.getPos_Y() * bridge.getDraw_Scale(),
-								bridge.getDraw_Scale(), bridge.getDraw_Scale());
-					}
-				}
+				d.draw(g);
 				fixSettings();
 
 			}
@@ -150,7 +142,7 @@ public class SimulationWindow
 				{
 					curGen = bridge.getSim_CurGen();
 					lblGenCount.setText("GEN "+curGen);
-					if(frame.isVisible())
+					if(frame.isVisible() && bridge.getSim_Running())
 					{
 						simPanel.repaint();
 					}
@@ -192,29 +184,39 @@ public class SimulationWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				bridge.setSim_Running(true);
-				simulation.start();
+				if(bridge.getSim_Paused())
+				{
+					bridge.setSim_Paused(false);
+				}else
+				{
+					bridge.setSim_Running(true);
+					simulation.start();
+				}
 			}
 		});
 		btnPause.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-
+				if(bridge.getSim_Running())
+				{
+					bridge.setSim_Paused(true);
+				}
 			}
 		});
 		btnStop.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-
+				bridge.setSim_Running(false);
+				simPanel.repaint();
 			}
 		});
 		btnGraph.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-
+				
 			}
 		});
 		btnUpdate.addActionListener(new ActionListener()

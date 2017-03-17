@@ -15,9 +15,8 @@ public class Simulation implements Runnable
 	private Bridge bridge;
 	private SplitTask sp = new SplitTask();
 	private ArrayList<Cell> cells;
-	private Draw draw;
 	
-	public Simulation(Bridge bridge, Draw draw)
+	public Simulation(Bridge bridge)
 	{
 		this.bridge = bridge;
 		cells = makeCells(bridge.getCell_Quantity());
@@ -53,10 +52,26 @@ public class Simulation implements Runnable
 	
 	private void simulate()
 	{
-		multiThread();
-		//singleThread();
+		if(bridge.getSim_Threads() == 1)
+		{
+			singleThread();
+		}else
+		{
+			multiThread();
+		}
 		bridge.setSim_CurGen(bridge.getSim_CurGen() + 1);
 		checkSave();
+		try
+		{
+			Thread.sleep(bridge.getSim_Delay());
+			while(bridge.getSim_Paused())
+			{
+				Thread.sleep(50);
+			}
+		} catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void singleThread()
@@ -76,13 +91,6 @@ public class Simulation implements Runnable
 		for(Cell ce : cells)
 		{
 			ce.doUpdateCell();
-		}
-		try
-		{
-			Thread.sleep(bridge.getSim_Delay());
-		} catch (InterruptedException e)
-		{
-			e.printStackTrace();
 		}
 	}
 	
