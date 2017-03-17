@@ -44,7 +44,7 @@ public class Cell
 	private Color c;
 	// Instances
 	private Bridge bridge;
-	private ArrayList<Cell> cell_Neighboors;
+	private ArrayList<Cell> cell_Neighboors; 
 	
 	//HardCoded
 	private Boolean hc_R;
@@ -66,7 +66,7 @@ public class Cell
 	public void doUpdateCell(){}
 	public void doMutationLogic(){}
 	
-	public void setNeighboors()
+	public void doNeighboors()
 	{
 		cell_Neighboors.clear();
 
@@ -211,105 +211,104 @@ public class Cell
 		}
 		return over;
 	}
-
 	
 	//GETTERS AND SETTERS
-	protected int getPos_X()
+	public int getPos_X()
 	{
 		return pos_X;
 	}
 
-	protected void setPos_X(int pos_X)
+	public void setPos_X(int pos_X)
 	{
 		this.pos_X = pos_X;
 	}
 
-	protected int getPos_Y()
+	public int getPos_Y()
 	{
 		return pos_Y;
 	}
 
-	protected void setPos_Y(int pos_Y)
+	public void setPos_Y(int pos_Y)
 	{
 		this.pos_Y = pos_Y;
 	}
 
-	protected Point2D getPos_Coords()
+	public Point2D getPos_Coords()
 	{
 		return pos_Coords;
 	}
 
-	protected void setPos_Coords(Point2D pos_Coords)
+	public void setPos_Coords(Point2D pos_Coords)
 	{
 		this.pos_Coords = pos_Coords;
 	}
 
-	protected Float getPd_Fitness()
+	public Float getPd_Fitness()
 	{
 		return pd_Fitness;
 	}
 
-	protected void setPd_Fitness(Float pd_Fitness)
+	public void setPd_Fitness(Float pd_Fitness)
 	{
 		this.pd_Fitness = pd_Fitness;
 	}
 
-	protected ArrayList<Cell> getCell_PotentialParents()
+	public ArrayList<Cell> getCell_PotentialParents()
 	{
 		return cell_PotentialParents;
 	}
 
-	protected void setCell_PotentialParents(ArrayList<Cell> cell_PotentialParents)
+	public void setCell_PotentialParents(ArrayList<Cell> cell_PotentialParents)
 	{
 		this.cell_PotentialParents = cell_PotentialParents;
 	}
 
-	protected Color getC()
+	public Color getC()
 	{
 		return c;
 	}
 
-	protected void setC(Color c)
+	public void setC(Color c)
 	{
 		this.c = c;
 	}
 
-	protected Bridge getBridge()
+	public Bridge getBridge()
 	{
 		return bridge;
 	}
 
-	protected void setBridge(Bridge bridge)
+	public void setBridge(Bridge bridge)
 	{
 		this.bridge = bridge;
 	}
 
-	protected ArrayList<Cell> getCell_Neighboors()
+	public ArrayList<Cell> getCell_Neighboors()
 	{
 		return cell_Neighboors;
 	}
 
-	protected void setCell_Neighboors(ArrayList<Cell> cell_Neighboors)
+	public void setCell_Neighboors(ArrayList<Cell> cell_Neighboors)
 	{
 		this.cell_Neighboors = cell_Neighboors;
 	}
 
-	protected Boolean getHc_R()
+	public Boolean getHc_R()
 	{
 		return hc_R;
 	}
 
-	protected void setHc_R(Boolean hc_R)
+	public void setHc_R(Boolean hc_R)
 	{
 		this.hc_R = hc_R;
 	}
 
-	protected Boolean getHc_NextGenR()
+	public Boolean getHc_NextGenR()
 	{
 		return hc_NextGenR;
 	}
 
-	protected void setHc_NextGenR(Boolean hc_NextGenR)
+	public void setHc_NextGenR(Boolean hc_NextGenR)
 	{
 		this.hc_NextGenR = hc_NextGenR;
 	}
