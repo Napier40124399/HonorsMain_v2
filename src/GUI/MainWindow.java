@@ -19,6 +19,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Cells.Cell;
+import Cells.Cell_Hard;
 import Components.Colors;
 import Components.CompBuilder;
 import Components.FileChooser;
@@ -84,6 +86,8 @@ public class MainWindow
 		build = new CompBuilder();
 		settingsWindow = new SettingsWindow();
 		initialize();
+		Cell c = new Cell_Hard();
+		c.doFitness();
 	}
 
 	private void initialize()

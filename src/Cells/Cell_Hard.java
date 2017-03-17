@@ -11,99 +11,103 @@ import java.util.ArrayList;
  */
 public class Cell_Hard extends Cell
 {
+	private Color c1;
+	private Color c2;
+	
 	@Override
-	public void setFitness()
+	public void doFitness()
 	{
-		fitness = 0;
-		for (Cell ce : neighboors)
+		setPd_Fitness(0f);
+		for (Cell ce : getCell_Neighboors())
 		{
-			if (!ce.getR())
+			if (!ce.getHc_R())
 			{
-				if (R)
+				if (getHc_R())
 				{
-					fitness += bridge.getT();
+					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_T()));
 				} else
 				{
-					fitness += bridge.getR();
+					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_R()));
 				}
 			} else
 			{
-				if (R)
+				if (getHc_R())
 				{
-					fitness += bridge.getP();
+					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_P()));
 				} else
 				{
-					fitness += bridge.getS();
+					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_S()));
 				}
 			}
 		}
 	}
 
 	@Override
-	public void setNewGeneration()
+	public void doNewGeneration()
 	{
-		daddys = new ArrayList<Cell>();
-		double old = fitness;
-		for (Cell ce : neighboors)
+		setCell_PotentialParents(new ArrayList<Cell>());
+		Float old = getPd_Fitness();
+		for (Cell ce : getCell_Neighboors())
 		{
-			if (ce.getPower() > old)
+			if (ce.getPd_Fitness() > old)
 			{
-				daddys.clear();
-				daddys.add(ce);
-				old = ce.getPower();
-			} else if (ce.getPower() == old)
+				getCell_PotentialParents().clear();
+				getCell_PotentialParents().add(ce);
+				old = ce.getPd_Fitness();
+			} else if (ce.getPd_Fitness() == old)
 			{
-				daddys.add(ce);
+				getCell_PotentialParents().add(ce);
 			}
 		}
-		if (daddys.size() > 0)
+		if (getCell_PotentialParents().size() > 0)
 		{
-			nextGenR = daddys.get(((int) (Math.random() * (daddys.size())))).getR();
+			setHc_NextGenR(getCell_PotentialParents().get(((int) (Math.random() * (getCell_PotentialParents().size()))))
+					.getHc_NextGenR());
 		}
 	}
 
 	@Override
-	public void updateCell()
+	public void doUpdateCell()
 	{
-		// Two color schemes based off seperate methods
-		color1();
-
-		this.R = nextGenR;
+		if(getBridge().getCell_ColorMode() == 0)
+		{
+			color1();
+			setC(c1);
+		}else
+		{
+			color2();
+			setC(c2);
+		}
+		setHc_R(getHc_NextGenR());
 	}
 
 	private void color1()
 	{
-		if (this.c1 != Color.white)
+		if (getHc_R() == true)
 		{
-			if (this.R == true)
+			if (getHc_R() != getHc_NextGenR())
 			{
-				if (this.R != nextGenR)
-				{
-					c1 = Color.green;
-				} else
-				{
-					c1 = Color.red;
-				}
+				c1 = Color.green;
 			} else
 			{
-				if (this.R != nextGenR)
-				{
-					c1 = Color.yellow;
-				} else
-				{
-					c1 = Color.blue;
-				}
+				c1 = Color.red;
 			}
 		} else
 		{
-			c1 = Color.white;
+			if (getHc_R() != getHc_NextGenR())
+			{
+				c1 = Color.yellow;
+			} else
+			{
+				c1 = Color.blue;
+			}
 		}
 	}
 
 	private void color2()
 	{
-		Float t = (float) (9f * bridge.getT());
-		Float tt = (float) (fitness) / t;
+		Float t = (float) (9f * getBridge().getPd_T());
+		Float tt = (float) (getPd_Fitness()) / t;
 		Float ttt = tt * 250;
 		int tttt = (int) (ttt * 1);
 		c2 = new Color(tttt, tttt, tttt);

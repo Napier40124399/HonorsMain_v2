@@ -33,61 +33,61 @@ import NetworkFinal.Network;
  */
 public class Cell
 {
-	// Changing values
 	// Positions
-	protected int x;
-	protected int y;
-	protected Point2D coords;
+	private int pos_X;
+	private int pos_Y;
+	private Point2D pos_Coords;
 	// Prisoner Dilemma vars
-	protected double fitness;
-	protected boolean R;
-	protected boolean nextGenR;
-	protected ArrayList<Cell> daddys;
+	private Float pd_Fitness;
+	private ArrayList<Cell> cell_PotentialParents;
 	// Visuals
-	protected Color c1;
-	protected Color c2;
-	// Stable values
-	protected Bridge bridge;
-	protected ArrayList<Cell> neighboors = new ArrayList<Cell>();
+	private Color c;
+	// Instances
+	private Bridge bridge;
+	private ArrayList<Cell> cell_Neighboors;
+	
+	//HardCoded
+	private Boolean hc_R;
+	private Boolean hc_NextGenR;
 
-	public void Cell(boolean R, int x, int y, Bridge bridge)
+	public void Initialize(boolean hc_R, int pos_X, int pos_Y, Bridge bridge)
 	{
-		this.R = R;
-		coords = new Point2D.Double(x, y);
-		this.x = x;
-		this.y = y;
+		this.hc_R = hc_R;
+		this.pos_X = pos_X;
+		this.pos_Y = pos_Y;
 		this.bridge = bridge;
-		c1 = Color.black;
-		c2 = Color.black;
+		
+		c = Color.black;
+		pos_Coords = new Point2D.Double(pos_X, pos_Y);
 	}
 	
-	public void setFitness(){}
-	public void setNewGeneration(){}
-	public void updateCell(){}
-	public void mutationLogic(){}
-
+	public void doFitness(){}
+	public void doNewGeneration(){}
+	public void doUpdateCell(){}
+	public void doMutationLogic(){}
+	
 	public void setNeighboors()
 	{
-		neighboors.clear();
+		cell_Neighboors.clear();
 
-		ArrayList<Cell> temp = bridge.getCells();
-		int distance = (int) bridge.getDistance();
+		ArrayList<Cell> temp = bridge.getCell_ArrayList();
+		int distance = (int) bridge.getCell_NeiDistance();
 		int size = (int) Math.sqrt(temp.size());
 
-		int startX = (int) coords.getY() - distance;
-		int endX = (int) coords.getY() + distance;
+		int startX = pos_Y - distance;
+		int endX = pos_Y + distance;
 
-		int startY = ((int) coords.getX() - distance) * size;
-		int endY = ((int) coords.getX() + distance) * size;
+		int startY = (pos_X - distance) * size;
+		int endY = (pos_X + distance) * size;
 
-		if (bridge.isTaurus())
+		if (bridge.getPd_Taurus())
 		{
 			if (startX < 0 || endX >= size)
 			{
 				notNormal(startX, startY, endX, endY, size, temp, distance);
 			}
 
-			else if ((coords.getX() - distance) < 0 || (coords.getX() + distance) >= size)
+			else if ((pos_X - distance) < 0 || (pos_X + distance) >= size)
 			{
 				notNormal(startX, startY, endX, endY, size, temp, distance);
 			}
@@ -100,7 +100,7 @@ public class Cell
 		{
 			if (startX < 0 || endX >= size)
 			{
-			} else if ((coords.getX() - distance) < 0 || (coords.getX() + distance) >= size)
+			} else if ((pos_X - distance) < 0 || (pos_X + distance) >= size)
 			{
 			} else
 			{
@@ -108,7 +108,7 @@ public class Cell
 			}
 		}
 	}
-
+	
 	private void notNormal(int startX, int startY, int endX, int endY, int size, ArrayList<Cell> temp, int dist)
 	{
 		for (int i = startX; i <= endX; i++)
@@ -139,33 +139,33 @@ public class Cell
 				switch (switcheroo)
 				{
 				case 0:
-					neighboors.add(temp.get(i + j));
+					cell_Neighboors.add(temp.get(i + j));
 					break;
 				case 1:
-					neighboors.add(temp.get(regulateI(i, size, false) + j));
+					cell_Neighboors.add(temp.get(regulateI(i, size, false) + j));
 					break;
 				case 2:
-					neighboors.add(temp.get(regulateI(i, size, true) + j));
+					cell_Neighboors.add(temp.get(regulateI(i, size, true) + j));
 					break;
 				case 4:
-					neighboors.add(temp.get((regulateJ(j, size, false)) + i));
+					cell_Neighboors.add(temp.get((regulateJ(j, size, false)) + i));
 					break;
 				case 8:
-					neighboors.add(temp.get((regulateJ(j, size, true)) + i));
+					cell_Neighboors.add(temp.get((regulateJ(j, size, true)) + i));
 					break;
 
 				// Corners
 				case 5:
-					neighboors.add(temp.get(regulateI(i, size, false) + regulateJ(j, size, false)));
+					cell_Neighboors.add(temp.get(regulateI(i, size, false) + regulateJ(j, size, false)));
 					break;
 				case 6:
-					neighboors.add(temp.get(regulateI(i, size, true) + regulateJ(j, size, false)));
+					cell_Neighboors.add(temp.get(regulateI(i, size, true) + regulateJ(j, size, false)));
 					break;
 				case 9:
-					neighboors.add(temp.get(regulateI(i, size, false) + regulateJ(j, size, true)));
+					cell_Neighboors.add(temp.get(regulateI(i, size, false) + regulateJ(j, size, true)));
 					break;
 				case 10:
-					neighboors.add(temp.get(regulateI(i, size, true) + regulateJ(j, size, true)));
+					cell_Neighboors.add(temp.get(regulateI(i, size, true) + regulateJ(j, size, true)));
 					break;
 				default:
 					break;
@@ -180,11 +180,11 @@ public class Cell
 		{
 			for (int j = startY; j <= endY; j += size)
 			{
-				neighboors.add(temp.get(i + j));
+				cell_Neighboors.add(temp.get(i + j));
 			}
 		}
 	}
-
+	
 	private int regulateI(int pos, int size, boolean upper)
 	{
 		int over = 0;
@@ -211,117 +211,106 @@ public class Cell
 		}
 		return over;
 	}
+
 	
-	public void manage(int task)
+	//GETTERS AND SETTERS
+	protected int getPos_X()
 	{
-		if (task == 0)
-		{
-			//setFitness();
-		} else if (task == 1)
-		{
-			//setNewGeneration();
-		} else if (task == 2)
-		{
-			//updateCell();
-		} else
-		{
-			setNeighboors();
-		}
+		return pos_X;
 	}
 
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-	// ======================================================================================================================================================
-
-	// Getters and Setters
-	public double getPower()
+	protected void setPos_X(int pos_X)
 	{
-		return fitness;
+		this.pos_X = pos_X;
 	}
 
-	public int getX()
+	protected int getPos_Y()
 	{
-		return (int) coords.getX();
+		return pos_Y;
 	}
 
-	public int getY()
+	protected void setPos_Y(int pos_Y)
 	{
-		return (int) coords.getY();
+		this.pos_Y = pos_Y;
 	}
 
-	public boolean getR()
+	protected Point2D getPos_Coords()
 	{
-		return R;
+		return pos_Coords;
 	}
 
-	public boolean getR(Point2D coords)
+	protected void setPos_Coords(Point2D pos_Coords)
 	{
-		return R;
-	}
-	
-	public Color getC1()
-	{
-		return c1;
-	}
-	
-	public Color getC2()
-	{
-		return c2;
-	}
-	
-	public Float getOut(Point2D coords)
-	{
-		return new Float(0);
+		this.pos_Coords = pos_Coords;
 	}
 
-	public Network getNET()
+	protected Float getPd_Fitness()
 	{
-		return null;
+		return pd_Fitness;
 	}
 
-	public Point2D getCoords()
+	protected void setPd_Fitness(Float pd_Fitness)
 	{
-		return coords;
+		this.pd_Fitness = pd_Fitness;
 	}
 
-	public ArrayList<Cell> getNeighboors()
+	protected ArrayList<Cell> getCell_PotentialParents()
 	{
-		return this.neighboors;
+		return cell_PotentialParents;
 	}
 
-	public ArrayList<ArrayList<Float>> getWeights()
+	protected void setCell_PotentialParents(ArrayList<Cell> cell_PotentialParents)
 	{
-		return null;
+		this.cell_PotentialParents = cell_PotentialParents;
 	}
-	
-	public int getType()
+
+	protected Color getC()
 	{
-		return 99;
+		return c;
 	}
-	
-	public int getFlag()
+
+	protected void setC(Color c)
 	{
-		return 99;
+		this.c = c;
 	}
-	
-	public Network getNetwork()
+
+	protected Bridge getBridge()
 	{
-		return null;
+		return bridge;
 	}
-	
-	public void resetMemory()
+
+	protected void setBridge(Bridge bridge)
 	{
-		
+		this.bridge = bridge;
 	}
-	
-	public void handleMemory(Float decisionME, Float decisionOP)
+
+	protected ArrayList<Cell> getCell_Neighboors()
 	{
-		
+		return cell_Neighboors;
 	}
-	
-	public String serialize(){return null;}
+
+	protected void setCell_Neighboors(ArrayList<Cell> cell_Neighboors)
+	{
+		this.cell_Neighboors = cell_Neighboors;
+	}
+
+	protected Boolean getHc_R()
+	{
+		return hc_R;
+	}
+
+	protected void setHc_R(Boolean hc_R)
+	{
+		this.hc_R = hc_R;
+	}
+
+	protected Boolean getHc_NextGenR()
+	{
+		return hc_NextGenR;
+	}
+
+	protected void setHc_NextGenR(Boolean hc_NextGenR)
+	{
+		this.hc_NextGenR = hc_NextGenR;
+	}
 }
