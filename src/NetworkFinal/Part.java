@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 @SuppressWarnings("serial")
-public class Part implements Serializable
+public class Part implements Cloneable, Serializable
 {
 	private ArrayList<Part> next = new ArrayList<Part>();
 	private ArrayList<Float> weights = new ArrayList<Float>();

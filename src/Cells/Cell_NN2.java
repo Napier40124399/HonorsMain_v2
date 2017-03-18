@@ -2,11 +2,10 @@ package Cells;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.geom.Point2D;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import NetworkFinal.Network;
+import NetworkFinal.Part;
 import NetworkFinal.Remember;
 
 /**
@@ -25,6 +24,11 @@ public class Cell_NN2 extends Cell
 	//NN Vars
 	private Network nextGenNet;
 	private Network network;
+	
+	//Temp Vars
+	private ArrayList<ArrayList<Part>> nextGenFab;
+	private ArrayList<Float> nextGenBias;
+	private Boolean occured = false;
 	
 	//PD Vars
 	private Float decisionOP;
@@ -103,6 +107,13 @@ public class Cell_NN2 extends Cell
 		{
 			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
 			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().deepClone();
+			//nextGenFab = getCell_PotentialParents().get(choose).getNetwork().cloneAlt();
+			//nextGenBias = getCell_PotentialParents().get(choose).getNetwork().getBiases();
+			occured = true;
+		}
+		else
+		{
+			nextGenNet = null;
 		}
 		getCell_PotentialParents().clear();
 	}
@@ -133,13 +144,20 @@ public class Cell_NN2 extends Cell
 				setC(c2);
 			}
 		}
-		
-		if(!nextGenNet.equals(null))
+		/*
+		if(occured)
+		{
+			network.baby(nextGenFab, nextGenBias);
+			occured = false;
+		}
+		*/
+		if(occured)
 		{
 			if(!nextGenNet.equals(network))
 			{
 				network = nextGenNet.deepClone();
 			}
+			occured = false;
 		}
 		
 		setPd_Fitness(0f);

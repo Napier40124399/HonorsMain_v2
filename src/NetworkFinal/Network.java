@@ -16,7 +16,7 @@ public class Network implements Cloneable, Serializable
 	private ArrayList<ArrayList<Part>> fabric = new ArrayList<ArrayList<Part>>();
 	private ArrayList<Float> biases = new ArrayList<Float>();
 	private Float id;
-	private Float biasWeight = 0.001f;
+	private Float biasWeight = 0.01f;
 	private Double newNodeChance = 0.05;
 	
 	//NEW
@@ -48,9 +48,12 @@ public class Network implements Cloneable, Serializable
 		parts.add(new Part());
 		parts.add(new Part());
 		fabric.add(parts);
-
+		
+		for(Part p : fabric.get(0))
+		{
+			p.addNode(outputNode);
+		}
 		addLayer();
-		addNode(1);
 	}
 	
 	public Float think(ArrayList<Float> memory)
@@ -83,60 +86,48 @@ public class Network implements Cloneable, Serializable
 	public void mutate(Float mutate, Boolean dynTop, int maxNodes)
 	{
 		// All initialized the same way, this is the difference
-		for (ArrayList<Part> layer : fabric)
-		{
-			for (Part p : layer)
-			{
-				p.mutate(mutate);
-				//p.makeCoop();
-			}
-		}
-		outputNode.mutate(mutate);
-
-		Random r = new Random();
-		for (int i = 0; i < 6; i++)
-		{
-			biases.set(i, new Float(biases.get(i) + (r.nextGaussian() * biasWeight)));
-		}
-		for(int i = 0; i < 6; i++)
-		{
-			if(biases.get(i) >= biasWeight*10)
-			{
-				biases.set(i, new Float(biasWeight*10));
-			}else if(biases.get(i) <= -biasWeight*10)
-			{
-				biases.set(i, new Float(-biasWeight*10));
-			}
-		}
-		if(Math.random() < 0.01)
-		{
-			for(Part p : fabric.get(0))
-			{
-				p.makeCoop();
-			}
-			for(Part p : fabric.get(1))
-			{
-				p.makeCoop();
-			}
-		}
-		
-		if(true)
-		{
-			if(Math.random() < newNodeChance)
-			{
-				if(fabric.get(fabric.size()-1).size() <= maxNodes)
+				for (ArrayList<Part> layer : fabric)
 				{
-					System.out.println(fabric.get(fabric.size()-1).size());
-					addNode(fabric.size()-1);
-					System.out.println(fabric.get(fabric.size()-1).size());
-				}else 
-				{
-					addLayer();
+					for (Part p : layer)
+					{
+						p.mutate(mutate);
+						//p.makeCoop();
+					}
 				}
-			}
-		}
-	}
+				outputNode.mutate(mutate);
 
+				Random r = new Random();
+				for (int i = 0; i < 6; i++)
+				{
+					biases.set(i, new Float(biases.get(i) + (r.nextGaussian() * biasWeight)));
+				}
+				
+				for(int i = 0; i < 6; i++)
+				{
+					if(biases.get(i) >= biasWeight*10)
+					{
+						biases.set(i, new Float(biasWeight*10));
+					}else if(biases.get(i) <= -biasWeight*10)
+					{
+						biases.set(i, new Float(-biasWeight*10));
+					}
+				}
+				
+				if(dynTop)
+				{
+					if(Math.random() < newNodeChance)
+					{
+						if(fabric.get(fabric.size()-1).size() <= maxNodes)
+						{
+							addNode(fabric.size()-1);
+						}else 
+						{
+							addLayer();
+						}
+					}
+				}
+	}
+	
 	private void addLayer()
 	{
 		for(Part p : fabric.get(fabric.size()-1))
@@ -162,14 +153,12 @@ public class Network implements Cloneable, Serializable
 	
 	private void addNode(int i)
 	{
-		System.out.println("added node - "+getTop());
-		Part part = new Part();
-		fabric.get(i).add(part);
+		fabric.get(i).add(new Part());
 		for (Part p : fabric.get(i - 1))
 		{
-			p.addNode(part);
+			p.addNode(fabric.get(i-1).get(fabric.get(i-1).size()-1));
 		}
-		part.addNode(outputNode);
+		fabric.get(i-1).get(fabric.get(i-1).size()-1).addNode(outputNode);
 	}
 	
 	public Network deepClone()
@@ -187,6 +176,29 @@ public class Network implements Cloneable, Serializable
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
+	}
+	
+	public ArrayList<ArrayList<Part>> getFabric(){return fabric;}
+	
+	public ArrayList<ArrayList<Part>> cloneAlt()
+	{
+		ArrayList<ArrayList<Part>> copyFabric = new ArrayList<ArrayList<Part>>();
+		ArrayList<Part> copy;
+		for(ArrayList<Part> layer : fabric)
+		{
+			copy = new ArrayList<Part>();
+			for(Part p : layer)
+			{
+				copy.add(p.deepClone());
+			}
+			copyFabric.add(copy);
+		}
+		return copyFabric;
+	}
+	
+	public ArrayList<Float> getBiases()
+	{
+		return (ArrayList<Float>) biases.clone();
 	}
 	
 	public String getTop()
@@ -221,5 +233,13 @@ public class Network implements Cloneable, Serializable
 				p.showCon();
 			}
 		}
+	}
+	
+	public void baby(ArrayList<ArrayList<Part>> newFab, ArrayList<Float> newBias)
+	{
+		fabric.clear();
+		biases.clear();
+		fabric = newFab;
+		biases = newBias;
 	}
 }
