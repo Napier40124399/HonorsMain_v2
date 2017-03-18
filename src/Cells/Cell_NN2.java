@@ -17,42 +17,65 @@ import NetworkFinal.Remember;
  */
 public class Cell_NN2 extends Cell
 {
-	private Network nextGenNet;
-	private Network w;
-	private Remember memory;;
+	private Remember memory;
 	private Float accepted = 0f;
 	private Float total = 0f;
-	private int cooped = 0;
+	private int coopHist = 0;
+	
+	//NN Vars
+	private Network nextGenNet;
+	private Network network;
+	
+	//PD Vars
+	private Float decisionOP;
+	private Float decisionME;
+	private Float temporaryFitness;
+	
+	//Visual Vars
+	private Color c1;
+	private Color c2;
+	
 
+	//Initialize network and memory
 	public Cell_NN2()
 	{
-		w = new Network(10);
+		//Network
+		if(true)//getBridge().getNn_DynTop())
+		{
+			network = new Network(1);
+		}else
+		{
+			//getBridge().getNn_StartNodes();
+			network = new Network(2);
+		}
+		
+		//Memory
+
+		memory = new Remember(3);
 	}
 
 	@Override
 	public void doFitness()
 	{
-		cooped = 0;
-		for (Cell ce : neighboors)
+		coopHist = 0;
+		temporaryFitness = 0f;
+		for (Cell ce : getCell_Neighboors())
 		{
 			memory.reset();
 			ce.resetMemory();
-			for(int j = 0; j < bridge.getItPerGen(); j++)
+			for(int i = 0; i < getBridge().getCell_ItPerGen(); i++)
 			{
-				Float decisionOP = ce.getOut(coords);
-				Float decisionME = w.think(memory.getMem());
-				
+				decisionOP = ce.makeDecisionCorrected();
+				decisionME = network.think(memory.getMem());
 				memory.save(decisionME);
 				memory.saveOP(decisionOP);
 				memory.normalize();
-				
 				ce.handleMemory(decisionOP, decisionME);
-				Float te = (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
-				
-				if(decisionME > 0){cooped+=1;}
-				fitness += te;
+				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
+				if(decisionME > 0){coopHist+=1;}
 			}
 		}
+		setPd_Fitness(temporaryFitness);
 	}
 
 	@Override
@@ -62,71 +85,71 @@ public class Cell_NN2 extends Cell
 		 * One of two ways, either manualy copy a network or use cloneable.
 		 */
 
-		daddys = new ArrayList<Cell>();
-		double old = fitness;
-		for (Cell ce : neighboors)
+		setCell_PotentialParents(new ArrayList<Cell>());
+		temporaryFitness = getPd_Fitness();
+		for (Cell ce : getCell_Neighboors())
 		{
-			if (ce.getPower() > old)
+			if (ce.getPd_Fitness() > temporaryFitness)
 			{
-				daddys.clear();
-				daddys.add(ce);
-				old = ce.getPower();
-			} else if (ce.getPower() == old)
+				getCell_PotentialParents().clear();
+				getCell_PotentialParents().add(ce);
+				temporaryFitness = ce.getPd_Fitness();
+			} else if (ce.getPd_Fitness() == temporaryFitness)
 			{
-				daddys.add(ce);
+				getCell_PotentialParents().add(ce);
 			}
 		}
-		if (daddys.size() > 0)
+		if (getCell_PotentialParents().size() > 0)
 		{
-			int tt = (int) (Math.random() * (daddys.size()));
-			nextGenNet = daddys.get(tt).getNetwork();
+			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
+			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().deepClone();
 		}
-		daddys.clear();
+		getCell_PotentialParents().clear();
 	}
 	
 	@Override
 	public void doUpdateCell()
 	{
-		color1();
-		color2();
-		
-		if(!nextGenNet.equals(null))
+		if(getBridge().getSim_Save())
 		{
-			if(!nextGenNet.equals(w))
+			if(getBridge().getCell_ColorMode() == 0)
 			{
-				w = nextGenNet.deepClone();
+				color1();
+				setC(c1);
+			}else
+			{
+				color2();
+				setC(c2);
+			}
+		}else
+		{
+			color1();
+			color2();
+			if(getBridge().getCell_ColorMode() == 0)
+			{
+				setC(c1);
+			}else
+			{
+				setC(c2);
 			}
 		}
 		
-		fitness = 0;
-	}
-	
-	private void color1()
-	{
-		accepted = new Float(fitness);
-		total = new Float(neighboors.size());
-		Float tt = accepted / total;
-		Float temp = (tt / 5f) / bridge.getItPerGen();
-		Float fff = 250 * temp;
-		int iii = (int) (fff * 1);
-
-		c1 = new Color(iii, iii, iii);
-	}
-	
-	private void color2()
-	{
-		Float nei = new Float(neighboors.size() * bridge.getItPerGen());
-		nei = 255 * (new Float(cooped) / nei);
-		int iii = (int) (nei * 1);
+		if(!nextGenNet.equals(null))
+		{
+			if(!nextGenNet.equals(network))
+			{
+				network = nextGenNet.deepClone();
+			}
+		}
 		
-		c2 = new Color(iii,iii,iii);
+		setPd_Fitness(0f);
 	}
 
 	@Override
-	public void doM0utationLogic()
+	public void doMutationLogic()
 	{
 		// More to come!!
-		w.mutate(bridge.getMutation());
+		network.mutate(getBridge().getCell_Mutation());
 	}
 	
 	@Override
@@ -144,13 +167,13 @@ public class Cell_NN2 extends Cell
 	}
 	
 	@Override
-	public Float getOut(Point2D cods)
+	public Float makeDecision(Point coords)
 	{
-		for (int i = 0; i < neighboors.size(); i++)
+		for (int i = 0; i < getCell_Neighboors().size(); i++)
 		{
-			if (neighboors.get(i).getCoords().equals(coords))
+			if (getCell_Neighboors().get(i).getPos_Coords().equals(coords))
 			{
-				return w.think(memory.getMem());
+				return network.think(memory.getMem());
 			}
 		}
 		// Failsafe
@@ -158,39 +181,49 @@ public class Cell_NN2 extends Cell
 	}
 	
 	@Override
+	public Float makeDecisionCorrected()
+	{
+		return network.think(memory.getMem());
+	}
+	
+	@Override
 	public Network getNetwork()
 	{
-		return w;
+		return network;
 	}
 
-	@Override
-	public void setNeighboors()
-	{
-		super.setNeighboors();
-		memory = new Remember(3);
-	}
-	
-	private void Output()
-	{
-		
-	}
-	
-	@Override
-	public void manage(int i)
-	{
-		w.output();
-	}
-	
 	@Override
 	public String serialize()
 	{
 		String output = "";
 		output = output + c1.getRed()+"/";
 		output = output + c2.getRed()+"/";
-		output = output + this.x + "/";
-		output = output + this.y + "/";
-		output = output + w.getTop();
+		output = output + getPos_X() + "/";
+		output = output + getPos_Y() + "/";
+		output = output + network.getTop();
 		
 		return output;
+	}
+	
+	//Private Methods
+	private void color1()
+	{
+		accepted = getPd_Fitness();
+		total = new Float(getCell_Neighboors().size());
+		Float tt = accepted / total;
+		Float temp = (tt / 5f) / getBridge().getCell_ItPerGen();
+		Float fff = 250 * temp;
+		int iii = (int) (fff * 1);
+
+		c1 = new Color(iii, iii, iii);
+	}
+	
+	private void color2()
+	{
+		Float nei = new Float(getCell_Neighboors().size() * getBridge().getCell_ItPerGen());
+		nei = 255 * (new Float(coopHist) / nei);
+		int iii = (int) (nei * 1);
+		
+		c2 = new Color(iii,iii,iii);
 	}
 }

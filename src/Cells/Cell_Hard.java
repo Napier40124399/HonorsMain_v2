@@ -78,14 +78,28 @@ public class Cell_Hard extends Cell
 	@Override
 	public void doUpdateCell()
 	{
-		if(getBridge().getCell_ColorMode() == 0)
+		if(getBridge().getSim_Save())
 		{
-			color1();
-			setC(c1);
+			if(getBridge().getCell_ColorMode() == 0)
+			{
+				color1();
+				setC(c1);
+			}else
+			{
+				color2();
+				setC(c2);
+			}
 		}else
 		{
+			color1();
 			color2();
-			setC(c2);
+			if(getBridge().getCell_ColorMode() == 0)
+			{
+				setC(c1);
+			}else
+			{
+				setC(c2);
+			}
 		}
 		setHc_R(getHc_NextGenR());
 	}

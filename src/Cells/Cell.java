@@ -1,8 +1,8 @@
 package Cells;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.awt.geom.Point2D;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import DataCenter.Bridge;
@@ -36,7 +36,7 @@ public class Cell
 	// Positions
 	private int pos_X;
 	private int pos_Y;
-	private Point2D pos_Coords;
+	private Point pos_Coords;
 	// Prisoner Dilemma vars
 	private Float pd_Fitness;
 	private ArrayList<Cell> cell_PotentialParents;
@@ -59,7 +59,7 @@ public class Cell
 		
 		c = Color.black;
 		hc_NextGenR = hc_R;
-		pos_Coords = new Point2D.Double(pos_X, pos_Y);
+		pos_Coords = new Point(pos_X, pos_Y);
 	}
 	
 	public void doFitness(){}
@@ -213,6 +213,14 @@ public class Cell
 		return over;
 	}
 	
+	//Public methods
+	protected void resetMemory(){}
+	protected Float makeDecision(Point p){return 0f;}
+	protected Float makeDecisionCorrected(){return 0f;}
+	protected void handleMemory(Float deciionOP, Float decisionME){}
+	protected Network getNetwork(){return null;}
+	protected String serialize(){return "";}
+	
 	//GETTERS AND SETTERS
 	public int getPos_X()
 	{
@@ -234,12 +242,12 @@ public class Cell
 		this.pos_Y = pos_Y;
 	}
 
-	public Point2D getPos_Coords()
+	public Point getPos_Coords()
 	{
 		return pos_Coords;
 	}
 
-	public void setPos_Coords(Point2D pos_Coords)
+	public void setPos_Coords(Point pos_Coords)
 	{
 		this.pos_Coords = pos_Coords;
 	}

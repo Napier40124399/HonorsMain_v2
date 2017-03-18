@@ -168,17 +168,7 @@ public class SimulationWindow
 		{
 			public void mouseClicked(MouseEvent arg0)
 			{
-				if (settingsShowing)
-				{
-					compPanel.setBounds(panelPos, size - 50, panelWidth, panelSize);
-					settingsShowing = false;
-					compPanel.repaint();
-				} else
-				{
-					compPanel.setBounds(panelPos, size - panelSize, panelWidth, panelSize);
-					settingsShowing = true;
-					compPanel.repaint();
-				}
+				
 			}
 		});
 		btnplay.addActionListener(new ActionListener()
@@ -223,7 +213,17 @@ public class SimulationWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				
+				if (settingsShowing)
+				{
+					compPanel.setBounds(panelPos, size - 50, panelWidth, panelSize);
+					settingsShowing = false;
+					compPanel.repaint();
+				} else
+				{
+					compPanel.setBounds(panelPos, size - panelSize, panelWidth, panelSize);
+					settingsShowing = true;
+					compPanel.repaint();
+				}
 			}
 		});
 		btnUpdate.addActionListener(new ActionListener()

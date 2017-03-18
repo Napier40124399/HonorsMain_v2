@@ -3,7 +3,7 @@ package Scenario;
 import java.util.ArrayList;
 
 import Cells.Cell;
-import Cells.Cell_Hard;
+import Cells.Cell_NN2;
 import DataCenter.Bridge;
 import MultiThreading.SplitTask;
 
@@ -123,7 +123,7 @@ public class Simulation implements Runnable
 		{
 			for(int j = 0; j < quantity; j++)
 			{
-				cells.add(new Cell_Hard());
+				cells.add(new Cell_NN2());
 				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
 			}
 		}

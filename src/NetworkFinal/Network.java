@@ -16,6 +16,7 @@ public class Network implements Cloneable, Serializable
 	private ArrayList<ArrayList<Part>> fabric = new ArrayList<ArrayList<Part>>();
 	private ArrayList<Float> biases = new ArrayList<Float>();
 	private Float id;
+	private Float biasWeight = 0.0001f;
 
 	public Network(int size)
 	{
@@ -57,7 +58,7 @@ public class Network implements Cloneable, Serializable
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
 		{
-			biases.add(new Float(r.nextGaussian() * 0.05));
+			biases.add(new Float(r.nextGaussian() * biasWeight));
 		}
 		
 		parts = new ArrayList<Part>();
@@ -84,16 +85,14 @@ public class Network implements Cloneable, Serializable
 		
 	}
 
-	public void mutate(int mutate)
+	public void mutate(Float mutate, Boolean dynTop, int maxNodes)
 	{
-		Float mutation = new Float(mutate);
-		mutation = mutation * 0.001f;
 		// All initialized the same way, this is the difference
 		for (ArrayList<Part> layer : fabric)
 		{
 			for (Part p : layer)
 			{
-				p.mutate(mutation);
+				p.mutate(mutate);
 				//p.makeCoop();
 			}
 		}
@@ -101,27 +100,30 @@ public class Network implements Cloneable, Serializable
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
 		{
-			biases.set(i, new Float(biases.get(i) + (r.nextGaussian() * 0.001)));
+			biases.set(i, new Float(biases.get(i) + (r.nextGaussian() * biasWeight)));
 		}
 		for(int i = 0; i < 6; i++)
 		{
-			if(biases.get(i) >= 0.5f)
+			if(biases.get(i) >= biasWeight)
 			{
-				biases.set(i, new Float(0.5));
-			}else if(biases.get(i) <= -0.5f)
+				biases.set(i, new Float(biasWeight));
+			}else if(biases.get(i) <= -biasWeight)
 			{
-				biases.set(i, new Float(-0.5));
+				biases.set(i, new Float(-biasWeight));
 			}
 		}
 		
-		if(Math.random() > 0.995)
+		if(dynTop)
 		{
-			if(fabric.get(fabric.size()-2).size() < 15)
+			if(Math.random() > 0.995)
 			{
-				addNode(fabric.size()-2);
-			}else 
-			{
-				addLayer();
+				if(fabric.get(fabric.size()-2).size() <= maxNodes)
+				{
+					addNodeHot(fabric.size()-2);
+				}else 
+				{
+					addLayer();
+				}
 			}
 		}
 	}
@@ -134,13 +136,30 @@ public class Network implements Cloneable, Serializable
 
 	private void addNode(int i)
 	{
-		Part pp = new Part();
-		fabric.get(i).add(pp);
+		Part part = new Part();
+		fabric.get(i).add(part);
 		if (i > 0)
 		{
 			for (Part p : fabric.get(i - 1))
 			{
-				p.addNode(pp);
+				p.addNode(part);
+			}
+		}
+	}
+	
+	private void addNodeHot(int i)
+	{
+		Part part = new Part();
+		fabric.get(i).add(part);
+		if (i > 0)
+		{
+			for (Part p : fabric.get(i - 1))
+			{
+				p.addNode(part);
+			}
+			for(Part p : fabric.get(i + 1))
+			{
+				part.addNode(p);
 			}
 		}
 	}
