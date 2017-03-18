@@ -25,6 +25,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -81,12 +82,15 @@ public class MainWindow
 	{ "ID", "Gen", "State", "Threads" };
 	private String[][] rows = null;
 	private TableModel model;
+	private SimulationWindow selectedSim = null;
 	// Instances
 	private CompBuilder build;
 	private Colors c = new Colors();
 	private ArrayList<SimulationWindow> simulations = new ArrayList<SimulationWindow>();
 	private LoadDefaults load = new LoadDefaults();
 	private SettingsWindow settingsWindow;
+	//Timers
+	private Timer timer;
 
 	public static void main(String[] args)
 	{
@@ -300,7 +304,6 @@ public class MainWindow
 		frame.getContentPane().add(btnPlay);
 		btnPlay.setIcon(new ImageIcon("res\\play.png"));
 		btnPlay.setRolloverIcon(new ImageIcon("res\\playHover.png"));
-		btnPlay.setBounds(20, 5, 40, 40);
 
 		btnPause = new JButton();
 		btnPause.setBorder(BorderFactory.createEmptyBorder());
@@ -308,7 +311,6 @@ public class MainWindow
 		frame.getContentPane().add(btnPause);
 		btnPause.setIcon(new ImageIcon("res\\pause.png"));
 		btnPause.setRolloverIcon(new ImageIcon("res\\pauseHover.png"));
-		btnPause.setBounds(70, 5, 40, 40);
 
 		btnStop = new JButton();
 		btnStop.setBorder(BorderFactory.createEmptyBorder());
@@ -316,11 +318,33 @@ public class MainWindow
 		frame.getContentPane().add(btnStop);
 		btnStop.setIcon(new ImageIcon("res\\stop.png"));
 		btnStop.setRolloverIcon(new ImageIcon("res\\stopHover.png"));
-		btnStop.setBounds(120, 5, 40, 40);
 
 		boxVisi = new JCheckBox();
 		build.buildCheckBox(boxVisi, false, frame);
 		boxVisi.setEnabled(false);
+		
+		timer = new Timer(60000, new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(simulations.size() > 0)
+				{
+					ArrayList<String[]> dets = new ArrayList<String[]>();
+					for(int i = 0; i < simulations.size(); i++)
+					{
+						dets.add(simulations.get(i).getVals());
+					}
+					String[][] newRows = new String[simulations.size()][4];
+					for(int i = 0; i < simulations.size(); i++)
+					{
+						newRows[i] = dets.get(i);
+					}
+					refreshTable();
+				}
+			}
+		});
+		timer.start();
 
 		// Bounds
 		// separator4.setBounds(460, 30, 2, 1000);
@@ -328,6 +352,15 @@ public class MainWindow
 		scroll.setBounds(480, 50, 350, 400);
 		lblDetails.setBounds(555, 510, 250, 40);
 		area.setBounds(480, 550, 350, 450);
+		btnPlay.setBounds(560, 1010, 40, 40);
+		btnPause.setBounds(600, 1010, 40, 40);
+		btnStop.setBounds(640, 1010, 40, 40);
+		boxVisi.setBounds(680, 1010, 80, 40);
+	}
+	
+	private void check(String[] vals)
+	{
+		
 	}
 
 	private void newRow(String[] settings)
@@ -338,7 +371,7 @@ public class MainWindow
 				"" + simulations.get(simulations.size() - 1).getThreads() };
 		if (tblSims.getRowCount() > 0)
 		{
-			String[][] newRows = new String[rows.length + 1][3];
+			String[][] newRows = new String[rows.length + 1][4];
 			newRows[0] = row;
 			for (int i = 0; i < rows.length; i++)
 			{
@@ -355,7 +388,14 @@ public class MainWindow
 
 	private void refreshTable()
 	{
-		model = new DefaultTableModel(rows, cols);
+		model = new DefaultTableModel(rows, cols)
+		{
+
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
 		tblSims.setModel(model);
 		tblSims.repaint();
 	}
@@ -417,13 +457,60 @@ public class MainWindow
 			public void mouseClicked(MouseEvent e)
 			{
 				ID = Integer.parseInt((String)tblSims.getModel().getValueAt(tblSims.getSelectedRow(), 0));
+				selectedSim = simulations.get(ID);
 				area.setText("");
-				for (String s : simulations.get(ID).getDetails())
+				for (String s : selectedSim.getDetails())
 				{
 					area.append(s);
 					area.append("\n");
 				}
-				simulations.get(ID).bringToFront();
+				selectedSim.bringToFront();
+				boxVisi.setEnabled(true);
+				boxVisi.setSelected(selectedSim.isVisible());
+			}
+		});
+		btnPlay.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(!selectedSim.equals(null))
+				{
+					selectedSim.play();
+				}
+			}
+		});
+		btnPause.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(!selectedSim.equals(null))
+				{
+					selectedSim.pause();
+				}
+			}
+		});
+		btnStop.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(!selectedSim.equals(null))
+				{
+					selectedSim.stop();
+				}
+			}
+		});
+		boxVisi.addActionListener(new ActionListener()
+		{
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				if(!selectedSim.equals(null))
+				{
+					selectedSim.toggleVisible(boxVisi.isSelected());
+				}
 			}
 		});
 	}

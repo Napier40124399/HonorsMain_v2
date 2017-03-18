@@ -71,6 +71,7 @@ public class SimulationWindow
 	private int drawScale;
 	private int size;
 	private int curGen = 0;
+	private Boolean stop = false;
 	// Instances
 	private Colors c = new Colors();
 	private CompBuilder builder = new CompBuilder();
@@ -100,16 +101,16 @@ public class SimulationWindow
 		simulation = new Simulation(bridge, cellType);
 		initialize(p);
 	}
-	
+
 	private Integer[] extrapolateTopology(String s)
 	{
 		String[] ss = s.split("-");
 		Integer[] top = new Integer[ss.length];
-		for(int i = 0; i < ss.length; i++)
+		for (int i = 0; i < ss.length; i++)
 		{
 			top[i] = Integer.parseInt(ss[i]);
 		}
-		
+
 		return top;
 	}
 
@@ -145,18 +146,18 @@ public class SimulationWindow
 
 		buildSettingsPanel();
 		addActionListeners();
-		
+
 		writePlaceholders();
 
 		Timer timer = new Timer(100, new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(bridge.getSim_CurGen() > curGen)
+				if (bridge.getSim_CurGen() > curGen)
 				{
 					curGen = bridge.getSim_CurGen();
-					lblGenCount.setText("GEN "+curGen);
-					if(frame.isVisible() && bridge.getSim_Running())
+					lblGenCount.setText("GEN " + curGen);
+					if (frame.isVisible() && bridge.getSim_Running())
 					{
 						simPanel.repaint();
 					}
@@ -165,15 +166,15 @@ public class SimulationWindow
 		});
 		timer.start();
 	}
-	
+
 	private void writePlaceholders()
 	{
-		txtThreads.setText(bridge.getSim_Threads()+"");
-		txtItPerGen.setText(bridge.getCell_ItPerGen()+"");
-		txtMutation.setText(bridge.getCell_Mutation()+"");
-		txtDrawDelay.setText(bridge.getDraw_Delay()+"");
+		txtThreads.setText(bridge.getSim_Threads() + "");
+		txtItPerGen.setText(bridge.getCell_ItPerGen() + "");
+		txtMutation.setText(bridge.getCell_Mutation() + "");
+		txtDrawDelay.setText(bridge.getDraw_Delay() + "");
 		txtSerDelay.setText("10");
-		//txtDrawScale.setText(bridge.getDraw_Scale()+"");
+		// txtDrawScale.setText(bridge.getDraw_Scale()+"");
 	}
 
 	private void addActionListeners()
@@ -187,7 +188,7 @@ public class SimulationWindow
 				System.out.println();
 				x = x / bridge.getDraw_Scale();
 				y = y / bridge.getDraw_Scale();
-				bridge.getCell_ArrayList().get(x*y+y).drawNet();
+				bridge.getCell_ArrayList().get(x * y + y).drawNet();
 			}
 		});
 		btnplay.addActionListener(new ActionListener()
@@ -237,36 +238,41 @@ public class SimulationWindow
 			}
 		});
 	}
-	
+
 	public void play()
 	{
-		if(!bridge.getSim_Running())
+		if (!bridge.getSim_Running())
 		{
 			bridge.setSim_Running(true);
 			simulation.start();
-		}else
+		} else
 		{
-			if(bridge.getSim_Paused())
+			if (bridge.getSim_Paused())
 			{
 				bridge.setSim_Paused(false);
 			}
 		}
 	}
-	
+
 	public void pause()
 	{
-		if(bridge.getSim_Running())
+		if (bridge.getSim_Running())
 		{
 			bridge.setSim_Paused(true);
 		}
 	}
-	
+
 	public void stop()
 	{
-		if(bridge.getSim_Running() == true)
+		if (bridge.getSim_Running() == true)
 		{
 			bridge.setSim_Running(false);
 			simPanel.repaint();
+			stop = true;
+			frame.dispose();
+		}else
+		{
+			stop = true;
 			frame.dispose();
 		}
 	}
@@ -540,7 +546,7 @@ public class SimulationWindow
 		lblSerialDelay.setText("Ser. Delay");
 		builder.buildLabel(lblSerialDelay);
 		panel.add(lblSerialDelay);
-		
+
 		JLabel lblThreads = new JLabel();
 		lblThreads.setText("Threads");
 		builder.buildLabel(lblThreads);
@@ -553,7 +559,7 @@ public class SimulationWindow
 		txtSerDelay = new JTextField();
 		builder.buildTxtForm(txtSerDelay);
 		panel.add(txtSerDelay);
-		
+
 		txtThreads = new JTextField();
 		builder.buildTxtForm(txtThreads);
 		panel.add(txtThreads);
@@ -566,7 +572,7 @@ public class SimulationWindow
 		txtSerDelay.setBounds(175, 75, 170, 30);
 		txtThreads.setBounds(175, 110, 170, 30);
 	}
-	
+
 	private void update()
 	{
 		bridge.setCell_ItPerGen(Integer.parseInt(txtItPerGen.getText()));
@@ -576,14 +582,14 @@ public class SimulationWindow
 		bridge.setSim_Delay(Integer.parseInt(txtDelay.getText()));
 		bridge.setSim_SaveDelay(Integer.parseInt(txtSerDelay.getText()));
 		bridge.setSim_Threads(Integer.parseInt(txtThreads.getText()));
-		
-		if(cellType == 0 || cellType == 1)
+
+		if (cellType == 0 || cellType == 1)
 		{
 			bridge.setPd_T(Float.parseFloat(txtT.getText()));
 			bridge.setPd_R(Float.parseFloat(txtR.getText()));
 			bridge.setPd_P(Float.parseFloat(txtP.getText()));
 			bridge.setPd_S(Float.parseFloat(txtS.getText()));
-		}else if(cellType == 2)
+		} else if (cellType == 2)
 		{
 			bridge.setNn_MaxNodes(Integer.parseInt(txtMaxNodes.getText()));
 			bridge.setNn_DynTop(boxDynamicTopology.isSelected());
@@ -595,75 +601,93 @@ public class SimulationWindow
 		compPanel.setBounds(compPanel.getX(), compPanel.getY(), compPanel.getWidth(), compPanel.getHeight() + 1);
 		compPanel.setBounds(compPanel.getX(), compPanel.getY(), compPanel.getWidth(), compPanel.getHeight() - 1);
 	}
-	
-	public void toggleVisible()
+
+	public void toggleVisible(Boolean visi)
 	{
-		frame.setVisible(!frame.isVisible());
+		frame.setVisible(visi);
 	}
-	
+
+	public Boolean isVisible()
+	{
+		return frame.isVisible();
+	}
+
 	public int getGen()
 	{
 		return curGen;
 	}
-	
+
 	public int getThreads()
 	{
 		return bridge.getSim_Threads();
 	}
-	
+
 	public String getState()
 	{
-		return "running";
-		//return state;
+		if (bridge.getSim_Running())
+		{
+			return "running";
+		} else if (curGen > 0 && !bridge.getSim_Running())
+		{
+			return "ended";
+		} else if (bridge.getSim_Paused())
+		{
+			return "pauses";
+		} else
+		{
+			return "NULL";
+		}
 	}
-	
+
 	public ArrayList<String> getDetails()
 	{
 		ArrayList<String> details = new ArrayList<String>();
-		if(cellType == 0)
+		if (cellType == 0)
 		{
 			details.add("Cells: hard coded.");
-		}else if(cellType == 1)
+		} else if (cellType == 1)
 		{
 			details.add("Cells: tit for tat.");
-		}else if(cellType == 2)
+		} else if (cellType == 2)
 		{
 			details.add("Cells: neural networks.");
 		}
 
-		details.add("Gen: "+curGen);
-		details.add("Threads: "+bridge.getSim_Threads());
-		
-		if(bridge.getSim_Paused())
+		details.add("Gen: " + curGen);
+		details.add("Threads: " + bridge.getSim_Threads());
+
+		if (bridge.getSim_Paused())
 		{
 			details.add("Status: paused");
-		}else
+		} else
 		{
 			details.add("Status: running");
 		}
-		
-		details.add("Cell Quantity: "+cellQ);
-		details.add("Iterations per generation "+bridge.getCell_ItPerGen());
-		details.add("Visible: "+frame.isVisible());
-		details.add("Save: "+bridge.getSim_Save());
-		
-		
+
+		details.add("Cell Quantity: " + cellQ);
+		details.add("Iterations per generation " + bridge.getCell_ItPerGen());
+		details.add("Visible: " + frame.isVisible());
+		details.add("Save: " + bridge.getSim_Save());
+
 		return details;
 	}
-	
+
 	public void bringToFront()
 	{
-		java.awt.EventQueue.invokeLater(new Runnable() {
-		    @Override
-		    public void run() {
-		        frame.toFront();
-		        frame.repaint();
-		    }
+		java.awt.EventQueue.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				frame.toFront();
+				frame.repaint();
+			}
 		});
 	}
-	
-	public void returnNorm()
+
+	public String[] getVals()
 	{
-		//frame.setVisible(b);
+		String[] vals = {curGen+"", getState(), getThreads()+""};
+		return vals;
 	}
 }
