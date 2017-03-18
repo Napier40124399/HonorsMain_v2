@@ -220,6 +220,7 @@ public class Cell
 	protected void handleMemory(Float deciionOP, Float decisionME){}
 	protected Network getNetwork(){return null;}
 	protected String serialize(){return "";}
+	public void drawNet(){}
 	
 	//GETTERS AND SETTERS
 	public int getPos_X()

@@ -25,7 +25,6 @@ public class Part implements Serializable
 	{
 		for (int i = 0; i < weights.size(); i++)
 		{
-			//next.get(i).receive(1f);
 			next.get(i).receive(output(i));
 		}
 		reset();
@@ -46,6 +45,19 @@ public class Part implements Serializable
 		Random r = new Random();
 		next.add(part);
 		weights.add(new Float(r.nextGaussian() / 2));
+	}
+	
+	public void removeNode(Part part)
+	{
+		for(int i = 0; i < next.size(); i++)
+		{
+			if(next.get(i).equals(part))
+			{
+				weights.remove(i);
+				next.remove(i);
+				break;
+			}
+		}
 	}
 
 	public void mutate(Float mute)
@@ -90,7 +102,7 @@ public class Part implements Serializable
 	{
 		for (int i = 0; i < weights.size(); i++)
 		{
-			weights.set(i, 10f);
+			weights.set(i, -10f);
 		}
 	}
 

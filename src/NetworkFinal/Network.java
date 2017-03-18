@@ -16,7 +16,11 @@ public class Network implements Cloneable, Serializable
 	private ArrayList<ArrayList<Part>> fabric = new ArrayList<ArrayList<Part>>();
 	private ArrayList<Float> biases = new ArrayList<Float>();
 	private Float id;
-	private Float biasWeight = 0.0001f;
+	private Float biasWeight = 0.001f;
+	private Double newNodeChance = 0.05;
+	
+	//NEW
+	private Part outputNode;
 
 	public Network(int size)
 	{
@@ -26,35 +30,10 @@ public class Network implements Cloneable, Serializable
 		}
 	}
 
-	public Float think(ArrayList<Float> memory)
-	{
-		ArrayList<Float> temp = new ArrayList<Float>();
-		for (int i = 0; i < 6; i++)
-		{
-			temp.add(new Float(biases.get(i) + memory.get(i)));
-		}
-		int j = 0;
-		for (Part p : fabric.get(0))
-		{
-			p.receive(temp.get(j));
-			p.pass();
-			j++;
-		}
-		int ssize = fabric.size()-1;
-		for (int i = 1; i < ssize; i++)
-		{
-			for (Part p : fabric.get(i))
-			{
-				p.handle();
-				p.pass();
-			}
-		}
-		Float res = fabric.get(ssize).get(0).getVal();
-		return res;
-	}
-
 	public void setUp(int size)
 	{
+		outputNode = new Part();
+		
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
 		{
@@ -71,20 +50,36 @@ public class Network implements Cloneable, Serializable
 		fabric.add(parts);
 
 		addLayer();
-		/*
-		for (int i = 0; i < size-1; i++)
-		{
-			addNode(1);
-		}
-		*/
-		addLayer();
+		addNode(1);
 	}
 	
-	public void makeDefect()
+	public Float think(ArrayList<Float> memory)
 	{
-		
+		ArrayList<Float> temp = new ArrayList<Float>();
+		for (int i = 0; i < 6; i++)
+		{
+			temp.add(new Float(biases.get(i) + memory.get(i)));
+		}
+		int j = 0;
+		for (Part p : fabric.get(0))
+		{
+			p.receive(temp.get(j));
+			p.pass();
+			j++;
+		}
+		for (int i = 1; i < fabric.size(); i++)
+		{
+			for (Part p : fabric.get(i))
+			{
+				p.handle();
+				p.pass();
+			}
+		}
+		Float res = outputNode.getVal();
+		outputNode.pass();
+		return res;
 	}
-
+	
 	public void mutate(Float mutate, Boolean dynTop, int maxNodes)
 	{
 		// All initialized the same way, this is the difference
@@ -96,6 +91,7 @@ public class Network implements Cloneable, Serializable
 				//p.makeCoop();
 			}
 		}
+		outputNode.mutate(mutate);
 
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
@@ -104,22 +100,35 @@ public class Network implements Cloneable, Serializable
 		}
 		for(int i = 0; i < 6; i++)
 		{
-			if(biases.get(i) >= biasWeight)
+			if(biases.get(i) >= biasWeight*10)
 			{
-				biases.set(i, new Float(biasWeight));
-			}else if(biases.get(i) <= -biasWeight)
+				biases.set(i, new Float(biasWeight*10));
+			}else if(biases.get(i) <= -biasWeight*10)
 			{
-				biases.set(i, new Float(-biasWeight));
+				biases.set(i, new Float(-biasWeight*10));
+			}
+		}
+		if(Math.random() < 0.01)
+		{
+			for(Part p : fabric.get(0))
+			{
+				p.makeCoop();
+			}
+			for(Part p : fabric.get(1))
+			{
+				p.makeCoop();
 			}
 		}
 		
-		if(dynTop)
+		if(true)
 		{
-			if(Math.random() > 0.995)
+			if(Math.random() < newNodeChance)
 			{
-				if(fabric.get(fabric.size()-2).size() <= maxNodes)
+				if(fabric.get(fabric.size()-1).size() <= maxNodes)
 				{
-					addNodeHot(fabric.size()-2);
+					System.out.println(fabric.get(fabric.size()-1).size());
+					addNode(fabric.size()-1);
+					System.out.println(fabric.get(fabric.size()-1).size());
 				}else 
 				{
 					addLayer();
@@ -130,11 +139,15 @@ public class Network implements Cloneable, Serializable
 
 	private void addLayer()
 	{
+		for(Part p : fabric.get(fabric.size()-1))
+		{
+			p.removeNode(outputNode);
+		}
 		fabric.add(new ArrayList<Part>());
 		addNode(fabric.size() - 1);
 	}
 
-	private void addNode(int i)
+	private void addNodeOld(int i)
 	{
 		Part part = new Part();
 		fabric.get(i).add(part);
@@ -147,41 +160,16 @@ public class Network implements Cloneable, Serializable
 		}
 	}
 	
-	private void addNodeHot(int i)
+	private void addNode(int i)
 	{
+		System.out.println("added node - "+getTop());
 		Part part = new Part();
 		fabric.get(i).add(part);
-		if (i > 0)
+		for (Part p : fabric.get(i - 1))
 		{
-			for (Part p : fabric.get(i - 1))
-			{
-				p.addNode(part);
-			}
-			for(Part p : fabric.get(i + 1))
-			{
-				part.addNode(p);
-			}
+			p.addNode(part);
 		}
-	}
-
-	private void addNodeR()
-	{
-		int i = (int) (Math.random() * (fabric.size() - 1));
-		if (i != 0)
-		{
-			if (i != fabric.size() - 1)
-			{
-				Part pp = new Part();
-				fabric.get(i).add(pp);
-				if (i > 0)
-				{
-					for (Part p : fabric.get(i - 1))
-					{
-						p.addNode(pp);
-					}
-				}
-			}
-		}
+		part.addNode(outputNode);
 	}
 	
 	public Network deepClone()

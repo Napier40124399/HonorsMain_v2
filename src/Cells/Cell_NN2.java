@@ -149,7 +149,7 @@ public class Cell_NN2 extends Cell
 	public void doMutationLogic()
 	{
 		// More to come!!
-		network.mutate(getBridge().getCell_Mutation());
+		network.mutate(getBridge().getCell_Mutation(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
 	}
 	
 	@Override
@@ -190,6 +190,12 @@ public class Cell_NN2 extends Cell
 	public Network getNetwork()
 	{
 		return network;
+	}
+	
+	@Override
+	public void drawNet()
+	{
+		System.out.println(network.getTop());
 	}
 
 	@Override

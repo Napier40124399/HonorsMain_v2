@@ -164,11 +164,16 @@ public class SimulationWindow
 
 	private void addActionListeners()
 	{
-		compPanel.addMouseListener(new MouseAdapter()
+		simPanel.addMouseListener(new MouseAdapter()
 		{
 			public void mouseClicked(MouseEvent arg0)
 			{
-				
+				int x = arg0.getX();
+				int y = arg0.getY();
+				System.out.println();
+				x = x / bridge.getDraw_Scale();
+				y = y / bridge.getDraw_Scale();
+				bridge.getCell_ArrayList().get(x*y+y).drawNet();
 			}
 		});
 		btnplay.addActionListener(new ActionListener()

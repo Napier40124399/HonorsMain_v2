@@ -273,16 +273,16 @@ public class MainWindow
 	
 	private void placeHolders()
 	{
-		comboType.setSelectedIndex(0);
-		txtCellQ.setText("500");
+		comboType.setSelectedIndex(2);
+		txtCellQ.setText("100");
 		txtMutation.setText("0.01");
 		txtDistance.setText("1");
 		txtGenerations.setText("0");
-		txtIterations.setText("1");
+		txtIterations.setText("51");
 		txtThreads.setText((Runtime.getRuntime().availableProcessors()-1)+"");
 		txtDelay.setText("10");
 		txtDrawDelay.setText("2");
-		txtDrawScale.setText("3");
+		txtDrawScale.setText("10");
 		txtSerializeDelay.setText("10");
 		txtSerializePath.setText("Not saving");
 	}

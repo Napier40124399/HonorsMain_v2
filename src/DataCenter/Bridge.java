@@ -55,7 +55,7 @@ public class Bridge
 	private Boolean pd_Taurus;
 	// Neural Network Variables
 	private int nn_MaxNodes;
-	private Boolean nn_DynTop;
+	private Boolean nn_DynTop = true;
 	// Simulation Variables
 	private Boolean sim_Running;
 	private Boolean sim_Paused;
