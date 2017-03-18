@@ -85,10 +85,6 @@ public class Cell_NN2 extends Cell
 	@Override
 	public void doNewGeneration()
 	{
-		/**
-		 * One of two ways, either manualy copy a network or use cloneable.
-		 */
-
 		setCell_PotentialParents(new ArrayList<Cell>());
 		temporaryFitness = getPd_Fitness();
 		for (Cell ce : getCell_Neighboors())
@@ -107,8 +103,6 @@ public class Cell_NN2 extends Cell
 		{
 			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
 			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().deepClone();
-			//nextGenFab = getCell_PotentialParents().get(choose).getNetwork().cloneAlt();
-			//nextGenBias = getCell_PotentialParents().get(choose).getNetwork().getBiases();
 			occured = true;
 		}
 		else

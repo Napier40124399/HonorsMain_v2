@@ -170,35 +170,13 @@ public class Network implements Cloneable, Serializable
 
 			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
 			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (Network) ois.readObject();
+			Network net = (Network) ois.readObject();
+			return net;
 		} catch (IOException e) {
 			return null;
 		} catch (ClassNotFoundException e) {
 			return null;
 		}
-	}
-	
-	public ArrayList<ArrayList<Part>> getFabric(){return fabric;}
-	
-	public ArrayList<ArrayList<Part>> cloneAlt()
-	{
-		ArrayList<ArrayList<Part>> copyFabric = new ArrayList<ArrayList<Part>>();
-		ArrayList<Part> copy;
-		for(ArrayList<Part> layer : fabric)
-		{
-			copy = new ArrayList<Part>();
-			for(Part p : layer)
-			{
-				copy.add(p.deepClone());
-			}
-			copyFabric.add(copy);
-		}
-		return copyFabric;
-	}
-	
-	public ArrayList<Float> getBiases()
-	{
-		return (ArrayList<Float>) biases.clone();
 	}
 	
 	public String getTop()
@@ -233,13 +211,5 @@ public class Network implements Cloneable, Serializable
 				p.showCon();
 			}
 		}
-	}
-	
-	public void baby(ArrayList<ArrayList<Part>> newFab, ArrayList<Float> newBias)
-	{
-		fabric.clear();
-		biases.clear();
-		fabric = newFab;
-		biases = newBias;
 	}
 }
