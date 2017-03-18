@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import DataCenter.Bridge;
 import NetworkFinal.Network;
 import NetworkFinal.Part;
 import NetworkFinal.Remember;
@@ -41,21 +42,12 @@ public class Cell_NN2 extends Cell
 	
 
 	//Initialize network and memory
-	public Cell_NN2()
+	@Override
+	public void Initialize(boolean hc_R, int pos_X, int pos_Y, Bridge bridge)
 	{
-		//Network
-		if(true)//getBridge().getNn_DynTop())
-		{
-			network = new Network(1);
-		}else
-		{
-			//getBridge().getNn_StartNodes();
-			network = new Network(2);
-		}
-		
-		//Memory
-
-		memory = new Remember(3);
+		super.Initialize(hc_R, pos_X, pos_Y, bridge);
+		network = new Network(getBridge().getNn_Topology());
+		memory = new Remember(getBridge().getNn_Topology()[0]/2);
 	}
 
 	@Override

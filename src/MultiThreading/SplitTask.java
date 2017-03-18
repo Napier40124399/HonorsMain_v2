@@ -12,7 +12,6 @@ public class SplitTask
 
 	public void splitTasks(ArrayList<Cell> cells, int threadCount)
 	{
-		System.out.println("split");
 		if(threadCount > 1)
 		{
 			Float f = new Float(cells.size() / threadCount);

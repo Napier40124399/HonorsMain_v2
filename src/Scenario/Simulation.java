@@ -19,7 +19,7 @@ public class Simulation implements Runnable
 	public Simulation(Bridge bridge)
 	{
 		this.bridge = bridge;
-		cells = makeCells(bridge.getCell_Quantity());
+		cells = makeCells(bridge.getCell_Quantity(), bridge);
 		bridge.setCell_ArrayList(cells);
 		sp.splitTasks(cells, bridge.getSim_Threads());
 	}
@@ -116,7 +116,7 @@ public class Simulation implements Runnable
 		}
 	}
 	
-	private ArrayList<Cell> makeCells(int quantity)
+	private ArrayList<Cell> makeCells(int quantity, Bridge bridge)
 	{
 		ArrayList<Cell> cells = new ArrayList<Cell>();
 		for(int i = 0; i < quantity; i++)

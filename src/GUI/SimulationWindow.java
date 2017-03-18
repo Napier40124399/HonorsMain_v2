@@ -88,15 +88,29 @@ public class SimulationWindow
 		panelPos = (size - panelWidth) / 2;
 
 		bridge = new Bridge();
+		bridge.setNn_Topology(extrapolateTopology(settings[15]));
 		bridge.setUp(Integer.parseInt(settings[1]), 0, Integer.parseInt(settings[5]), Integer.parseInt(settings[4]),
 				Integer.parseInt(settings[3]), Float.parseFloat(settings[2]), 1.5f, 1f, 0f, 0f,
 				Boolean.parseBoolean(settings[8]), 18, Boolean.parseBoolean(settings[11]), settings[13],
 				Integer.parseInt(settings[12]), Integer.parseInt(settings[6]), Integer.parseInt(settings[7]),
-				Integer.parseInt(settings[9]), Integer.parseInt(settings[10]));
+				Integer.parseInt(settings[9]), drawScale);
+		bridge.setNn_DynTop(Boolean.parseBoolean(settings[14]));
 
 		d = new Draw(bridge);
 		simulation = new Simulation(bridge);
 		initialize(p);
+	}
+	
+	private Integer[] extrapolateTopology(String s)
+	{
+		String[] ss = s.split("-");
+		Integer[] top = new Integer[ss.length];
+		for(int i = 0; i < ss.length; i++)
+		{
+			top[i] = Integer.parseInt(ss[i]);
+		}
+		
+		return top;
 	}
 
 	private void initialize(Point p)
@@ -378,7 +392,7 @@ public class SimulationWindow
 			panel.add(lblMaxNodes);
 
 			boxDynamicTopology = new JCheckBox();
-			builder.buildCheckBox(boxDynamicTopology, true);
+			builder.buildCheckBox(boxDynamicTopology, bridge.getNn_DynTop());
 			panel.add(boxDynamicTopology);
 
 			txtMaxNodes = new JTextField();

@@ -55,7 +55,8 @@ public class Bridge
 	private Boolean pd_Taurus;
 	// Neural Network Variables
 	private int nn_MaxNodes;
-	private Boolean nn_DynTop = true;
+	private Integer[] nn_Topology;
+	private Boolean nn_DynTop;
 	// Simulation Variables
 	private Boolean sim_Running;
 	private Boolean sim_Paused;
@@ -362,5 +363,15 @@ public class Bridge
 	public void setNn_DynTop(Boolean nn_DynTop)
 	{
 		this.nn_DynTop = nn_DynTop;
+	}
+
+	public Integer[] getNn_Topology()
+	{
+		return nn_Topology;
+	}
+
+	public void setNn_Topology(Integer[] nn_Topology)
+	{
+		this.nn_Topology = nn_Topology;
 	}
 }
