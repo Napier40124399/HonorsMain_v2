@@ -3,7 +3,9 @@ package Scenario;
 import java.util.ArrayList;
 
 import Cells.Cell;
+import Cells.Cell_Hard;
 import Cells.Cell_NN2;
+import Cells.Cell_TitTat;
 import DataCenter.Bridge;
 import MultiThreading.SplitTask;
 
@@ -16,10 +18,10 @@ public class Simulation implements Runnable
 	private SplitTask sp = new SplitTask();
 	private ArrayList<Cell> cells;
 	
-	public Simulation(Bridge bridge)
+	public Simulation(Bridge bridge, int type)
 	{
 		this.bridge = bridge;
-		cells = makeCells(bridge.getCell_Quantity(), bridge);
+		cells = makeCells(bridge.getCell_Quantity(), bridge, type);
 		bridge.setCell_ArrayList(cells);
 		sp.splitTasks(cells, bridge.getSim_Threads());
 	}
@@ -116,14 +118,29 @@ public class Simulation implements Runnable
 		}
 	}
 	
-	private ArrayList<Cell> makeCells(int quantity, Bridge bridge)
+	private Cell getCell(int type)
+	{
+		if(type == 0)
+		{
+			return new Cell_Hard();
+		}else if(type == 1)
+		{
+			return new Cell_TitTat();
+		}else if(type == 2)
+		{
+			return new Cell_NN2();
+		}
+		else return null;
+	}
+	
+	private ArrayList<Cell> makeCells(int quantity, Bridge bridge, int type)
 	{
 		ArrayList<Cell> cells = new ArrayList<Cell>();
 		for(int i = 0; i < quantity; i++)
 		{
 			for(int j = 0; j < quantity; j++)
 			{
-				cells.add(new Cell_NN2());
+				cells.add(getCell(type));
 				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
 			}
 		}

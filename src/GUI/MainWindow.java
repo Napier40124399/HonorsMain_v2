@@ -6,8 +6,12 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -17,13 +21,17 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import Components.Colors;
 import Components.CompBuilder;
 import Components.FileChooser;
 import FileIO.LoadDefaults;
-import MultiThreading.SplitTask;
 
 public class MainWindow
 {
@@ -57,8 +65,22 @@ public class MainWindow
 	private JPanel separator3;
 	private JCheckBox boxDynTop;
 	private JTextField txtTop;
+	// Side Panel
+	private JScrollPane scroll;
+	private JTable tblSims;
+	private JTextArea area;
+	private JButton btnPlay;
+	private JButton btnPause;
+	private JButton btnStop;
+	private JCheckBox boxVisi;
 	// Labels
 	private ArrayList<JLabel> labels = new ArrayList<JLabel>();
+	// Table variables
+	private int ID;
+	private String[] cols =
+	{ "ID", "Gen", "State", "Threads" };
+	private String[][] rows = null;
+	private TableModel model;
 	// Instances
 	private CompBuilder build;
 	private Colors c = new Colors();
@@ -94,7 +116,7 @@ public class MainWindow
 	private void initialize()
 	{
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 1130);
+		frame.setBounds(100, 100, 850, 1130);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setBackground(c.getDarkBlue());
 		frame.getContentPane().setLayout(null);
@@ -241,9 +263,101 @@ public class MainWindow
 		btnStart.setText("Start Simulation");
 		build.buildButton(btnStart, frame);
 
+		sidePanel();
+
 		place();
 		placeHolders();
 		actionListeners();
+	}
+
+	private void sidePanel()
+	{
+		JPanel separator4 = new JPanel();
+		build.buildSeparator(separator4, frame);
+
+		JLabel lblOngoing = new JLabel("Ongoing Simulations");
+		build.buildLabel(lblOngoing, frame);
+
+		model = new DefaultTableModel(rows, cols);
+		tblSims = new JTable(model);
+		build.buildTable(tblSims);
+
+		scroll = new JScrollPane(tblSims);
+		build.buildScrollPane(scroll);
+		frame.getContentPane().add(scroll);
+
+		JLabel lblDetails = new JLabel("Simulation Details");
+		build.buildLabel(lblDetails, frame);
+
+		area = new JTextArea();
+		area.setEditable(false);
+		area.setFocusable(false);
+		build.buildArea(area, frame);
+		
+		btnPlay = new JButton();
+		btnPlay.setBorder(BorderFactory.createEmptyBorder());
+		btnPlay.setContentAreaFilled(false);
+		frame.getContentPane().add(btnPlay);
+		btnPlay.setIcon(new ImageIcon("res\\play.png"));
+		btnPlay.setRolloverIcon(new ImageIcon("res\\playHover.png"));
+		btnPlay.setBounds(20, 5, 40, 40);
+
+		btnPause = new JButton();
+		btnPause.setBorder(BorderFactory.createEmptyBorder());
+		btnPause.setContentAreaFilled(false);
+		frame.getContentPane().add(btnPause);
+		btnPause.setIcon(new ImageIcon("res\\pause.png"));
+		btnPause.setRolloverIcon(new ImageIcon("res\\pauseHover.png"));
+		btnPause.setBounds(70, 5, 40, 40);
+
+		btnStop = new JButton();
+		btnStop.setBorder(BorderFactory.createEmptyBorder());
+		btnStop.setContentAreaFilled(false);
+		frame.getContentPane().add(btnStop);
+		btnStop.setIcon(new ImageIcon("res\\stop.png"));
+		btnStop.setRolloverIcon(new ImageIcon("res\\stopHover.png"));
+		btnStop.setBounds(120, 5, 40, 40);
+
+		boxVisi = new JCheckBox();
+		build.buildCheckBox(boxVisi, false, frame);
+		boxVisi.setEnabled(false);
+
+		// Bounds
+		// separator4.setBounds(460, 30, 2, 1000);
+		lblOngoing.setBounds(540, 5, 250, 40);
+		scroll.setBounds(480, 50, 350, 400);
+		lblDetails.setBounds(555, 510, 250, 40);
+		area.setBounds(480, 550, 350, 450);
+	}
+
+	private void newRow(String[] settings)
+	{
+		String[] row =
+		{ "" + (simulations.size() - 1), "" + simulations.get(simulations.size() - 1).getGen(),
+				simulations.get(simulations.size() - 1).getState(),
+				"" + simulations.get(simulations.size() - 1).getThreads() };
+		if (tblSims.getRowCount() > 0)
+		{
+			String[][] newRows = new String[rows.length + 1][3];
+			newRows[0] = row;
+			for (int i = 0; i < rows.length; i++)
+			{
+				newRows[i + 1] = rows[i];
+			}
+			rows = newRows;
+		} else
+		{
+			rows = new String[1][4];
+			rows[0] = row;
+		}
+		refreshTable();
+	}
+
+	private void refreshTable()
+	{
+		model = new DefaultTableModel(rows, cols);
+		tblSims.setModel(model);
+		tblSims.repaint();
 	}
 
 	private void actionListeners()
@@ -283,6 +397,7 @@ public class MainWindow
 
 					simulations.add(
 							new SimulationWindow(settings, new Point(frame.getX() + frame.getWidth(), frame.getY())));
+					newRow(settings);
 				}
 			}
 		});
@@ -293,6 +408,22 @@ public class MainWindow
 			public void actionPerformed(ActionEvent e)
 			{
 				settingsWindow.setVisible(true, new Point(frame.getX() + frame.getWidth(), frame.getY()));
+			}
+		});
+
+		tblSims.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				ID = Integer.parseInt((String)tblSims.getModel().getValueAt(tblSims.getSelectedRow(), 0));
+				area.setText("");
+				for (String s : simulations.get(ID).getDetails())
+				{
+					area.append(s);
+					area.append("\n");
+				}
+				simulations.get(ID).bringToFront();
 			}
 		});
 	}
@@ -308,7 +439,10 @@ public class MainWindow
 		{
 			message += "Cell Quantity out of bounds. (5 < Q < 2500)\n";
 		}
-		if(Integer.parseInt(txtTop.getText().split("-")[0]) % 2 != 0){return false;}
+		if (Integer.parseInt(txtTop.getText().split("-")[0]) % 2 != 0)
+		{
+			return false;
+		}
 		return true;
 	}
 

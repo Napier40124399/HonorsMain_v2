@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -19,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
 
-import Cells.Cell;
 import Components.Colors;
 import Components.CompBuilder;
 import DataCenter.Bridge;
@@ -97,7 +97,7 @@ public class SimulationWindow
 		bridge.setNn_DynTop(Boolean.parseBoolean(settings[14]));
 
 		d = new Draw(bridge);
-		simulation = new Simulation(bridge);
+		simulation = new Simulation(bridge, cellType);
 		initialize(p);
 	}
 	
@@ -194,38 +194,21 @@ public class SimulationWindow
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(!bridge.getSim_Running())
-				{
-					bridge.setSim_Running(true);
-					simulation.start();
-				}else
-				{
-					if(bridge.getSim_Paused())
-					{
-						bridge.setSim_Paused(false);
-					}
-				}
+				play();
 			}
 		});
 		btnPause.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(bridge.getSim_Running())
-				{
-					bridge.setSim_Paused(true);
-				}
+				pause();
 			}
 		});
 		btnStop.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				if(bridge.getSim_Running() == true)
-				{
-					bridge.setSim_Running(false);
-					simPanel.repaint();
-				}
+				stop();
 			}
 		});
 		btnGraph.addActionListener(new ActionListener()
@@ -253,6 +236,39 @@ public class SimulationWindow
 				update();
 			}
 		});
+	}
+	
+	public void play()
+	{
+		if(!bridge.getSim_Running())
+		{
+			bridge.setSim_Running(true);
+			simulation.start();
+		}else
+		{
+			if(bridge.getSim_Paused())
+			{
+				bridge.setSim_Paused(false);
+			}
+		}
+	}
+	
+	public void pause()
+	{
+		if(bridge.getSim_Running())
+		{
+			bridge.setSim_Paused(true);
+		}
+	}
+	
+	public void stop()
+	{
+		if(bridge.getSim_Running() == true)
+		{
+			bridge.setSim_Running(false);
+			simPanel.repaint();
+			frame.dispose();
+		}
 	}
 
 	private void buildSettingsPanel()
@@ -580,8 +596,74 @@ public class SimulationWindow
 		compPanel.setBounds(compPanel.getX(), compPanel.getY(), compPanel.getWidth(), compPanel.getHeight() - 1);
 	}
 	
-	public void show()
+	public void toggleVisible()
 	{
-		frame.setVisible(true);
+		frame.setVisible(!frame.isVisible());
+	}
+	
+	public int getGen()
+	{
+		return curGen;
+	}
+	
+	public int getThreads()
+	{
+		return bridge.getSim_Threads();
+	}
+	
+	public String getState()
+	{
+		return "running";
+		//return state;
+	}
+	
+	public ArrayList<String> getDetails()
+	{
+		ArrayList<String> details = new ArrayList<String>();
+		if(cellType == 0)
+		{
+			details.add("Cells: hard coded.");
+		}else if(cellType == 1)
+		{
+			details.add("Cells: tit for tat.");
+		}else if(cellType == 2)
+		{
+			details.add("Cells: neural networks.");
+		}
+
+		details.add("Gen: "+curGen);
+		details.add("Threads: "+bridge.getSim_Threads());
+		
+		if(bridge.getSim_Paused())
+		{
+			details.add("Status: paused");
+		}else
+		{
+			details.add("Status: running");
+		}
+		
+		details.add("Cell Quantity: "+cellQ);
+		details.add("Iterations per generation "+bridge.getCell_ItPerGen());
+		details.add("Visible: "+frame.isVisible());
+		details.add("Save: "+bridge.getSim_Save());
+		
+		
+		return details;
+	}
+	
+	public void bringToFront()
+	{
+		java.awt.EventQueue.invokeLater(new Runnable() {
+		    @Override
+		    public void run() {
+		        frame.toFront();
+		        frame.repaint();
+		    }
+		});
+	}
+	
+	public void returnNorm()
+	{
+		//frame.setVisible(b);
 	}
 }
