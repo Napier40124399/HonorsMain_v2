@@ -583,7 +583,7 @@ public class SimulationWindow
 		bridge.setSim_SaveDelay(Integer.parseInt(txtSerDelay.getText()));
 		bridge.setSim_Threads(Integer.parseInt(txtThreads.getText()));
 
-		if (cellType == 0 || cellType == 1)
+		if (cellType == 0 || cellType == 1 || cellType == 3)
 		{
 			bridge.setPd_T(Float.parseFloat(txtT.getText()));
 			bridge.setPd_R(Float.parseFloat(txtR.getText()));

@@ -129,7 +129,7 @@ public class Cell_Hard extends Cell
 
 	private void color2()
 	{
-		Float t = (float) (9f * getBridge().getPd_T());
+		Float t = (float) (new Float(getCell_Neighboors().size()) * getBridge().getPd_T());
 		Float tt = (float) (getPd_Fitness()) / t;
 		Float ttt = tt * 250;
 		int tttt = (int) (ttt * 1);

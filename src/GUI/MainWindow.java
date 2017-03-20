@@ -159,7 +159,7 @@ public class MainWindow
 		comboType.addItem("Hardcoded");
 		comboType.addItem("Tit for tat");
 		comboType.addItem("Neural network");
-		comboType.addItem("Mixed");
+		comboType.addItem("Carpet");
 		build.buildComboField(comboType, frame);
 
 		txtCellQ = new JTextField();

@@ -1,5 +1,6 @@
 package Scenario;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import Cells.Cell;
@@ -129,6 +130,9 @@ public class Simulation implements Runnable
 		}else if(type == 2)
 		{
 			return new Cell_NN2();
+		}else if(type == 3)
+		{
+			return new Cell_Hard();
 		}
 		else return null;
 	}
@@ -144,7 +148,20 @@ public class Simulation implements Runnable
 				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
 			}
 		}
-		
+		Point p = new Point(bridge.getCell_Quantity()/2, bridge.getCell_Quantity()/2);
+		if(type == 3)
+		{
+			for(Cell ce : cells)
+			{
+				ce.setHc_R(false);
+				ce.setHc_NextGenR(false);
+				if(ce.getPos_Coords().equals(p))
+				{
+					ce.setHc_R(true);
+					ce.setHc_NextGenR(true);
+				}
+			}
+		}
 		return cells;
 	}
 	
