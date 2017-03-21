@@ -46,7 +46,8 @@ public class Bridge
 	private int cell_ItPerGen;
 	private int cell_MaxGen;
 	private int cell_NeiDistance;
-	private Float cell_Mutation;
+	private Float cell_MutationAmount = 0.01f;
+	private Float cell_MutationChance;
 	// PD Variables
 	private Float pd_T;
 	private Float pd_R;
@@ -55,8 +56,10 @@ public class Bridge
 	private Boolean pd_Taurus;
 	// Neural Network Variables
 	private int nn_MaxNodes;
+	private Float nn_ConWeightAllowance = 1f;
 	private Integer[] nn_Topology;
 	private Boolean nn_DynTop;
+	private Float nn_NewNodeChance = 0.05f;
 	// Simulation Variables
 	private Boolean sim_Running;
 	private Boolean sim_Paused;
@@ -74,7 +77,7 @@ public class Bridge
 	private Boolean fireThreadChange = false;
 
 	public void setUp(int cell_Quantity, int cell_ColorMode, int cell_ItPerGen,
-			int cell_MaxGen, int cell_NeiDistance, Float cell_Mutation, Float pd_T, Float pd_R, Float pd_P, Float pd_S,
+			int cell_MaxGen, int cell_NeiDistance, Float cell_MutationChance, Float pd_T, Float pd_R, Float pd_P, Float pd_S,
 			Boolean pd_Taurus, int nn_MaxNodes, Boolean sim_Save, String sim_SavePath, int sim_SaveDelay,
 			int sim_Threads, int sim_Delay, int draw_Delay, int draw_Scale)
 	{
@@ -83,7 +86,7 @@ public class Bridge
 		this.cell_ItPerGen		= cell_ItPerGen;
 		this.cell_MaxGen		= cell_MaxGen;
 		this.cell_NeiDistance	= cell_NeiDistance;
-		this.cell_Mutation		= cell_Mutation;
+		this.cell_MutationChance= cell_MutationChance;
 		this.pd_Taurus		= pd_Taurus;
 		this.nn_MaxNodes	= nn_MaxNodes;
 		this.sim_Save		= sim_Save;
@@ -171,14 +174,14 @@ public class Bridge
 		this.cell_NeiDistance = cell_NeiDistance;
 	}
 
-	public Float getCell_Mutation()
+	public Float getCell_MutationAmount()
 	{
-		return cell_Mutation;
+		return cell_MutationAmount;
 	}
 
-	public void setCell_Mutation(Float cell_Mutation)
+	public void setCell_MutationAmount(Float cell_Mutation)
 	{
-		this.cell_Mutation = cell_Mutation;
+		this.cell_MutationAmount = cell_Mutation;
 	}
 
 	public Float getPd_T()
@@ -373,5 +376,35 @@ public class Bridge
 	public void setNn_Topology(Integer[] nn_Topology)
 	{
 		this.nn_Topology = nn_Topology;
+	}
+
+	public Float getCell_MutationChance()
+	{
+		return cell_MutationChance;
+	}
+
+	public void setCell_MutationChance(Float cell_MutationChance)
+	{
+		this.cell_MutationChance = cell_MutationChance;
+	}
+
+	public Float getNn_ConWeightAllowance()
+	{
+		return nn_ConWeightAllowance;
+	}
+
+	public void setNn_ConWeightAllowance(Float nn_ConWeightAllowance)
+	{
+		this.nn_ConWeightAllowance = nn_ConWeightAllowance;
+	}
+
+	public Float getNn_NewNodeChance()
+	{
+		return nn_NewNodeChance;
+	}
+
+	public void setNn_NewNodeChance(Float nn_NewNodeChance)
+	{
+		this.nn_NewNodeChance = nn_NewNodeChance;
 	}
 }

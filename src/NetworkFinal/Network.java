@@ -18,7 +18,7 @@ public class Network implements Cloneable, Serializable
 	private ArrayList<ArrayList<Part>> fabric = new ArrayList<ArrayList<Part>>();
 	private ArrayList<Float> biases = new ArrayList<Float>();
 	private Float id;
-	private Float biasWeight = 0.01f;
+	private Float biasWeight = 0.001f;
 	private Double newNodeChance = 0.05;
 
 	// NEW
@@ -51,31 +51,6 @@ public class Network implements Cloneable, Serializable
 			}
 		}
 	}
-	
-	
-	
-	public void setUp()
-	{
-		outputNode = new Part();
-		
-		Random r = new Random();
-		for (int i = 0; i < 6; i++)
-		{
-			biases.add(new Float(r.nextGaussian() * biasWeight));
-		}
-		
-		parts = new ArrayList<Part>();
-		parts.add(new Part());
-		parts.add(new Part());
-		parts.add(new Part());
-		parts.add(new Part());
-		parts.add(new Part());
-		parts.add(new Part());
-		fabric.add(parts);
-		
-		addLayer();
-		addNode(1);
-	}
 
 	public Float think(ArrayList<Float> memory)
 	{
@@ -104,18 +79,17 @@ public class Network implements Cloneable, Serializable
 		return res;
 	}
 
-	public void mutate(Float mutate, Boolean dynTop, int maxNodes)
+	public void mutate(Float muationChance, Float muationAmount, Float conWeightAllowance, Boolean dynTop, int maxNodes)
 	{
 		// All initialized the same way, this is the difference
 		for (ArrayList<Part> layer : fabric)
 		{
 			for (Part p : layer)
 			{
-				p.mutate(mutate);
-				// p.makeCoop();
+				p.mutate(muationAmount, muationChance, conWeightAllowance);
 			}
 		}
-		outputNode.mutate(mutate);
+		outputNode.mutate(muationAmount, muationChance, conWeightAllowance);
 
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
@@ -136,7 +110,7 @@ public class Network implements Cloneable, Serializable
 
 		if (dynTop)
 		{
-			if (Math.random() < newNodeChance)
+			if (Math.random() < muationChance)
 			{
 				if (fabric.get(fabric.size() - 1).size() <= maxNodes)
 				{
@@ -213,27 +187,5 @@ public class Network implements Cloneable, Serializable
 		}
 
 		return temp;
-	}
-
-	public void output()
-	{
-		System.out.println("Fabric size: " + fabric.size());
-		for (ArrayList<Part> layer : fabric)
-		{
-			System.out.println("Layer size: " + layer.size());
-		}
-		System.out.println("===== Biases =====");
-		for (Float f : biases)
-		{
-			System.out.println(f);
-		}
-		for (ArrayList<Part> level : fabric)
-		{
-			System.out.println("=== Weights ===");
-			for (Part p : level)
-			{
-				p.showCon();
-			}
-		}
 	}
 }

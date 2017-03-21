@@ -153,7 +153,7 @@ public class Cell_NN2 extends Cell
 	public void doMutationLogic()
 	{
 		// More to come!!
-		network.mutate(getBridge().getCell_Mutation(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
+		network.mutate(getBridge().getCell_MutationChance(), getBridge().getCell_MutationAmount(), getBridge().getNn_ConWeightAllowance(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
 	}
 	
 	@Override

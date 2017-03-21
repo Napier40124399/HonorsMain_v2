@@ -16,11 +16,6 @@ public class Part implements Cloneable, Serializable
 	private ArrayList<Float> weights = new ArrayList<Float>();
 	private Float input = new Float(0);
 
-	public Part()
-	{
-		
-	}
-
 	public void pass()
 	{
 		for (int i = 0; i < weights.size(); i++)
@@ -60,12 +55,15 @@ public class Part implements Cloneable, Serializable
 		}
 	}
 
-	public void mutate(Float mute)
+	public void mutate(Float mutationAmount, Float mutationChance, Float conWeightAllowance)
 	{
 		for (int i = 0; i < weights.size(); i++)
 		{
-			weights.set(i, mutate(i, mute));
-			if(weights.get(i) > 0.5 || weights.get(i) < -0.5)
+			if(new Float(Math.random()) > mutationChance)
+			{
+				weights.set(i, weights.get(i) * mutationAmount);
+			}
+			if(weights.get(i) > conWeightAllowance || weights.get(i) < -conWeightAllowance)
 			{
 				weights.set(i, (weights.get(i) * 0.9f));
 			}
@@ -96,14 +94,6 @@ public class Part implements Cloneable, Serializable
 	private Float output(int i)
 	{
 		return weights.get(i) * input;
-	}
-
-	public void makeCoop()
-	{
-		for (int i = 0; i < weights.size(); i++)
-		{
-			weights.set(i, -10f);
-		}
 	}
 
 	private Float mutate(int i, Float mutate)
@@ -140,15 +130,6 @@ public class Part implements Cloneable, Serializable
 		} catch (ClassNotFoundException e)
 		{
 			return null;
-		}
-	}
-	
-	public void showCon()
-	{
-		System.out.println("= Cons =");
-		for(Float f : weights)
-		{
-			System.out.println(f);
 		}
 	}
 }

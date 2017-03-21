@@ -69,7 +69,7 @@ public class Cell_Hard extends Cell
 	@Override
 	public void doMutationLogic()
 	{
-		if(Math.random() < getBridge().getCell_Mutation())
+		if(Math.random() < getBridge().getCell_MutationChance())
 		{
 			setHc_NextGenR(!getHc_NextGenR());
 		}

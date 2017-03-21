@@ -171,7 +171,7 @@ public class SimulationWindow
 	{
 		txtThreads.setText(bridge.getSim_Threads() + "");
 		txtItPerGen.setText(bridge.getCell_ItPerGen() + "");
-		txtMutation.setText(bridge.getCell_Mutation() + "");
+		txtMutation.setText(bridge.getCell_MutationChance() + "");
 		txtDrawDelay.setText(bridge.getDraw_Delay() + "");
 		txtSerDelay.setText("10");
 		// txtDrawScale.setText(bridge.getDraw_Scale()+"");
@@ -576,7 +576,7 @@ public class SimulationWindow
 	private void update()
 	{
 		bridge.setCell_ItPerGen(Integer.parseInt(txtItPerGen.getText()));
-		bridge.setCell_Mutation(Float.parseFloat(txtMutation.getText()));
+		bridge.setCell_MutationChance(Float.parseFloat(txtMutation.getText()));
 		bridge.setCell_ColorMode(comboColorMode.getSelectedIndex());
 		bridge.setDraw_Delay(Integer.parseInt(txtDrawDelay.getText()));
 		bridge.setSim_Delay(Integer.parseInt(txtDelay.getText()));
