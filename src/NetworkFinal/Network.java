@@ -79,18 +79,41 @@ public class Network implements Cloneable, Serializable
 		return res;
 	}
 
-	public void mutate(Float muationChance, Float muationAmount, Float conWeightAllowance, Boolean dynTop, int maxNodes)
+	public void mutate(Float mutationChance, Float muationAmount, Float conWeightAllowance, Boolean dynTop, int maxNodes)
 	{
 		// All initialized the same way, this is the difference
 		for (ArrayList<Part> layer : fabric)
 		{
 			for (Part p : layer)
 			{
-				p.mutate(muationAmount, muationChance, conWeightAllowance);
+				p.mutate(muationAmount, mutationChance, conWeightAllowance);
 			}
 		}
-		outputNode.mutate(muationAmount, muationChance, conWeightAllowance);
+		outputNode.mutate(muationAmount, mutationChance, conWeightAllowance);
 
+		//Dynamic topology logic
+		if (dynTop)
+		{
+			for(int i = 0; i < fabric.size(); i++)
+			{
+				for(Part p : fabric.get(i))
+				{
+					if(Math.random() < mutationChance)
+					{
+						removeNode(i, p);
+					}
+				}
+				if(fabric.get(i).size() < maxNodes)
+				{
+					if(Math.random() < mutationChance)
+					{
+						addNode(i);
+					}
+				}
+			}
+		}
+		
+		//Biases
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
 		{
@@ -107,20 +130,6 @@ public class Network implements Cloneable, Serializable
 				biases.set(i, new Float(-biasWeight * 10));
 			}
 		}
-
-		if (dynTop)
-		{
-			if (Math.random() < muationChance)
-			{
-				if (fabric.get(fabric.size() - 1).size() <= maxNodes)
-				{
-					addNode(fabric.size() - 1);
-				} else
-				{
-					addLayer();
-				}
-			}
-		}
 	}
 
 	private void addLayer()
@@ -133,19 +142,6 @@ public class Network implements Cloneable, Serializable
 		addNode(fabric.size() - 1);
 	}
 
-	private void addNodeOld(int i)
-	{
-		Part part = new Part();
-		fabric.get(i).add(part);
-		if (i > 0)
-		{
-			for (Part p : fabric.get(i - 1))
-			{
-				p.addNode(part);
-			}
-		}
-	}
-
 	private void addNode(int i)
 	{
 		fabric.get(i).add(new Part());
@@ -154,6 +150,14 @@ public class Network implements Cloneable, Serializable
 			p.addNode(fabric.get(i - 1).get(fabric.get(i - 1).size() - 1));
 		}
 		fabric.get(i - 1).get(fabric.get(i - 1).size() - 1).addNode(outputNode);
+	}
+	
+	private void removeNode(int i, Part p)
+	{
+		for(Part previousP : fabric.get(i-1))
+		{
+			previousP.removeNode(p);
+		}
 	}
 
 	public Network deepClone()

@@ -130,13 +130,6 @@ public class Cell_NN2 extends Cell
 				setC(c2);
 			}
 		}
-		/*
-		if(occured)
-		{
-			network.baby(nextGenFab, nextGenBias);
-			occured = false;
-		}
-		*/
 		if(occured)
 		{
 			if(!nextGenNet.equals(network))
@@ -168,20 +161,6 @@ public class Cell_NN2 extends Cell
 		memory.save(decisionME);
 		memory.saveOP(decisionOP);
 		memory.normalize();
-	}
-	
-	@Override
-	public Float makeDecision(Point coords)
-	{
-		for (int i = 0; i < getCell_Neighboors().size(); i++)
-		{
-			if (getCell_Neighboors().get(i).getPos_Coords().equals(coords))
-			{
-				return network.think(memory.getMem());
-			}
-		}
-		// Failsafe
-		return new Float(0);
 	}
 	
 	@Override
