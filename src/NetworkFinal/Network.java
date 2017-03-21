@@ -79,7 +79,9 @@ public class Network implements Cloneable, Serializable
 		return res;
 	}
 
-	public void mutate(Float mutationChance, Float muationAmount, Float conWeightAllowance, Boolean dynTop, int maxNodes)
+	//A complicated method to use
+	public void mutate(Float mutationChance, Float muationAmount, Float conWeightAllowance, Float nodeChangeChance,
+			Float layerChangeChance, Boolean dynTop, int maxNodes)
 	{
 		// All initialized the same way, this is the difference
 		for (ArrayList<Part> layer : fabric)
@@ -91,29 +93,40 @@ public class Network implements Cloneable, Serializable
 		}
 		outputNode.mutate(muationAmount, mutationChance, conWeightAllowance);
 
-		//Dynamic topology logic
+		// Dynamic topology logic
 		if (dynTop)
 		{
-			for(int i = 0; i < fabric.size(); i++)
+			for (int i = 1; i < fabric.size(); i++)
 			{
-				for(Part p : fabric.get(i))
+				for (Part p : fabric.get(i))
 				{
-					if(Math.random() < mutationChance)
+					if (Math.random() < nodeChangeChance)
 					{
-						removeNode(i, p);
+						if (fabric.get(i).size() > 1)
+						{
+							removeNode(i, p);
+						}else
+						{
+							removeLayer(i);
+						}
 					}
+					
 				}
-				if(fabric.get(i).size() < maxNodes)
+				if (fabric.get(i).size() < maxNodes)
 				{
-					if(Math.random() < mutationChance)
+					if (Math.random() < nodeChangeChance)
 					{
 						addNode(i);
 					}
 				}
 			}
+			if(Math.random() < layerChangeChance)
+			{
+				addLayer();
+			}
 		}
-		
-		//Biases
+
+		// Biases
 		Random r = new Random();
 		for (int i = 0; i < 6; i++)
 		{
@@ -141,6 +154,33 @@ public class Network implements Cloneable, Serializable
 		fabric.add(new ArrayList<Part>());
 		addNode(fabric.size() - 1);
 	}
+	
+	private void removeLayer(int i)
+	{
+		for(Part p : fabric.get(i))
+		{
+			fabric.get(i).remove(p);
+		}
+		
+		fabric.remove(i);
+		
+		if(i == fabric.size()-1)
+		{
+			for(Part p : fabric.get(i-1))
+			{
+				p.addNode(outputNode);
+			}
+		}else
+		{
+			for(Part p1 : fabric.get(i-1))
+			{
+				for(Part p2 : fabric.get(i))
+				{
+					p1.addNode(p2);
+				}
+			}
+		}
+	}
 
 	private void addNode(int i)
 	{
@@ -151,10 +191,10 @@ public class Network implements Cloneable, Serializable
 		}
 		fabric.get(i - 1).get(fabric.get(i - 1).size() - 1).addNode(outputNode);
 	}
-	
+
 	private void removeNode(int i, Part p)
 	{
-		for(Part previousP : fabric.get(i-1))
+		for (Part previousP : fabric.get(i - 1))
 		{
 			previousP.removeNode(p);
 		}

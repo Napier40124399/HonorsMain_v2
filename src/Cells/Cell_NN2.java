@@ -21,33 +21,32 @@ public class Cell_NN2 extends Cell
 	private Float accepted = 0f;
 	private Float total = 0f;
 	private int coopHist = 0;
-	
-	//NN Vars
+
+	// NN Vars
 	private Network nextGenNet;
 	private Network network;
-	
-	//Temp Vars
+
+	// Temp Vars
 	private ArrayList<ArrayList<Part>> nextGenFab;
 	private ArrayList<Float> nextGenBias;
 	private Boolean occured = false;
-	
-	//PD Vars
+
+	// PD Vars
 	private Float decisionOP;
 	private Float decisionME;
 	private Float temporaryFitness;
-	
-	//Visual Vars
+
+	// Visual Vars
 	private Color c1;
 	private Color c2;
-	
 
-	//Initialize network and memory
+	// Initialize network and memory
 	@Override
 	public void Initialize(boolean hc_R, int pos_X, int pos_Y, Bridge bridge)
 	{
 		super.Initialize(hc_R, pos_X, pos_Y, bridge);
 		network = new Network(getBridge().getNn_Topology());
-		memory = new Remember(getBridge().getNn_Topology()[0]/2);
+		memory = new Remember(getBridge().getNn_Topology()[0] / 2);
 	}
 
 	@Override
@@ -59,7 +58,7 @@ public class Cell_NN2 extends Cell
 		{
 			memory.reset();
 			ce.resetMemory();
-			for(int i = 0; i < getBridge().getCell_ItPerGen(); i++)
+			for (int i = 0; i < getBridge().getCell_ItPerGen(); i++)
 			{
 				decisionOP = ce.makeDecisionCorrected();
 				decisionME = network.think(memory.getMem());
@@ -68,7 +67,10 @@ public class Cell_NN2 extends Cell
 				memory.normalize();
 				ce.handleMemory(decisionOP, decisionME);
 				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
-				if(decisionME > 0){coopHist+=1;}
+				if (decisionME > 0)
+				{
+					coopHist += 1;
+				}
 			}
 		}
 		setPd_Fitness(temporaryFitness);
@@ -96,49 +98,48 @@ public class Cell_NN2 extends Cell
 			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
 			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().deepClone();
 			occured = true;
-		}
-		else
+		} else
 		{
 			nextGenNet = null;
 		}
 		getCell_PotentialParents().clear();
 	}
-	
+
 	@Override
 	public void doUpdateCell()
 	{
-		if(getBridge().getSim_Save())
+		if (getBridge().getSim_Save())
 		{
-			if(getBridge().getCell_ColorMode() == 0)
+			if (getBridge().getCell_ColorMode() == 0)
 			{
 				color1();
 				setC(c1);
-			}else
+			} else
 			{
 				color2();
 				setC(c2);
 			}
-		}else
+		} else
 		{
 			color1();
 			color2();
-			if(getBridge().getCell_ColorMode() == 0)
+			if (getBridge().getCell_ColorMode() == 0)
 			{
 				setC(c1);
-			}else
+			} else
 			{
 				setC(c2);
 			}
 		}
-		if(occured)
+		if (occured)
 		{
-			if(!nextGenNet.equals(network))
+			if (!nextGenNet.equals(network))
 			{
 				network = nextGenNet.deepClone();
 			}
 			occured = false;
 		}
-		
+
 		setPd_Fitness(0f);
 	}
 
@@ -146,15 +147,17 @@ public class Cell_NN2 extends Cell
 	public void doMutationLogic()
 	{
 		// More to come!!
-		network.mutate(getBridge().getCell_MutationChance(), getBridge().getCell_MutationAmount(), getBridge().getNn_ConWeightAllowance(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
+		network.mutate(getBridge().getCell_MutationChance(), getBridge().getCell_MutationAmount(),
+				getBridge().getNn_ConWeightAllowance(), getBridge().getNn_NodeRAChance(),
+				getBridge().getNn_LayerRAChance(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
 	}
-	
+
 	@Override
 	public void resetMemory()
 	{
 		memory.reset();
 	}
-	
+
 	@Override
 	public void handleMemory(Float decisionME, Float decisionOP)
 	{
@@ -162,19 +165,19 @@ public class Cell_NN2 extends Cell
 		memory.saveOP(decisionOP);
 		memory.normalize();
 	}
-	
+
 	@Override
 	public Float makeDecisionCorrected()
 	{
 		return network.think(memory.getMem());
 	}
-	
+
 	@Override
 	public Network getNetwork()
 	{
 		return network;
 	}
-	
+
 	@Override
 	public void drawNet()
 	{
@@ -185,16 +188,16 @@ public class Cell_NN2 extends Cell
 	public String serialize()
 	{
 		String output = "";
-		output = output + c1.getRed()+"/";
-		output = output + c2.getRed()+"/";
+		output = output + c1.getRed() + "/";
+		output = output + c2.getRed() + "/";
 		output = output + getPos_X() + "/";
 		output = output + getPos_Y() + "/";
 		output = output + network.getTop();
-		
+
 		return output;
 	}
-	
-	//Private Methods
+
+	// Private Methods
 	private void color1()
 	{
 		accepted = getPd_Fitness();
@@ -206,13 +209,13 @@ public class Cell_NN2 extends Cell
 
 		c1 = new Color(iii, iii, iii);
 	}
-	
+
 	private void color2()
 	{
 		Float nei = new Float(getCell_Neighboors().size() * getBridge().getCell_ItPerGen());
 		nei = 255 * (new Float(coopHist) / nei);
 		int iii = (int) (nei * 1);
-		
-		c2 = new Color(iii,iii,iii);
+
+		c2 = new Color(iii, iii, iii);
 	}
 }

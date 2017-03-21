@@ -59,7 +59,8 @@ public class Bridge
 	private Float nn_ConWeightAllowance = 1f;
 	private Integer[] nn_Topology;
 	private Boolean nn_DynTop;
-	private Float nn_NewNodeChance = 0.05f;
+	private Float nn_NodeRAChance= 0.05f;  //Chance a node is removed or added
+	private Float nn_LayerRAChance= 0.05f;  //Chance a node is removed or added
 	// Simulation Variables
 	private Boolean sim_Running;
 	private Boolean sim_Paused;
@@ -398,13 +399,23 @@ public class Bridge
 		this.nn_ConWeightAllowance = nn_ConWeightAllowance;
 	}
 
-	public Float getNn_NewNodeChance()
+	public Float getNn_NodeRAChance()
 	{
-		return nn_NewNodeChance;
+		return nn_NodeRAChance;
 	}
 
-	public void setNn_NewNodeChance(Float nn_NewNodeChance)
+	public void setNn_NodeRAChance(Float nn_NodeRAChance)
 	{
-		this.nn_NewNodeChance = nn_NewNodeChance;
+		this.nn_NodeRAChance = nn_NodeRAChance;
+	}
+
+	public Float getNn_LayerRAChance()
+	{
+		return nn_LayerRAChance;
+	}
+
+	public void setNn_LayerRAChance(Float nn_LayerRAChance)
+	{
+		this.nn_LayerRAChance = nn_LayerRAChance;
 	}
 }
