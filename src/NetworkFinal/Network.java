@@ -41,6 +41,10 @@ public class Network implements Cloneable, Serializable
 			parts.add(new Part());
 		}
 		fabric.add(parts);
+		for(Part p : fabric.get(0))
+		{
+			p.addNode(outputNode);
+		}
 
 		for (int i = 1; i < size.length; i++)
 		{
@@ -79,7 +83,7 @@ public class Network implements Cloneable, Serializable
 		return res;
 	}
 
-	//A complicated method to use
+	// A complicated method to use
 	public void mutate(Float mutationChance, Float muationAmount, Float conWeightAllowance, Float nodeChangeChance,
 			Float layerChangeChance, Boolean dynTop, int maxNodes)
 	{
@@ -105,12 +109,12 @@ public class Network implements Cloneable, Serializable
 						if (fabric.get(i).size() > 1)
 						{
 							removeNode(i, p);
-						}else
+						} else
 						{
 							removeLayer(i);
 						}
 					}
-					
+
 				}
 				if (fabric.get(i).size() < maxNodes)
 				{
@@ -120,7 +124,7 @@ public class Network implements Cloneable, Serializable
 					}
 				}
 			}
-			if(Math.random() < layerChangeChance)
+			if (Math.random() < layerChangeChance)
 			{
 				addLayer();
 			}
@@ -128,12 +132,12 @@ public class Network implements Cloneable, Serializable
 
 		// Biases
 		Random r = new Random();
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < biases.size(); i++)
 		{
 			biases.set(i, new Float(biases.get(i) + (r.nextGaussian() * biasWeight)));
 		}
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < biases.size(); i++)
 		{
 			if (biases.get(i) >= biasWeight * 10)
 			{
@@ -154,27 +158,27 @@ public class Network implements Cloneable, Serializable
 		fabric.add(new ArrayList<Part>());
 		addNode(fabric.size() - 1);
 	}
-	
+
 	private void removeLayer(int i)
 	{
-		for(Part p : fabric.get(i))
+		for (Part p : fabric.get(i))
 		{
 			fabric.get(i).remove(p);
 		}
-		
+
 		fabric.remove(i);
-		
-		if(i == fabric.size()-1)
+
+		if (i == fabric.size() - 1)
 		{
-			for(Part p : fabric.get(i-1))
+			for (Part p : fabric.get(i - 1))
 			{
 				p.addNode(outputNode);
 			}
-		}else
+		} else
 		{
-			for(Part p1 : fabric.get(i-1))
+			for (Part p1 : fabric.get(i - 1))
 			{
-				for(Part p2 : fabric.get(i))
+				for (Part p2 : fabric.get(i))
 				{
 					p1.addNode(p2);
 				}
@@ -218,6 +222,18 @@ public class Network implements Cloneable, Serializable
 		} catch (ClassNotFoundException e)
 		{
 			return null;
+		}
+	}
+	
+	public void getWeights()
+	{
+		System.out.println("================================");
+		for(ArrayList<Part> layer : fabric)
+		{
+			for(Part p : layer)
+			{
+				p.getWeights();
+			}
 		}
 	}
 

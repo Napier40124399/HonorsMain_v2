@@ -5,20 +5,20 @@ import java.util.ArrayList;
 
 import Cells.Cell;
 import Cells.Cell_Hard;
-import Cells.Cell_NN2;
+import Cells.Cell_NN;
 import Cells.Cell_TitTat;
 import DataCenter.Bridge;
 import MultiThreading.SplitTask;
 
 public class Simulation implements Runnable
 {
-	//Threads
+	// Threads
 	private Thread t;
-	//Instances
+	// Instances
 	private Bridge bridge;
 	private SplitTask sp = new SplitTask();
 	private ArrayList<Cell> cells;
-	
+
 	public Simulation(Bridge bridge, int type)
 	{
 		this.bridge = bridge;
@@ -26,53 +26,54 @@ public class Simulation implements Runnable
 		bridge.setCell_ArrayList(cells);
 		sp.splitTasks(cells, bridge.getSim_Threads());
 	}
-	
+
 	@Override
 	public void run()
 	{
 		bridge.setSim_CurGen(0);
-		for(Cell ce : cells)
+		for (Cell ce : cells)
 		{
 			ce.doNeighboors();
 		}
-		
-		//Specific amount of generations
-		for(int i = 0; i < bridge.getCell_MaxGen(); i++)
+
+		// Specific amount of generations
+		for (int i = 0; i < bridge.getCell_MaxGen(); i++)
 		{
 			simulate();
 		}
-		
-		//Check if unlimitted
-		if(bridge.getCell_MaxGen() == 0)
+
+		// Check if unlimitted
+		if (bridge.getCell_MaxGen() == 0)
 		{
-			//Unlimitted
-			while(bridge.getSim_Running())
+			// Unlimitted
+			while (bridge.getSim_Running())
 			{
 				simulate();
 			}
 		}
 	}
-	
+
 	private void simulate()
 	{
-		if(bridge.getSim_Threads() <= 1)
+		if (bridge.getSim_Threads() <= 1)
 		{
 			singleThread();
-		}else
+		} else
 		{
-			if(bridge.getFireThreadChange())
+			if (bridge.getFireThreadChange())
 			{
 				sp.splitTasks(cells, bridge.getSim_Threads());
 				bridge.setFireThreadChange(false);
 			}
 			multiThread();
 		}
+		dispProp();
 		bridge.setSim_CurGen(bridge.getSim_CurGen() + 1);
 		checkSave();
 		try
 		{
 			Thread.sleep(bridge.getSim_Delay());
-			while(bridge.getSim_Paused())
+			while (bridge.getSim_Paused())
 			{
 				Thread.sleep(50);
 			}
@@ -81,27 +82,39 @@ public class Simulation implements Runnable
 			e.printStackTrace();
 		}
 	}
-	
+
+	private void dispProp()
+	{
+		Float coop = 0f;
+		for (Cell ce : cells)
+		{
+			coop += ce.getCoopHist();
+		}
+		coop = ((coop / new Float(cells.size()))
+				/ new Float(bridge.getCell_ItPerGen()) / new Float(cells.get(0).getCell_Neighboors().size()));
+		System.out.println(coop);
+	}
+
 	private void singleThread()
 	{
-		for(Cell ce : cells)
+		for (Cell ce : cells)
 		{
 			ce.doFitness();
 		}
-		for(Cell ce : cells)
+		for (Cell ce : cells)
 		{
 			ce.doNewGeneration();
 		}
-		for(Cell ce : cells)
+		for (Cell ce : cells)
 		{
 			ce.doMutationLogic();
 		}
-		for(Cell ce : cells)
+		for (Cell ce : cells)
 		{
 			ce.doUpdateCell();
 		}
 	}
-	
+
 	private void multiThread()
 	{
 		sp.threadTask(0);
@@ -109,53 +122,53 @@ public class Simulation implements Runnable
 		sp.threadTask(2);
 		sp.threadTask(3);
 	}
-	
+
 	private void checkSave()
 	{
-		if(bridge.getSim_Save() && bridge.getSim_CurGen() == bridge.getSim_SaveDelay())
+		if (bridge.getSim_Save() && bridge.getSim_CurGen() == bridge.getSim_SaveDelay())
 		{
 			bridge.setSim_CurGen(0);
-			//Handle save logic here
+			// Handle save logic here
 		}
 	}
-	
+
 	private Cell getCell(int type)
 	{
-		if(type == 0)
+		if (type == 0)
 		{
 			return new Cell_Hard();
-		}else if(type == 1)
+		} else if (type == 1)
 		{
 			return new Cell_TitTat();
-		}else if(type == 2)
+		} else if (type == 2)
 		{
-			return new Cell_NN2();
-		}else if(type == 3)
+			return new Cell_NN();
+		} else if (type == 3)
 		{
 			return new Cell_Hard();
-		}
-		else return null;
+		} else
+			return null;
 	}
-	
+
 	private ArrayList<Cell> makeCells(int quantity, Bridge bridge, int type)
 	{
 		ArrayList<Cell> cells = new ArrayList<Cell>();
-		for(int i = 0; i < quantity; i++)
+		for (int i = 0; i < quantity; i++)
 		{
-			for(int j = 0; j < quantity; j++)
+			for (int j = 0; j < quantity; j++)
 			{
 				cells.add(getCell(type));
 				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
 			}
 		}
-		Point p = new Point(bridge.getCell_Quantity()/2, bridge.getCell_Quantity()/2);
-		if(type == 3)
+		Point p = new Point(bridge.getCell_Quantity() / 2, bridge.getCell_Quantity() / 2);
+		if (type == 3)
 		{
-			for(Cell ce : cells)
+			for (Cell ce : cells)
 			{
 				ce.setHc_R(false);
 				ce.setHc_NextGenR(false);
-				if(ce.getPos_Coords().equals(p))
+				if (ce.getPos_Coords().equals(p))
 				{
 					ce.setHc_R(true);
 					ce.setHc_NextGenR(true);
@@ -164,7 +177,7 @@ public class Simulation implements Runnable
 		}
 		return cells;
 	}
-	
+
 	public void start()
 	{
 		t = new Thread(this);

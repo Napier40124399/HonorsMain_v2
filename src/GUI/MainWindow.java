@@ -528,7 +528,7 @@ public class MainWindow
 		}
 		if (Integer.parseInt(txtTop.getText().split("-")[0]) % 2 != 0)
 		{
-			return false;
+			//return false;
 		}
 		return true;
 	}
@@ -552,7 +552,7 @@ public class MainWindow
 		txtDistance.setText("1");
 		txtGenerations.setText("0");
 		txtIterations.setText("51");
-		txtThreads.setText((Runtime.getRuntime().availableProcessors() - 1) + "");
+		txtThreads.setText((Runtime.getRuntime().availableProcessors() / 2) + "");
 		txtDelay.setText("10");
 		txtDrawDelay.setText("2");
 		txtDrawScale.setText("10");

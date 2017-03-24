@@ -112,7 +112,15 @@ public class Part implements Cloneable, Serializable
 	{
 		weights = (ArrayList<Float>) con.clone();
 	}
-
+	
+	public void getWeights()
+	{
+		for(Float f : weights)
+		{
+			System.out.println(f);
+		}
+	}
+	
 	public Part deepClone()
 	{
 		try

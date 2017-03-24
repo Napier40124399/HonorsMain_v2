@@ -322,4 +322,9 @@ public class Cell
 	{
 		this.hc_NextGenR = hc_NextGenR;
 	}
+	
+	public int getCoopHist()
+	{
+		return 0;
+	}
 }
