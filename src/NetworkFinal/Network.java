@@ -28,6 +28,7 @@ public class Network implements Cloneable, Serializable
 	{
 		setUp(size);
 	}
+
 	public Network(Integer[] size, Float[] biases, Float[][][] connections)
 	{
 		setUpAlt(size, biases, connections);
@@ -67,11 +68,11 @@ public class Network implements Cloneable, Serializable
 		{
 			fabric.add(new ArrayList<Part>());
 		}
-		for (int i = 0; i < size[size.length-1]; i++)
+		for (int i = 0; i < size[size.length - 1]; i++)
 		{
-			addNode(size.length-1, connections[1][i], outputNode);
+			addNode(size.length - 1, connections[1][i], outputNode);
 		}
-		for(int i = size.length-2; i > -1; i--)
+		for (int i = size.length - 2; i > -1; i--)
 		{
 			for (int j = 0; j < size[0]; j++)
 			{
@@ -83,7 +84,7 @@ public class Network implements Cloneable, Serializable
 			this.biases.add(f);
 		}
 	}
-	
+
 	public Float think(ArrayList<Float> memory)
 	{
 		ArrayList<Float> temp = new ArrayList<Float>();
@@ -232,15 +233,15 @@ public class Network implements Cloneable, Serializable
 			previousP.removeNode(p);
 		}
 	}
-	
+
 	private void addNode(int i, Float[] cons)
 	{
 		Part part = new Part();
 		fabric.get(i).add(part);
-		
+
 		for (int j = 0; j < cons.length; j++)
 		{
-			part.addNode(fabric.get(i+1).get(j), cons[j]);
+			part.addNode(fabric.get(i + 1).get(j), cons[j]);
 		}
 	}
 
@@ -305,7 +306,7 @@ public class Network implements Cloneable, Serializable
 		{
 			temp = temp + layer.size() + "-";
 		}
-
+		temp = temp.substring(0, temp.length()-1);
 		return temp;
 	}
 }
