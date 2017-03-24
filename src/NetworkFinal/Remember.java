@@ -1,7 +1,6 @@
 package NetworkFinal;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 public class Remember
 {
@@ -33,8 +32,8 @@ public class Remember
 		opCur.clear();
 		for(int i = 0; i < size; i++)
 		{
-			memory.add(new Float(new Random().nextGaussian()*0.01));
-			opMem.add(new Float(new Random().nextGaussian()*0.01));
+			memory.add(new Float(0));
+			opMem.add(new Float(0));
 		}
 		memCur = (ArrayList<Float>) memory.clone();
 		opCur = (ArrayList<Float>) opMem.clone();

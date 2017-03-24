@@ -28,6 +28,10 @@ public class Network implements Cloneable, Serializable
 	{
 		setUp(size);
 	}
+	public Network(Integer[] size, Float[] biases, Float[][][] connections)
+	{
+		setUpAlt(size, biases, connections);
+	}
 
 	public void setUp(Integer[] size)
 	{
@@ -56,6 +60,30 @@ public class Network implements Cloneable, Serializable
 		}
 	}
 
+	public void setUpAlt(Integer[] size, Float[] biases, Float[][][] connections)
+	{
+		outputNode = new Part();
+		for (int i = size.length; i > 0; i--)
+		{
+			fabric.add(new ArrayList<Part>());
+		}
+		for (int i = 0; i < size[size.length-1]; i++)
+		{
+			addNode(size.length-1, connections[1][i], outputNode);
+		}
+		for(int i = size.length-2; i > -1; i--)
+		{
+			for (int j = 0; j < size[0]; j++)
+			{
+				addNode(i, connections[0][j]);
+			}
+		}
+		for (Float f : biases)
+		{
+			this.biases.add(f);
+		}
+	}
+	
 	public Float think(ArrayList<Float> memory)
 	{
 		ArrayList<Float> temp = new ArrayList<Float>();
@@ -204,56 +232,6 @@ public class Network implements Cloneable, Serializable
 			previousP.removeNode(p);
 		}
 	}
-
-	public Network deepCloneOld()
-	{
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			Network net = (Network) ois.readObject();
-			return net;
-		} catch (IOException e)
-		{
-			return null;
-		} catch (ClassNotFoundException e)
-		{
-			return null;
-		}
-	}
-
-	public Network(Integer[] size, Float[] biases, Float[][][] connections)
-	{
-		setUpAlt(size, biases, connections);
-	}
-
-	public void setUpAlt(Integer[] size, Float[] biases, Float[][][] connections)
-	{
-		outputNode = new Part();
-		for (int i = size.length; i > 0; i--)
-		{
-			fabric.add(new ArrayList<Part>());
-		}
-		for (int i = 0; i < size[size.length-1]; i++)
-		{
-			addNode(size.length-1, connections[1][i], outputNode);
-		}
-		for(int i = size.length-2; i > -1; i--)
-		{
-			for (int j = 0; j < size[0]; j++)
-			{
-				addNode(i, connections[0][j]);
-			}
-		}
-		for (Float f : biases)
-		{
-			this.biases.add(f);
-		}
-	}
 	
 	private void addNode(int i, Float[] cons)
 	{
@@ -317,25 +295,6 @@ public class Network implements Cloneable, Serializable
 		network = new Network(top, biases, connections);
 
 		return network;
-	}
-
-	public void showAll()
-	{
-		System.out.println("=====================================");
-		System.out.println("=====================================");
-		System.out.println("=====================================");
-		for (int i = 0; i < fabric.size(); i++)
-		{
-			System.out.println(" ========== NEW LAYER");
-			for (int j = 0; j < fabric.get(i).size(); j++)
-			{
-				System.out.println(" +++++ NEW NODE");
-				fabric.get(i).get(j).showWeights();
-			}
-		}
-		System.out.println("=====================================");
-		System.out.println("=====================================");
-		System.out.println("=====================================");
 	}
 
 	public String getTop()
