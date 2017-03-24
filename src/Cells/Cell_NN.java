@@ -54,7 +54,6 @@ public class Cell_NN extends Cell
 	{
 		coopHist = 0;
 		temporaryFitness = 0f;
-		getNetwork().getWeights();
 		for (Cell ce : getCell_Neighboors())
 		{
 			memory.reset();

@@ -42,6 +42,12 @@ public class Part implements Cloneable, Serializable
 		weights.add(new Float(r.nextGaussian() / 2));
 	}
 	
+	public void addNode(Part part, Float con)
+	{
+		next.add(part);
+		weights.add(con);
+	}
+	
 	public void removeNode(Part part)
 	{
 		for(int i = 0; i < next.size(); i++)
@@ -90,6 +96,14 @@ public class Part implements Cloneable, Serializable
 	{
 		input = 0f;
 	}
+	
+	public void showWeights()
+	{
+		for(Float f : weights)
+		{
+			System.out.println(f);
+		}
+	}
 
 	private Float output(int i)
 	{
@@ -106,6 +120,17 @@ public class Part implements Cloneable, Serializable
 	public ArrayList<Float> getCon()
 	{
 		return (ArrayList<Float>) this.weights.clone();
+	}
+	
+	public Float[] getCons()
+	{
+		Float[] cons = new Float[weights.size()];
+		for(int i = 0; i < cons.length; i++)
+		{
+			cons[i] = weights.get(i);
+		}
+		
+		return cons;
 	}
 
 	public void sett(ArrayList<Float> con)

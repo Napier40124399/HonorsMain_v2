@@ -41,7 +41,7 @@ public class Network implements Cloneable, Serializable
 			parts.add(new Part());
 		}
 		fabric.add(parts);
-		for(Part p : fabric.get(0))
+		for (Part p : fabric.get(0))
 		{
 			p.addNode(outputNode);
 		}
@@ -188,12 +188,13 @@ public class Network implements Cloneable, Serializable
 
 	private void addNode(int i)
 	{
-		fabric.get(i).add(new Part());
+		Part ppp = new Part();
+		fabric.get(i).add(ppp);
 		for (Part p : fabric.get(i - 1))
 		{
-			p.addNode(fabric.get(i - 1).get(fabric.get(i - 1).size() - 1));
+			p.addNode(ppp);
 		}
-		fabric.get(i - 1).get(fabric.get(i - 1).size() - 1).addNode(outputNode);
+		ppp.addNode(outputNode);
 	}
 
 	private void removeNode(int i, Part p)
@@ -204,7 +205,7 @@ public class Network implements Cloneable, Serializable
 		}
 	}
 
-	public Network deepClone()
+	public Network deepCloneOld()
 	{
 		try
 		{
@@ -224,17 +225,117 @@ public class Network implements Cloneable, Serializable
 			return null;
 		}
 	}
-	
-	public void getWeights()
+
+	public Network(Integer[] size, Float[] biases, Float[][][] connections)
 	{
-		System.out.println("================================");
-		for(ArrayList<Part> layer : fabric)
+		setUpAlt(size, biases, connections);
+	}
+
+	public void setUpAlt(Integer[] size, Float[] biases, Float[][][] connections)
+	{
+		outputNode = new Part();
+		for (int i = size.length; i > 0; i--)
 		{
-			for(Part p : layer)
+			fabric.add(new ArrayList<Part>());
+		}
+		for (int i = 0; i < size[size.length-1]; i++)
+		{
+			addNode(size.length-1, connections[1][i], outputNode);
+		}
+		for(int i = size.length-2; i > -1; i--)
+		{
+			for (int j = 0; j < size[0]; j++)
 			{
-				p.getWeights();
+				addNode(i, connections[0][j]);
 			}
 		}
+		for (Float f : biases)
+		{
+			this.biases.add(f);
+		}
+	}
+	
+	private void addNode(int i, Float[] cons)
+	{
+		Part part = new Part();
+		fabric.get(i).add(part);
+		
+		for (int j = 0; j < cons.length; j++)
+		{
+			part.addNode(fabric.get(i+1).get(j), cons[j]);
+		}
+	}
+
+	private void addNode(int i, Float[] cons, Part out)
+	{
+		Part part = new Part();
+		fabric.get(i).add(part);
+
+		for (int j = 0; j < cons.length; j++)
+		{
+			part.addNode(out, cons[j]);
+		}
+	}
+
+	public Network deepClone()
+	{
+		Network network = null;
+
+		Integer[] top = new Integer[fabric.size()];
+		Float[] biases = new Float[this.biases.size()];
+		Float[][][] connections = new Float[fabric.size()][][];
+		ArrayList<ArrayList<ArrayList<Float>>> cons = new ArrayList<ArrayList<ArrayList<Float>>>();
+
+		for (int i = 0; i < fabric.size(); i++)
+		{
+			top[i] = fabric.get(i).size();
+		}
+
+		for (int i = 0; i < biases.length; i++)
+		{
+			biases[i] = this.biases.get(i);
+		}
+
+		for (int i = 0; i < fabric.size(); i++)
+		{
+			connections[i] = new Float[fabric.get(i).size()][];
+
+			for (int j = 0; j < fabric.get(i).size(); j++)
+			{
+				connections[i][j] = fabric.get(i).get(j).getCons();
+			}
+		}
+		//
+		for (int i = 0; i < fabric.size(); i++)
+		{
+			cons.add(new ArrayList<ArrayList<Float>>());
+			for (int j = 0; j < fabric.get(i).size(); j++)
+			{
+				cons.get(i).add(fabric.get(i).get(j).getCon());
+			}
+		}
+		network = new Network(top, biases, connections);
+
+		return network;
+	}
+
+	public void showAll()
+	{
+		System.out.println("=====================================");
+		System.out.println("=====================================");
+		System.out.println("=====================================");
+		for (int i = 0; i < fabric.size(); i++)
+		{
+			System.out.println(" ========== NEW LAYER");
+			for (int j = 0; j < fabric.get(i).size(); j++)
+			{
+				System.out.println(" +++++ NEW NODE");
+				fabric.get(i).get(j).showWeights();
+			}
+		}
+		System.out.println("=====================================");
+		System.out.println("=====================================");
+		System.out.println("=====================================");
 	}
 
 	public String getTop()
