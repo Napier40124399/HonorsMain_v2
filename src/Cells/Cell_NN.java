@@ -135,7 +135,7 @@ public class Cell_NN extends Cell
 		{
 			if (!nextGenNet.equals(network))
 			{
-				network = nextGenNet.deepClone();
+				network = nextGenNet;
 			}
 			occured = false;
 		}
@@ -218,7 +218,7 @@ public class Cell_NN extends Cell
 
 		c2 = new Color(iii, iii, iii);
 	}
-	
+
 	@Override
 	public int getCoopHist()
 	{

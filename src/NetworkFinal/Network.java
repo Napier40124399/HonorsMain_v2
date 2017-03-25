@@ -68,15 +68,24 @@ public class Network implements Cloneable, Serializable
 		{
 			fabric.add(new ArrayList<Part>());
 		}
-		for (int i = 0; i < size[size.length - 1]; i++)
+		if(connections.length > 1)
 		{
-			addNode(size.length - 1, connections[1][i], outputNode);
-		}
-		for (int i = size.length - 2; i > -1; i--)
-		{
-			for (int j = 0; j < size[0]; j++)
+			for (int i = 0; i < size[size.length - 1]; i++)
 			{
-				addNode(i, connections[0][j]);
+				addNode(size.length - 1, connections[1][i], outputNode);
+			}
+			for (int i = size.length - 2; i > -1; i--)
+			{
+				for (int j = 0; j < size[i]; j++)
+				{
+					addNode(i, connections[i][j]);
+				}
+			}
+		}else
+		{
+			for (int i = 0; i < size[size.length - 1]; i++)
+			{
+				addNode(size.length - 1, connections[0][i], outputNode);
 			}
 		}
 		for (Float f : biases)
@@ -308,5 +317,16 @@ public class Network implements Cloneable, Serializable
 		}
 		temp = temp.substring(0, temp.length()-1);
 		return temp;
+	}
+	
+	public void showCons()
+	{
+		for(ArrayList<Part> layer : fabric)
+		{
+			for(Part p : layer)
+			{
+				p.getWeights();
+			}
+		}
 	}
 }

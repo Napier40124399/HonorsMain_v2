@@ -107,11 +107,11 @@ public class Simulation implements Runnable
 		}
 		for (Cell ce : cells)
 		{
-			ce.doMutationLogic();
+			ce.doUpdateCell();
 		}
 		for (Cell ce : cells)
 		{
-			ce.doUpdateCell();
+			ce.doMutationLogic();
 		}
 	}
 

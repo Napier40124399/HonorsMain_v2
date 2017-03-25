@@ -38,13 +38,13 @@ public class Threading implements Runnable
 		{
 			for (int i = start; i < end; i++)
 			{
-				threadMutation(i);
+				threadUpdate(i);
 			}
 		} else
 		{
 			for (int i = start; i < end; i++)
 			{
-				threadUpdate(i);
+				threadMutation(i);
 			}
 		}
 	}
