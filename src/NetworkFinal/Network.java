@@ -104,7 +104,7 @@ public class Network implements Cloneable, Serializable
 		}
 
 		// Dynamic topology logic
-		if (false)
+		if (dynTop)
 		{
 			for (int i = 1; i < fabric.size(); i++)
 			{
@@ -248,27 +248,6 @@ public class Network implements Cloneable, Serializable
 		for (int j = 0; j < fabric.get(fabric.size() - 1).size(); j++)
 		{
 			fabric.get(fabric.size() - 1).get(j).addPrepNode(outputNode);
-		}
-	}
-
-	public Network deepClone()
-	{
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			Network net = (Network) ois.readObject();
-			net.doCons();
-			return net;
-		} catch (IOException e)
-		{
-			return null;
-		} catch (ClassNotFoundException e)
-		{
-			return null;
 		}
 	}
 

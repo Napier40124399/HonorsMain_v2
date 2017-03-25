@@ -68,7 +68,7 @@ public class Cell_NN extends Cell
 				memory.saveOP(decisionOP);
 				memory.normalize();
 				ce.handleMemory(decisionOP, decisionME);
-				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
+				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.2f;
 				if (decisionME > 0)
 				{
 					coopHist += 1;
@@ -221,9 +221,9 @@ public class Cell_NN extends Cell
 	{
 		accepted = getPd_Fitness();
 		total = new Float(getCell_Neighboors().size());
-		Float tt = accepted / total;
-		Float temp = (tt / 5f) / getBridge().getCell_ItPerGen();
-		Float fff = 250 * temp;
+		Float temp = (float) (getBridge().getCell_ItPerGen() * getCell_Neighboors().size() *5);
+		Float tt = accepted / temp;
+		Float fff = 255 * tt;
 		int iii = (int) (fff * 1);
 		c1 = new Color(iii, iii, iii);
 	}
