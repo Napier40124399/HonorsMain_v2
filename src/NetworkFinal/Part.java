@@ -42,6 +42,11 @@ public class Part implements Cloneable, Serializable
 		weights.add(new Float(r.nextGaussian() / 2));
 	}
 	
+	public void addPrepNode(Part part)
+	{
+		next.add(part);
+	}
+	
 	public void addNode(Part part, Float con)
 	{
 		next.add(part);
@@ -74,6 +79,26 @@ public class Part implements Cloneable, Serializable
 				weights.set(i, (weights.get(i) * 0.9f));
 			}
 		}
+	}
+	
+	public void becomeDefector()
+	{
+		for(int i = 0; i < weights.size(); i++)
+		{
+			weights.set(i, -1f);
+		}
+	}
+	
+	public void setNext(ArrayList<Part> next)
+	{
+		this.next.clear();
+		this.next = (ArrayList<Part>) next.clone();
+	}
+	
+	public void setWeights(ArrayList<Float> weights)
+	{
+		this.weights.clear();
+		this.weights = (ArrayList<Float>) weights.clone();
 	}
 
 	public Float getVal()
@@ -146,23 +171,10 @@ public class Part implements Cloneable, Serializable
 		}
 	}
 	
-	public Part deepClone()
+	public Part partialCopy()
 	{
-		try
-		{
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(baos);
-			oos.writeObject(this);
-
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			ObjectInputStream ois = new ObjectInputStream(bais);
-			return (Part) ois.readObject();
-		} catch (IOException e)
-		{
-			return null;
-		} catch (ClassNotFoundException e)
-		{
-			return null;
-		}
+		Part part = new Part();
+		part.setWeights(weights);
+		return part;
 	}
 }

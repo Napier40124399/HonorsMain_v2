@@ -47,6 +47,7 @@ public class Cell_NN extends Cell
 		super.Initialize(hc_R, pos_X, pos_Y, bridge);
 		network = new Network(getBridge().getNn_Topology());
 		memory = new Remember(getBridge().getNn_Topology()[0] / 2);
+		network.defect();
 	}
 
 	@Override
@@ -54,6 +55,7 @@ public class Cell_NN extends Cell
 	{
 		coopHist = 0;
 		temporaryFitness = 0f;
+		//validate();
 		for (Cell ce : getCell_Neighboors())
 		{
 			memory.reset();
@@ -76,6 +78,21 @@ public class Cell_NN extends Cell
 		setPd_Fitness(temporaryFitness);
 	}
 
+	private void validate()
+	{
+		ArrayList<Float> checker = new ArrayList<Float>();
+		for (int i = 0; i < memory.getMem().size(); i++)
+		{
+			checker.add(new Float(Math.random()));
+		}
+		Float check = network.think(checker);
+		System.out.println("Checked " + check);
+		if (check == 0f)
+		{
+			getNetwork().showCons();
+		}
+	}
+
 	@Override
 	public void doNewGeneration()
 	{
@@ -96,7 +113,9 @@ public class Cell_NN extends Cell
 		if (getCell_PotentialParents().size() > 0)
 		{
 			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
-			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().deepClone();
+			// nextGenNet =
+			// getCell_PotentialParents().get(choose).getNetwork().deepClone();
+			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().makeCopy();
 			occured = true;
 		} else
 		{
@@ -139,8 +158,8 @@ public class Cell_NN extends Cell
 			}
 			occured = false;
 		}
-
 		setPd_Fitness(0f);
+		//getNetwork().showCons();
 	}
 
 	@Override
@@ -206,7 +225,6 @@ public class Cell_NN extends Cell
 		Float temp = (tt / 5f) / getBridge().getCell_ItPerGen();
 		Float fff = 250 * temp;
 		int iii = (int) (fff * 1);
-
 		c1 = new Color(iii, iii, iii);
 	}
 
@@ -215,10 +233,9 @@ public class Cell_NN extends Cell
 		Float nei = new Float(getCell_Neighboors().size() * getBridge().getCell_ItPerGen());
 		nei = 255 * (new Float(coopHist) / nei);
 		int iii = (int) (nei * 1);
-
 		c2 = new Color(iii, iii, iii);
 	}
-
+	
 	@Override
 	public int getCoopHist()
 	{

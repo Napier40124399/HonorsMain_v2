@@ -46,7 +46,7 @@ public class Bridge
 	private int cell_ItPerGen;
 	private int cell_MaxGen;
 	private int cell_NeiDistance;
-	private Float cell_MutationAmount = 0.1f;
+	private Float cell_MutationAmount = 1f;
 	private Float cell_MutationChance;
 	// PD Variables
 	private Float pd_T;
