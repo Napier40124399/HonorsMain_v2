@@ -1,12 +1,8 @@
 package NetworkFinal;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 @SuppressWarnings("serial")
@@ -55,15 +51,17 @@ public class Part implements Cloneable, Serializable
 	
 	public void removeNode(Part part)
 	{
+		int ii = 0;
 		for(int i = 0; i < next.size(); i++)
 		{
 			if(next.get(i).equals(part))
 			{
-				weights.remove(i);
-				next.remove(i);
+				ii = i;
 				break;
 			}
 		}
+		weights.remove(ii);
+		next.remove(ii);
 	}
 
 	public void mutate(Float mutationAmount, Float mutationChance, Float conWeightAllowance)

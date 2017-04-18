@@ -71,7 +71,7 @@ public class Cell_Hard extends Cell
 	{
 		if(Math.random() < getBridge().getCell_MutationChance())
 		{
-			setHc_NextGenR(!getHc_NextGenR());
+			setHc_R(!getHc_R());
 		}
 	}
 	

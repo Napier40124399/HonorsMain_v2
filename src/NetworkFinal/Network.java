@@ -114,10 +114,10 @@ public class Network implements Cloneable, Serializable
 					{
 						if (fabric.get(i).size() > 1)
 						{
-							removeNode(i, p);
+							//removeNode(i, p);
 						} else
 						{
-							removeLayer(i);
+							//removeLayer(i);
 						}
 					}
 				}
