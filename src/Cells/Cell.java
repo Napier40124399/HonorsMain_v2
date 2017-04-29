@@ -30,8 +30,7 @@ import NetworkFinal.Network;
  * @see Point2D
  * @see Runnable
  */
-public class Cell
-{
+public class Cell {
 	// Positions
 	private int pos_X;
 	private int pos_Y;
@@ -71,8 +70,7 @@ public class Cell
 	 *            correct use of this, the simulation will not work.
 	 * @see {@link Cells.Cell Cell superclass index}
 	 */
-	public void Initialize(boolean hc_R, int pos_X, int pos_Y, Bridge bridge)
-	{
+	public void Initialize(boolean hc_R, int pos_X, int pos_Y, Bridge bridge) {
 		this.hc_R = hc_R;
 		this.pos_X = pos_X;
 		this.pos_Y = pos_Y;
@@ -99,8 +97,7 @@ public class Cell
 	 * @see {@link Cells.Cell#setPd_Fitness Fitness Setter}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	public void doFitness()
-	{
+	public void doFitness() {
 	}
 
 	/**
@@ -116,8 +113,7 @@ public class Cell
 	 * @see {@link Cells.Cell#getCell_Neighboors Neighbours Getter}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	public void doNewGeneration()
-	{
+	public void doNewGeneration() {
 	}
 
 	/**
@@ -128,8 +124,7 @@ public class Cell
 	 * 
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	public void doUpdateCell()
-	{
+	public void doUpdateCell() {
 	}
 
 	/**
@@ -139,8 +134,7 @@ public class Cell
 	 * @see {@link DataCenter.Bridge Bridge}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	public void doMutationLogic()
-	{
+	public void doMutationLogic() {
 	}
 
 	/**
@@ -159,8 +153,7 @@ public class Cell
 	 * @see {@link Cells.Cell#isNormal isNormal Method}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	public void doNeighboors()
-	{
+	public void doNeighboors() {
 		cell_Neighboors = new ArrayList<Cell>();
 
 		ArrayList<Cell> temp = bridge.getCell_ArrayList();
@@ -173,30 +166,22 @@ public class Cell
 		int startY = (pos_X - distance) * size;
 		int endY = (pos_X + distance) * size;
 
-		if (bridge.getPd_Taurus())
-		{
-			if (startX < 0 || endX >= size)
-			{
+		if (bridge.getPd_Taurus()) {
+			if (startX < 0 || endX >= size) {
 				notNormal(startX, startY, endX, endY, size, temp);
 			}
 
-			else if ((pos_X - distance) < 0 || (pos_X + distance) >= size)
-			{
+			else if ((pos_X - distance) < 0 || (pos_X + distance) >= size) {
 				notNormal(startX, startY, endX, endY, size, temp);
 			}
 
-			else
-			{
+			else {
 				isNormal(startX, startY, endX, endY, size, temp);
 			}
-		} else
-		{
-			if (startX < 0 || endX >= size)
-			{
-			} else if ((pos_X - distance) < 0 || (pos_X + distance) >= size)
-			{
-			} else
-			{
+		} else {
+			if (startX < 0 || endX >= size) {
+			} else if ((pos_X - distance) < 0 || (pos_X + distance) >= size) {
+			} else {
 				isNormal(startX, startY, endX, endY, size, temp);
 			}
 		}
@@ -227,36 +212,28 @@ public class Cell
 	 * @see {@link Cells.Cell#isNormal isNormal}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	private void notNormal(int startX, int startY, int endX, int endY, int size, ArrayList<Cell> temp)
-	{
-		for (int i = startX; i <= endX; i++)
-		{
-			for (int j = startY; j <= endY; j += size)
-			{
+	private void notNormal(int startX, int startY, int endX, int endY, int size, ArrayList<Cell> temp) {
+		for (int i = startX; i <= endX; i++) {
+			for (int j = startY; j <= endY; j += size) {
 				int switcheroo = 0;
 
 				// WORKS, DON'T QUESTION IT
-				if (i < 0)
-				{
+				if (i < 0) {
 					switcheroo += 1;
 				}
-				if (i >= size)
-				{
+				if (i >= size) {
 					switcheroo += 2;
 				}
-				if (j < 0)
-				{
+				if (j < 0) {
 					switcheroo += 4;
 				}
-				if (j >= size * size)
-				{
+				if (j >= size * size) {
 					switcheroo += 8;
 				}
 
 				// Supposed to be more efficient than if statements in cases
 				// where long lists are made
-				switch (switcheroo)
-				{
+				switch (switcheroo) {
 				case 0:
 					cell_Neighboors.add(temp.get(i + j));
 					break;
@@ -318,12 +295,9 @@ public class Cell
 	 * @see {@link Cells.Cell#isNormal isNormal}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	private void isNormal(int startX, int startY, int endX, int endY, int size, ArrayList<Cell> temp)
-	{
-		for (int i = startX; i <= endX; i++)
-		{
-			for (int j = startY; j <= endY; j += size)
-			{
+	private void isNormal(int startX, int startY, int endX, int endY, int size, ArrayList<Cell> temp) {
+		for (int i = startX; i <= endX; i++) {
+			for (int j = startY; j <= endY; j += size) {
 				cell_Neighboors.add(temp.get(i + j));
 			}
 		}
@@ -344,14 +318,11 @@ public class Cell
 	 * @see {@link Cells.Cell#doNeighboors doNeighboors}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	private int regulateI(int pos, int size, boolean upper)
-	{
+	private int regulateI(int pos, int size, boolean upper) {
 		int over = 0;
-		if (upper)
-		{
+		if (upper) {
 			over = pos - size; // Should be positive
-		} else
-		{
+		} else {
 			over = size + pos; // Should be negative
 		}
 		return over;
@@ -372,15 +343,12 @@ public class Cell
 	 * @see {@link Cells.Cell#doNeighboors doNeighboors}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	private int regulateJ(int pos, int size, boolean upper)
-	{
+	private int regulateJ(int pos, int size, boolean upper) {
 		int over = 0;
 
-		if (upper)
-		{
+		if (upper) {
 			over = pos - size * size; // Should be positive
-		} else
-		{
+		} else {
 			over = pos + size * size; // Should be negative
 		}
 		return over;
@@ -391,8 +359,7 @@ public class Cell
 	 * <h1>Reset Memory</h1>Resets a cell's memory. Do not implement if cell has
 	 * no memory.
 	 */
-	public void resetMemory()
-	{
+	public void resetMemory() {
 	}
 
 	/**
@@ -400,8 +367,7 @@ public class Cell
 	 * 
 	 * @return Float representing the cell's move.
 	 */
-	public Float makeDecision()
-	{
+	public Float makeDecision() {
 		return 0f;
 	}
 
@@ -415,19 +381,17 @@ public class Cell
 	 * @param decisionME
 	 *            represents the cell's decision.
 	 */
-	public void handleMemory(Float decisionOP, Float decisionME)
-	{
+	public void handleMemory(Float decisionOP, Float decisionME) {
 	}
 
 	/**
-	 * <h1>getNetwork</h1>A getter for network however this is more complex
-	 * than the average getter. Extensive logic may be necessary to return the
+	 * <h1>getNetwork</h1>A getter for network however this is more complex than
+	 * the average getter. Extensive logic may be necessary to return the
 	 * correct network.
 	 * 
 	 * @return Network, a copy of the cell's network.
 	 */
-	public Network getNetwork()
-	{
+	public Network getNetwork() {
 		return null;
 	}
 
@@ -437,8 +401,7 @@ public class Cell
 	 * 
 	 * @return String of important cell info.
 	 */
-	public String serialize()
-	{
+	public String serialize() {
 		return "";
 	}
 
@@ -446,8 +409,7 @@ public class Cell
 	 * <h1>drawNet</h1>A troubleshooting method, used for bug fixing and
 	 * ensuring neural networks work correctly after a change.
 	 */
-	public void drawNet()
-	{
+	public void drawNet() {
 	}
 
 	// GETTERS AND SETTERS
@@ -456,8 +418,7 @@ public class Cell
 	 * 
 	 * @return {@link Cells.Cell#pos_X pos_X} (int)
 	 */
-	public int getPos_X()
-	{
+	public int getPos_X() {
 		return pos_X;
 	}
 
@@ -468,8 +429,7 @@ public class Cell
 	 *            (int)
 	 * @see {@link Cells.Cell#pos_X pos_X} (int)
 	 */
-	public void setPos_X(int pos_X)
-	{
+	public void setPos_X(int pos_X) {
 		this.pos_X = pos_X;
 	}
 
@@ -478,8 +438,7 @@ public class Cell
 	 * 
 	 * @return {@link Cells.Cell#pos_Y pos_Y} (int)
 	 */
-	public int getPos_Y()
-	{
+	public int getPos_Y() {
 		return pos_Y;
 	}
 
@@ -490,8 +449,7 @@ public class Cell
 	 *            (int)
 	 * @see {@link Cells.Cell#pos_Y pos_Y} (int)
 	 */
-	public void setPos_Y(int pos_Y)
-	{
+	public void setPos_Y(int pos_Y) {
 		this.pos_Y = pos_Y;
 	}
 
@@ -501,8 +459,7 @@ public class Cell
 	 * @return {@link Cells.Cell#pos_Coords pos_Coords} (Point)
 	 * @see {@link Point What is a Point type?}
 	 */
-	public Point getPos_Coords()
-	{
+	public Point getPos_Coords() {
 		return pos_Coords;
 	}
 
@@ -512,8 +469,7 @@ public class Cell
 	 * @param pos_Coords
 	 * @see {@link Cells.Cell#pos_Coords pos_Coords}
 	 */
-	public void setPos_Coords(Point pos_Coords)
-	{
+	public void setPos_Coords(Point pos_Coords) {
 		this.pos_Coords = pos_Coords;
 	}
 
@@ -523,8 +479,7 @@ public class Cell
 	 * 
 	 * @return
 	 */
-	public Float getPd_Fitness()
-	{
+	public Float getPd_Fitness() {
 		return pd_Fitness;
 	}
 
@@ -535,8 +490,7 @@ public class Cell
 	 *            Float
 	 * @see {@link Cells.Cell#pd_Fitness pd_Fitness}
 	 */
-	public void setPd_Fitness(Float pd_Fitness)
-	{
+	public void setPd_Fitness(Float pd_Fitness) {
 		this.pd_Fitness = pd_Fitness;
 	}
 
@@ -546,104 +500,147 @@ public class Cell
 	 * 
 	 * @return
 	 */
-	public ArrayList<Cell> getCell_PotentialParents()
-	{
+	public ArrayList<Cell> getCell_PotentialParents() {
 		return cell_PotentialParents;
 	}
 
 	/**
-	 * <h1>setCell_PotentialParents</h1>Setter for cell_PotentialParents variable.
-	 * @param cell_PotentialParents (ArrayList<Cell>)
+	 * <h1>setCell_PotentialParents</h1>Setter for cell_PotentialParents
+	 * variable.
+	 * 
+	 * @param cell_PotentialParents
+	 *            (ArrayList<Cell>)
 	 * @see {@link ArrayList What is an arraylist?}
 	 */
-	public void setCell_PotentialParents(ArrayList<Cell> cell_PotentialParents)
-	{
+	public void setCell_PotentialParents(ArrayList<Cell> cell_PotentialParents) {
 		this.cell_PotentialParents = cell_PotentialParents;
 	}
 
 	/**
-	 * <h1>getC</h1>Simple getter for Color c.
-	 * @return Color
+	 * <h1>getC</h1>Simple getter for c (Color).
+	 * 
+	 * @return {@link Color Color}
 	 */
-	public Color getC()
-	{
+	public Color getC() {
 		return c;
 	}
 
 	/**
 	 * <h1>setC</h1>Setter for Color c.
-	 * @param c (Color)
+	 * 
+	 * @param c
+	 *            ({@link Color Color})
 	 */
-	public void setC(Color c)
-	{
+	public void setC(Color c) {
 		this.c = c;
 	}
 
 	/**
 	 * <h1>getBridge</h1>Getter for bridge.
+	 * 
 	 * @return {@link DataCenter.Bridge Bridge}
 	 */
-	public Bridge getBridge()
-	{
+	public Bridge getBridge() {
 		return bridge;
 	}
 
 	/**
-	 * <h1>setBridge</h1>
+	 * <h1>setBridge</h1>Setter for bridge.
+	 * 
 	 * @param bridge
+	 *            ({@link DataCenter.Bridge Bridge})
 	 */
-	public void setBridge(Bridge bridge)
-	{
+	public void setBridge(Bridge bridge) {
 		this.bridge = bridge;
 	}
 
-	public ArrayList<Cell> getCell_Neighboors()
-	{
+	/**
+	 * <h1>getCell_Neighboors</h1>Getter for cell_Neighboors.
+	 * 
+	 * @return {@link Cells.Cell#cell_Neighboors cell_Neighboors}
+	 */
+	public ArrayList<Cell> getCell_Neighboors() {
 		return cell_Neighboors;
 	}
 
-	public void setCell_Neighboors(ArrayList<Cell> cell_Neighboors)
-	{
+	/**
+	 * <h1>setCell_Neighboors</h1>Setter for {@link Cells.Cell#cell_Neighboors
+	 * cell}
+	 * 
+	 * @param ArrayList<Cell>
+	 */
+	public void setCell_Neighboors(ArrayList<Cell> cell_Neighboors) {
 		this.cell_Neighboors = cell_Neighboors;
 	}
 
-	public Boolean getHc_R()
-	{
+	/**
+	 * <h1>getHc_R</h1>Getter for {@link Cells.Cell#hc_R hc_R};
+	 * 
+	 * @return Boolean
+	 */
+	public Boolean getHc_R() {
 		return hc_R;
 	}
 
-	public Boolean getHc_R(Boolean hc_R)
-	{
+	/**
+	 * <h1>getHc_R(Boolean)</h1>An extension of {@link Cells.Cell#getHc_R
+	 * getHc_R} which takes in a Boolean and outputs a Boolean. Intended use it
+	 * to perform some local logic using the argument.
+	 * 
+	 * @param hc_R
+	 * @return Boolean
+	 */
+	public Boolean getHc_R(Boolean hc_R) {
 		return this.hc_R;
 	}
 
-	public void setHc_R(Boolean hc_R)
-	{
+	/**
+	 * <h1>setHc_R</h1>Setter for {@link Cells.Cell#hc_R hc_R}.
+	 * 
+	 * @param hc_R
+	 *            (Boolean)
+	 */
+	public void setHc_R(Boolean hc_R) {
 		this.hc_R = hc_R;
 	}
 
-	public Boolean getHc_NextGenR()
-	{
+	/**
+	 * <h1>getHc_NextGenR</h1>Getter for {@link Cells.Cell#hc_NextGenR hc_NextGenR}.
+	 * @return Boolean
+	 */
+	public Boolean getHc_NextGenR() {
 		return hc_NextGenR;
 	}
 
-	public void setHc_NextGenR(Boolean hc_NextGenR)
-	{
+	/**
+	 * <h1>setHc_NextGenR</h1>Setter for {@link Cells.Cell#hc_NextGenR hc_NextGenR}.
+	 * @param {@link Cells.Cell#hc_NextGenR hc_NextGenR} (Boolean)
+	 */
+	public void setHc_NextGenR(Boolean hc_NextGenR) {
 		this.hc_NextGenR = hc_NextGenR;
 	}
 
-	public int getCoopHist()
-	{
+	/**
+	 * <h1>getCoopHist</h1>Getter for cooperation history.
+	 * @return int
+	 */
+	public int getCoopHist() {
 		return 0;
 	}
 
-	public int getType()
-	{
+	/**
+	 * <h1>getType</h1>Getter for type.
+	 * @return int
+	 */
+	public int getType() {
 		return 0;
 	}
 
-	public void setType(int type)
-	{
+	/**
+	 * <h1>setType</h1>Setter for type (int).
+	 * @param int
+	 */
+	public void setType(int type) {
 
 	}
 
@@ -665,7 +662,6 @@ public class Cell
 	 * @see {@link Cells.Cell#hc_NextGenR hx_NextGenR}
 	 * @see {@link Cells.Cell Cell Superclass Index}
 	 */
-	private void variables()
-	{
+	private void variables() {
 	}
 }

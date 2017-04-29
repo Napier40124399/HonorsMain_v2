@@ -39,7 +39,14 @@ import Cells.Cell;
 public class Bridge
 {
 	// Cell Variables
+	/**
+	 * <h1>cell_ArrayList</h1>ArrayList of Cells.
+	 * @see {@link Cells.Cell}
+	 */
 	private ArrayList<Cell> cell_ArrayList;
+	/**
+	 * <h1></h1>
+	 */
 	private Cell cell_Array[];
 	private int cell_Quantity;
 	private int cell_ColorMode;
