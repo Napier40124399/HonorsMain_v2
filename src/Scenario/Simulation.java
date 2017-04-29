@@ -92,6 +92,11 @@ public class Simulation implements Runnable
 		}
 		coop = ((coop / new Float(cells.size()))
 				/ new Float(bridge.getCell_ItPerGen()) / new Float(cells.get(0).getCell_Neighboors().size()));
+		//coop = 0f;
+		for(Cell ce : cells)
+		{
+			//coop += ce.getPd_Fitness();
+		}
 		System.out.println(coop);
 	}
 
@@ -158,7 +163,15 @@ public class Simulation implements Runnable
 			for (int j = 0; j < quantity; j++)
 			{
 				cells.add(getCell(type));
-				cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
+
+				if(Math.random() > 0.5)
+				{
+					cells.get(cells.size() - 1).Initialize(false, i, j, bridge);
+				}
+				else
+				{
+					cells.get(cells.size() - 1).Initialize(true, i, j, bridge);
+				}
 			}
 		}
 		Point p = new Point(bridge.getCell_Quantity() / 2, bridge.getCell_Quantity() / 2);

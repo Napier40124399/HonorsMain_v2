@@ -1,108 +1,63 @@
 package Cells;
 
 import java.awt.Color;
-import java.util.ArrayList;
+
+import CellStrategies.Fitness_TitTat;
+import CellStrategies.Mutation_TitTat;
+import CellStrategies.Parent_TitTat;
+import CellStrategies.StratFitness;
+import CellStrategies.StratMutation;
+import CellStrategies.StratParent;
+import CellStrategies.StratUpdate;
+import CellStrategies.Update_TitTat;
 
 /**
- * <h1>Cell - Hard Coded</h1> This is the cell subclass for hardcoded cells.
+ * <h1>Cell - Tit For Tat</h1>This is the tit for tat subclass. This class
+ * extends {@link Cells.Cellular Cell}.
  *
  * @see {@link Cells.Cellular super class}
- * @see {@link Cells.Cell interface}
  */
 public class Cell_TitTat extends Cell
 {
 	private Color c1;
 	private Color c2;
-	private ArrayList<Boolean> memory = new ArrayList<Boolean>();
-	
+	private int type = 0;
+	private int nextGenType = 0;
+	private Boolean memory = true;
+	private StratFitness sf = new Fitness_TitTat();
+	private StratParent sp = new Parent_TitTat();
+	private StratUpdate su = new Update_TitTat();
+	private StratMutation sm = new Mutation_TitTat();
+
 	@Override
 	public void doFitness()
 	{
-		setPd_Fitness(0f);
-		for (Cell ce : getCell_Neighboors())
-		{
-			if (!ce.getHc_R())
-			{
-				if (getHc_R())
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_T()));
-				} else
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_R()));
-				}
-			} else
-			{
-				if (getHc_R())
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_P()));
-				} else
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_S()));
-				}
-			}
-		}
+		setPd_Fitness(sf.fitnessStrat(this, getCell_Neighboors(), getHc_R(), getBridge()));
 	}
 
 	@Override
 	public void doNewGeneration()
 	{
-		setCell_PotentialParents(new ArrayList<Cell>());
-		Float old = getPd_Fitness();
-		for (Cell ce : getCell_Neighboors())
+		nextGenType = sp.parentStrat(this, getCell_Neighboors(), getBridge());
+	}
+
+	@Override
+	public void doUpdateCell()
+	{
+		memory = true;
+		color1();
+		setC(c1);
+		if (type == 1)
 		{
-			if (ce.getPd_Fitness() > old)
-			{
-				getCell_PotentialParents().clear();
-				getCell_PotentialParents().add(ce);
-				old = ce.getPd_Fitness();
-			} else if (ce.getPd_Fitness() == old)
-			{
-				getCell_PotentialParents().add(ce);
-			}
+			setC(new Color(0, 255, 100));
 		}
-		if (getCell_PotentialParents().size() > 0)
-		{
-			setHc_NextGenR(getCell_PotentialParents().get(((int) (Math.random() * (getCell_PotentialParents().size()))))
-					.getHc_R());
-		}else{setHc_NextGenR(getHc_R());}
+		su.copyStrat(this, getBridge(), nextGenType);
 	}
 
 	@Override
 	public void doMutationLogic()
 	{
-		if(Math.random() < getBridge().getCell_MutationChance())
-		{
-			setHc_R(!getHc_R());
-		}
-	}
-	
-	@Override
-	public void doUpdateCell()
-	{
-		if(getBridge().getSim_Save())
-		{
-			if(getBridge().getCell_ColorMode() == 0)
-			{
-				color1();
-				setC(c1);
-			}else
-			{
-				color2();
-				setC(c2);
-			}
-		}else
-		{
-			color1();
-			color2();
-			if(getBridge().getCell_ColorMode() == 0)
-			{
-				setC(c1);
-			}else
-			{
-				setC(c2);
-			}
-		}
-		setHc_R(getHc_NextGenR());
+		sm.mutationStrat(this, getBridge());
 	}
 
 	private void color1()
@@ -135,5 +90,37 @@ public class Cell_TitTat extends Cell
 		Float ttt = tt * 250;
 		int tttt = (int) (ttt * 1);
 		c2 = new Color(tttt, tttt, tttt);
+	}
+
+	@Override
+	public Boolean getHc_R(Boolean hc_R)
+	{
+		if (type == 1)
+		{
+			Boolean giving = memory;
+			memory = hc_R;
+			return giving;
+		} else
+		{
+			return getHc_R();
+		}
+	}
+
+	@Override
+	public int getType()
+	{
+		return this.type;
+	}
+
+	@Override
+	public void setType(int type)
+	{
+		this.type = type;
+	}
+
+	@Override
+	public void resetMemory()
+	{
+		memory = true;
 	}
 }

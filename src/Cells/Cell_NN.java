@@ -10,10 +10,10 @@ import NetworkFinal.Part;
 import NetworkFinal.Remember;
 
 /**
- * <h1>Cell_NN</h1> Neural network designed to mimic the hardcoded cell logic.
- * 
- * @author James Taylor
+ * <h1>Cell - Neural Network</h1>This is the neural network subclass. This class
+ * extends {@link Cells.Cellular Cell}.
  *
+ * @see {@link Cells.Cellular super class}
  */
 public class Cell_NN extends Cell
 {
@@ -53,6 +53,7 @@ public class Cell_NN extends Cell
 	@Override
 	public void doFitness()
 	{
+		setPd_Fitness(0f);
 		coopHist = 0;
 		temporaryFitness = 0f;
 		//validate();
@@ -62,13 +63,13 @@ public class Cell_NN extends Cell
 			ce.resetMemory();
 			for (int i = 0; i < getBridge().getCell_ItPerGen(); i++)
 			{
-				decisionOP = ce.makeDecisionCorrected();
+				decisionOP = ce.makeDecision();
 				decisionME = network.think(memory.getMem());
 				memory.save(decisionME);
 				memory.saveOP(decisionOP);
 				memory.normalize();
 				ce.handleMemory(decisionOP, decisionME);
-				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.2f;
+				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
 				if (decisionME > 0)
 				{
 					coopHist += 1;
@@ -158,7 +159,6 @@ public class Cell_NN extends Cell
 			}
 			occured = false;
 		}
-		setPd_Fitness(0f);
 		//getNetwork().showCons();
 	}
 
@@ -186,7 +186,7 @@ public class Cell_NN extends Cell
 	}
 
 	@Override
-	public Float makeDecisionCorrected()
+	public Float makeDecision()
 	{
 		return network.think(memory.getMem());
 	}
@@ -219,13 +219,18 @@ public class Cell_NN extends Cell
 	// Private Methods
 	private void color1()
 	{
-		accepted = getPd_Fitness();
-		total = new Float(getCell_Neighboors().size());
-		Float temp = (float) (getBridge().getCell_ItPerGen() * getCell_Neighboors().size() *5);
-		Float tt = accepted / temp;
-		Float fff = 255 * tt;
-		int iii = (int) (fff * 1);
-		c1 = new Color(iii, iii, iii);
+		accepted = getBridge().getCell_ItPerGen()*5f*getCell_Neighboors().size();
+		total = new Float(getPd_Fitness()/accepted);
+		Float temp = total * 255;
+		int col = (int) (temp*1);
+		try
+		{
+			c1 = new Color(col,col,col);
+		}catch(Exception e)
+		{
+			System.out.println("Incorrect value: "+col+" >> "+getPd_Fitness()+" >> "+accepted);
+			c1 = Color.red;
+		}
 	}
 
 	private void color2()

@@ -1,78 +1,47 @@
 package Cells;
 
 import java.awt.Color;
-import java.util.ArrayList;
+
+import CellStrategies.Fitness_Hard;
+import CellStrategies.Mutation_Hard;
+import CellStrategies.Parent_Hard;
+import CellStrategies.StratFitness;
+import CellStrategies.StratMutation;
+import CellStrategies.StratParent;
+import CellStrategies.StratUpdate;
+import CellStrategies.Update_Hard;
 
 /**
- * <h1>Cell - Hard Coded</h1> This is the cell subclass for hardcoded cells.
+ * <h1>Cell - Hardcoded</h1>This is the hardcoded subclass. This class
+ * extends {@link Cells.Cellular Cell}.
  *
  * @see {@link Cells.Cellular super class}
- * @see {@link Cells.Cell interface}
  */
 public class Cell_Hard extends Cell
 {
 	private Color c1;
 	private Color c2;
+	private StratFitness sf = new Fitness_Hard();
+	private StratParent sp = new Parent_Hard();
+	private StratMutation sm = new Mutation_Hard();
+	private StratUpdate su = new Update_Hard();
 	
 	@Override
 	public void doFitness()
 	{
-		setPd_Fitness(0f);
-		for (Cell ce : getCell_Neighboors())
-		{
-			if (!ce.getHc_R())
-			{
-				if (getHc_R())
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_T()));
-				} else
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_R()));
-				}
-			} else
-			{
-				if (getHc_R())
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_P()));
-				} else
-				{
-					setPd_Fitness(new Float(getPd_Fitness() + getBridge().getPd_S()));
-				}
-			}
-		}
+		setPd_Fitness(sf.fitnessStrat(this, getCell_Neighboors(), getHc_R(), getBridge()));
 	}
 
 	@Override
 	public void doNewGeneration()
 	{
-		setCell_PotentialParents(new ArrayList<Cell>());
-		Float old = getPd_Fitness();
-		for (Cell ce : getCell_Neighboors())
-		{
-			if (ce.getPd_Fitness() > old)
-			{
-				getCell_PotentialParents().clear();
-				getCell_PotentialParents().add(ce);
-				old = ce.getPd_Fitness();
-			} else if (ce.getPd_Fitness() == old)
-			{
-				getCell_PotentialParents().add(ce);
-			}
-		}
-		if (getCell_PotentialParents().size() > 0)
-		{
-			setHc_NextGenR(getCell_PotentialParents().get(((int) (Math.random() * (getCell_PotentialParents().size()))))
-					.getHc_R());
-		}else{setHc_NextGenR(getHc_R());}
+		sp.parentStrat(this, getCell_Neighboors(), getBridge());
 	}
 
 	@Override
 	public void doMutationLogic()
 	{
-		if(Math.random() < getBridge().getCell_MutationChance())
-		{
-			setHc_R(!getHc_R());
-		}
+		sm.mutationStrat(this, getBridge());
 	}
 	
 	@Override
@@ -101,9 +70,11 @@ public class Cell_Hard extends Cell
 				setC(c2);
 			}
 		}
-		setHc_R(getHc_NextGenR());
+		su.copyStrat(this, getBridge(), 0);
 	}
-
+	/**
+	 * <h1>Color1</h1>Creates a color based off cooperation history. Meant to represent the current and previous cell behaviour.
+	 */
 	private void color1()
 	{
 		if (getHc_R() == true)
@@ -127,12 +98,15 @@ public class Cell_Hard extends Cell
 		}
 	}
 
+	/**
+	 * <h1>Color2</h1>Creates a color based off current fitness as a percentage of maximum fitness.
+	 */
 	private void color2()
 	{
 		Float t = (float) (new Float(getCell_Neighboors().size()) * getBridge().getPd_T());
 		Float tt = (float) (getPd_Fitness()) / t;
 		Float ttt = tt * 250;
 		int tttt = (int) (ttt * 1);
-		c2 = new Color(tttt, tttt, tttt);
+		c2 = new Color(1,1,1);//tttt, tttt, tttt);
 	}
 }
