@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @SuppressWarnings("serial")
-public class Network implements Cloneable, Serializable
+public class Network implements Serializable
 {
 	private ArrayList<Part> parts;
 	private ArrayList<ArrayList<Part>> fabric = new ArrayList<ArrayList<Part>>();
