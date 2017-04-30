@@ -1,6 +1,8 @@
 package Scenario;
 
 import java.awt.Point;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import Cells.Cell;
@@ -18,6 +20,10 @@ public class Simulation implements Runnable
 	private Bridge bridge;
 	private SplitTask sp = new SplitTask();
 	private ArrayList<Cell> cells;
+	
+	//Temporary stuff
+	private ArrayList<Float> coopHist = new ArrayList<Float>();
+	private ArrayList<Float> fitnHist = new ArrayList<Float>();
 
 	public Simulation(Bridge bridge, int type)
 	{
@@ -51,6 +57,7 @@ public class Simulation implements Runnable
 				simulate();
 			}
 		}
+		writeOut(coopHist, fitnHist);
 	}
 
 	private void simulate()
@@ -81,6 +88,7 @@ public class Simulation implements Runnable
 		{
 			e.printStackTrace();
 		}
+		
 	}
 
 	private void dispProp()
@@ -92,11 +100,13 @@ public class Simulation implements Runnable
 		}
 		coop = ((coop / new Float(cells.size()))
 				/ new Float(bridge.getCell_ItPerGen()) / new Float(cells.get(0).getCell_Neighboors().size()));
-		//coop = 0f;
+		coopHist.add(coop);
+		coop = 0f;
 		for(Cell ce : cells)
 		{
-			//coop += ce.getPd_Fitness();
+			coop += ce.getPd_Fitness();
 		}
+		fitnHist.add(coop);
 		System.out.println(coop);
 	}
 
@@ -195,5 +205,29 @@ public class Simulation implements Runnable
 	{
 		t = new Thread(this);
 		t.start();
+	}
+	
+	private void writeOut(ArrayList<Float> coopHist, ArrayList<Float> fitnHist)
+	{
+		String prefix = bridge.getSim_SavePath();
+		try {
+			PrintWriter writer = new PrintWriter("C:\\Users\\James\\Documents\\SimulationResults\\"+prefix+"_coopHist.txt", "UTF-8");
+			for (Float f : coopHist) {
+				writer.println(f);
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("fail");
+		}
+		
+		try {
+			PrintWriter writer2 = new PrintWriter("C:\\Users\\James\\Documents\\SimulationResults\\"+prefix+"_fitnHist.txt", "UTF-8");
+			for (Float f : fitnHist) {
+				writer2.println(f);
+			}
+			writer2.close();
+		} catch (IOException e) {
+			System.out.println("fail");
+		}
 	}
 }
