@@ -105,24 +105,11 @@ public class Network implements Serializable {
 		}
 
 		// Dynamic topology logic
-		if(dynTop && fabric.size() > 1)
-		{
+		if (dynTop && fabric.size() > 1) {
 			dynTopLogic(nodeChangeChance);
 		}
-		if (false) {
-			for (int i = 1; i < fabric.size()-1; i++)
-			{
-				for (Part p : fabric.get(i))
-				{
-					if (Math.random() < nodeChangeChance)
-					{
-						if (fabric.get(i).size() > 1) {
-							removeNode(i, p);
-						} else {
-							//removeLayer(i);
-						}
-					}
-				}
+		if (dynTop) {
+			for (int i = 1; i < fabric.size() - 1; i++) {
 				if (fabric.get(i).size() < maxNodes) {
 					if (Math.random() < nodeChangeChance) {
 						addNode(i);
@@ -148,27 +135,17 @@ public class Network implements Serializable {
 			}
 		}
 	}
-	
-	private void dynTopLogic(Float nodeChangeChance)
-	{
+
+	private void dynTopLogic(Float nodeChangeChance) {
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		ArrayList<Part> toBeRemovedLayer = new ArrayList<Part>();
-		for(int i = 1; i < fabric.size(); i++)
-		{
-			
-		}
-		for(int i = 1; i < fabric.size(); i++)
-		{
-			for(int j = 0; j < fabric.get(i).size(); j++)
-			{
-				if(Math.random() < nodeChangeChance)
-				{
-					if(fabric.get(i).size() > 1)
-					{
+		for (int i = 1; i < fabric.size(); i++) {
+			for (int j = 0; j < fabric.get(i).size(); j++) {
+				if (Math.random() < nodeChangeChance) {
+					if (fabric.get(i).size() > 1) {
 						fabric.get(i).get(j).setIndex(i);
 						toBeRemoved.add(fabric.get(i).get(j));
-					}else
-					{
+					} else {
 						fabric.get(i).get(j).setIndex(i);
 						toBeRemovedLayer.add(fabric.get(i).get(j));
 					}
@@ -188,88 +165,69 @@ public class Network implements Serializable {
 		addNode(fabric.size() - 1);
 	}
 
-	private void removeNodes(ArrayList<Part> parts)
-	{
-		for(int i = parts.size()-1; i > -1; i--)
-		{
+	private void removeNodes(ArrayList<Part> parts) {
+		for (int i = parts.size() - 1; i > -1; i--) {
 			Part pa = parts.get(i);
 			parts.set(i, null);
 			removeNode(pa.getIndex(), pa);
 		}
 	}
-	
-	private void removeLayers(ArrayList<Part> parts)
-	{
-		for(int i = 0; i < parts.size(); i++)
-		{
+
+	private void removeLayers(ArrayList<Part> parts) {
+		for (int i = parts.size() - 1; i > -1; i--) {
 			Part pa = parts.get(i);
 			int index = pa.getIndex();
 			parts.set(i, null);
 			removeNode(pa.getIndex(), pa);
-			String temp = topState();
 			fabric.remove(index);
-			temp += "> "+topState();
-			System.out.println("Top: "+temp);
-			if(index < fabric.size()-1)
-			{
-				for(Part p1 : fabric.get(index-1))
-				{
-					for(Part p2 : fabric.get(index))
-					{
+			if (index < fabric.size() - 1) {
+				for (Part p1 : fabric.get(index - 1)) {
+					for (Part p2 : fabric.get(index)) {
 						p1.addNode(p2);
 					}
 				}
-			}else
-			{
-				for(Part p : fabric.get(index-1))
-				{
+			} else {
+				for (Part p : fabric.get(index - 1)) {
 					p.addNode(outputNode);
 				}
 			}
 		}
 	}
-	
-	private String topState()
-	{
+
+	private String topState() {
 		String top = "";
-		for(int i = 0; i < fabric.size(); i++)
-		{
-			top += fabric.get(i).size()+"-";
+		for (int i = 0; i < fabric.size(); i++) {
+			top += fabric.get(i).size() + "-";
 		}
 		return top;
 	}
-	
-	private void verify()
-	{
+
+	private void verify() {
 		ArrayList<Integer> layersToFix = new ArrayList<Integer>();
-		for(int i = 1; i < fabric.size(); i++)
-		{
-			if(fabric.get(i).size() == 0)
-			{
+		for (int i = 1; i < fabric.size(); i++) {
+			if (fabric.get(i).size() == 0) {
 				layersToFix.add(i);
 			}
 		}
 		fabric.removeAll(layersToFix);
 	}
-	
-	private void removeNodes(ArrayList<Part> parts, int j)
-	{
-		for(int i = 0; i < parts.size(); i++)
-		{
+
+	private void removeNodes(ArrayList<Part> parts, int j) {
+		for (int i = 0; i < parts.size(); i++) {
 			Part pa = parts.get(i);
 			parts.set(i, null);
 			removeNode(j, pa);
 		}
 	}
-	
+
 	private void removeLayer(int i) {
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		for (Part p : fabric.get(i)) {
 			toBeRemoved.add(p);
 		}
-		
+
 		removeNodes(toBeRemoved, i);
-		
+
 		fabric.remove(i);
 
 		if (i == fabric.size() - 1) {
