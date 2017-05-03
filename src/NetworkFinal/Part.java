@@ -10,6 +10,7 @@ public class Part implements Serializable {
 	private ArrayList<Part> next = new ArrayList<Part>();
 	private ArrayList<Float> weights = new ArrayList<Float>();
 	private Float input = new Float(0);
+	private int index = 0;
 
 	/**
 	 * <h1>pass</h1>For each connection, calculates the value and sends it.
@@ -271,5 +272,14 @@ public class Part implements Serializable {
 		Part part = new Part();
 		part.setWeights(weights);
 		return part;
+	}
+	
+	public void setIndex(int index)
+	{
+		this.index = index;
+	}
+	public int getIndex()
+	{
+		return index;
 	}
 }

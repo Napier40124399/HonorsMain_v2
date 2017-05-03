@@ -57,7 +57,10 @@ public class Simulation implements Runnable
 				simulate();
 			}
 		}
-		writeOut(coopHist, fitnHist);
+		if(bridge.getSim_Save())
+		{
+			writeOut(coopHist, fitnHist);
+		}
 	}
 
 	private void simulate()
