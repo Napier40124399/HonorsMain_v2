@@ -67,7 +67,7 @@ public class Network implements Serializable {
 		for (int i = 1; i < size.length; i++) {
 			addLayer();
 			for (int j = 0; j < size[i] - 1; j++) {
-				addNode(i);
+				addNodeEnd(i);
 			}
 		}
 	}
@@ -106,20 +106,25 @@ public class Network implements Serializable {
 
 		// Dynamic topology logic
 		if (dynTop && fabric.size() > 1) {
-			dynTopLogic(nodeChangeChance);
+			dynTopLogic(nodeChangeChance, layerChangeChance);
 		}
-		if (dynTop) {
+		/*
+		if (false) {
 			for (int i = 1; i < fabric.size() - 1; i++) {
 				if (fabric.get(i).size() < maxNodes) {
 					if (Math.random() < nodeChangeChance) {
-						addNode(i);
+						addNodeHot(i);
 					}
 				}
+			}
+			if(Math.random() < nodeChangeChance && fabric.size() > 1)
+			{
+				addNode(fabric.size()-1);
 			}
 			if (Math.random() < layerChangeChance) {
 				addLayer();
 			}
-		}
+		}*/
 
 		// Biases
 		Random r = new Random();
@@ -136,7 +141,23 @@ public class Network implements Serializable {
 		}
 	}
 
-	private void dynTopLogic(Float nodeChangeChance) {
+	private void dynTopLogic(Float nodeChangeChance, Float layerChangeChance) {
+		int end = fabric.size()-1;
+		for(int i = 1; i < end; i++)
+		{
+			if(Math.random() < nodeChangeChance)
+			{
+				addNodeHot(i);
+			}
+		}
+		if(Math.random() < nodeChangeChance)
+		{
+			addNodeEnd(end);
+		}
+		if(Math.random() < layerChangeChance)
+		{
+			addLayerAlt();
+		}
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		ArrayList<Part> toBeRemovedLayer = new ArrayList<Part>();
 		for (int i = 1; i < fabric.size(); i++) {
@@ -154,7 +175,23 @@ public class Network implements Serializable {
 		}
 		removeNodes(toBeRemoved);
 		removeLayers(toBeRemovedLayer);
-		verify();
+	}
+	
+	private void addLayerAlt()
+	{
+		Part part = new Part();
+		for(Part p : fabric.get(fabric.size()-1))
+		{
+			p.removeNode(outputNode);
+		}
+		ArrayList<Part> newLayer = new ArrayList<Part>();
+		newLayer.add(part);
+		fabric.add(newLayer);
+		for(Part p : fabric.get(fabric.size()-2))
+		{
+			p.addNode(part);
+		}
+		part.addNode(outputNode);
 	}
 
 	private void addLayer() {
@@ -162,7 +199,7 @@ public class Network implements Serializable {
 			p.removeNode(outputNode);
 		}
 		fabric.add(new ArrayList<Part>());
-		addNode(fabric.size() - 1);
+		addNodeEnd(fabric.size() - 1);
 	}
 
 	private void removeNodes(ArrayList<Part> parts) {
@@ -243,7 +280,20 @@ public class Network implements Serializable {
 		}
 	}
 
-	private void addNode(int i) {
+	private void addNodeHot(int i)
+	{
+		Part ppp = new Part();
+		fabric.get(i).add(ppp);
+		for (Part p : fabric.get(i - 1)) {
+			p.addNode(ppp);
+		}
+		for(Part p : fabric.get(i+1))
+		{
+			ppp.addNode(p);
+		}
+	}
+	
+	private void addNodeEnd(int i) {
 		Part ppp = new Part();
 		fabric.get(i).add(ppp);
 		for (Part p : fabric.get(i - 1)) {
@@ -266,7 +316,7 @@ public class Network implements Serializable {
 		for (int i = 0; i < fabric.size(); i++) {
 			fabric2.add(new ArrayList<Part>());
 			for (int j = 0; j < fabric.get(i).size(); j++) {
-				fabric2.get(i).add(fabric.get(i).get(j).partialCopy());
+				fabric2.get(i).add(fabric.get(i).get(j).fullCopy());
 			}
 		}
 		ArrayList<Float> biases2 = new ArrayList<Float>();

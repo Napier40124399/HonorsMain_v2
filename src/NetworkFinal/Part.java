@@ -61,6 +61,7 @@ public class Part implements Serializable {
 	 *            ({@link NetworkFinal.Part Part})
 	 */
 	public void addPrepNode(Part part) {
+		next.clear();
 		next.add(part);
 	}
 
@@ -86,15 +87,17 @@ public class Part implements Serializable {
 	 *            ({@link NetworkFinal.Part Part})
 	 */
 	public void removeNode(Part part) {
-		int ii = 0;
+		if(weights.size() != next.size())
+		{
+			System.out.println("PROBLEM: "+weights.size()+" >> "+next.size());
+		}
 		for (int i = 0; i < next.size(); i++) {
 			if (next.get(i).equals(part)) {
-				ii = i;
+				weights.remove(i);
+				next.remove(i);
 				break;
 			}
 		}
-		weights.remove(ii);
-		next.remove(ii);
 	}
 
 	/**
@@ -271,6 +274,18 @@ public class Part implements Serializable {
 	public Part partialCopy() {
 		Part part = new Part();
 		part.setWeights(weights);
+		return part;
+	}
+	
+	public Part fullCopy()
+	{
+		Part part = new Part();
+		ArrayList<Float> weights2 = new ArrayList<Float>();
+		for(Float f : weights)
+		{
+			weights2.add(new Float(f));
+		}
+		part.setWeights(weights2);
 		return part;
 	}
 	

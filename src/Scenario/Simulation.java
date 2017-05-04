@@ -109,6 +109,10 @@ public class Simulation implements Runnable
 		{
 			coop += ce.getPd_Fitness();
 		}
+		coop = coop / bridge.getCell_ItPerGen();
+		coop = coop / cells.get(0).getCell_Neighboors().size();
+		//coop = coop / 5;
+		coop = coop / cells.size();
 		fitnHist.add(coop);
 		System.out.println(coop);
 	}
@@ -214,7 +218,7 @@ public class Simulation implements Runnable
 	{
 		String prefix = bridge.getSim_SavePath();
 		try {
-			PrintWriter writer = new PrintWriter("C:\\Users\\James\\Documents\\SimulationResults\\"+prefix+"_coopHist.txt", "UTF-8");
+			PrintWriter writer = new PrintWriter(prefix+"\\coopHist.txt", "UTF-8");
 			for (Float f : coopHist) {
 				writer.println(f);
 			}
@@ -224,7 +228,7 @@ public class Simulation implements Runnable
 		}
 		
 		try {
-			PrintWriter writer2 = new PrintWriter("C:\\Users\\James\\Documents\\SimulationResults\\"+prefix+"_fitnHist.txt", "UTF-8");
+			PrintWriter writer2 = new PrintWriter(prefix+"\\fitnHist.txt", "UTF-8");
 			for (Float f : fitnHist) {
 				writer2.println(f);
 			}
