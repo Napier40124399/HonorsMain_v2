@@ -52,6 +52,13 @@ public class StealthSim implements Runnable {
 				Float.valueOf(settings[13]), Float.valueOf(settings[14]), Boolean.valueOf(settings[1]),
 				getInt(settings[9]), true, settings[16], getInt(settings[8]), getInt(settings[4]), 0, 0, 0);
 		bridge.setCell_ArrayList(makeCells(bridge.getCell_Quantity(), bridge, getInt(settings[10])));
+		String[] top = settings[17].split("-");
+		Integer[] topology = new Integer[top.length];
+		for(int i = 0; i < top.length; i++)
+		{
+			topology[i] = getInt(top[i]);
+		}
+		bridge.setNn_Topology(topology);
 		splitTask.splitTasks(bridge.getCell_ArrayList(), bridge.getSim_Threads());
 		cells = bridge.getCell_ArrayList();
 		Thread t = new Thread(this);
