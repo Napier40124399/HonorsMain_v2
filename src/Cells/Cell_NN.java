@@ -27,8 +27,6 @@ public class Cell_NN extends Cell
 	private Network network;
 
 	// Temp Vars
-	private ArrayList<ArrayList<Part>> nextGenFab;
-	private ArrayList<Float> nextGenBias;
 	private Boolean occured = false;
 
 	// PD Vars
@@ -133,6 +131,7 @@ public class Cell_NN extends Cell
 			if (getBridge().getCell_ColorMode() == 0)
 			{
 				color1();
+				color2();
 				setC(c1);
 			} else
 			{

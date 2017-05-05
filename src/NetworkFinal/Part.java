@@ -61,8 +61,13 @@ public class Part implements Serializable {
 	 *            ({@link NetworkFinal.Part Part})
 	 */
 	public void addPrepNode(Part part) {
+		double temp = Math.random();
 		next.clear();
 		next.add(part);
+		if(weights.size() != next.size())
+		{
+			System.out.println("PROBLEM2: "+weights.size()+" >> "+next.size()+" >> ID"+temp);
+		}
 	}
 
 	/**
@@ -125,7 +130,7 @@ public class Part implements Serializable {
 	}
 
 	/**
-	 * <h1>becomeDefector</h1>Doesn't really work as suggested. Instead it sets
+	 * <h1>becomeDefector</h1>Doesn't work as simply as expected. Instead it sets
 	 * all connection weights to -1.
 	 */
 	public void becomeDefector() {

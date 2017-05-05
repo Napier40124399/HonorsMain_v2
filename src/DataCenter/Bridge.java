@@ -102,12 +102,12 @@ public class Bridge {
 	 * <h1>nn_NodeRAChance</h1>Float which specifies the per node removal or
 	 * addition chance.
 	 */
-	private Float nn_NodeRAChance = 0.05f; // Chance a node is removed or added
+	private Float nn_NodeRAChance = 0.01f; // Chance a node is removed or added
 	/**
 	 * <h1>nn_LayerRAChance</h1>Float which specifies the per layer removal or
 	 * addition chance.
 	 */
-	private Float nn_LayerRAChance = 0.05f; // Chance a node is removed or added
+	private Float nn_LayerRAChance = 0.01f; // Chance a node is removed or added
 	// Simulation Variables
 	/**
 	 * <h1>sim_Running</h1>Boolean specifies whether the simulation is running.

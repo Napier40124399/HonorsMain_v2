@@ -111,7 +111,7 @@ public class Simulation implements Runnable
 		}
 		coop = coop / bridge.getCell_ItPerGen();
 		coop = coop / cells.get(0).getCell_Neighboors().size();
-		//coop = coop / 5;
+		coop = coop / 5;
 		coop = coop / cells.size();
 		fitnHist.add(coop);
 		System.out.println(coop);

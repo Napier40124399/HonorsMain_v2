@@ -156,7 +156,7 @@ public class Network implements Serializable {
 		}
 		if(Math.random() < layerChangeChance)
 		{
-			addLayerAlt();
+			//addLayerAlt();
 		}
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		ArrayList<Part> toBeRemovedLayer = new ArrayList<Part>();
@@ -174,7 +174,7 @@ public class Network implements Serializable {
 			}
 		}
 		removeNodes(toBeRemoved);
-		removeLayers(toBeRemovedLayer);
+		//removeLayers(toBeRemovedLayer);
 	}
 	
 	private void addLayerAlt()
