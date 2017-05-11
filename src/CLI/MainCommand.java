@@ -9,7 +9,7 @@ public class MainCommand {
 			"1", "0", "0", "0.03", "C:\\Users\\James\\Documents\\SimulationResults\\dump", "6-2" };
 
 	/**
-	 * <h1>Main</h1>Takes in simulation parameters as follows:
+	 * <h1>Main</h1>Launcher for command interface. Takes in simulation parameters as follows:
 	 * <ul>
 	 * <li>0) synch (bool) - true/false</li>
 	 * <li>1) taurus (bool) - true/false</li>
