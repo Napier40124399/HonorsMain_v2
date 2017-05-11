@@ -14,6 +14,13 @@ import Cells.Cell_TitTat;
 import DataCenter.Bridge;
 import MultiThreading.SplitTask;
 
+/**
+ * <h1>StealthSim</h1>Simulation environment for interface which do not use a
+ * GUI.
+ * 
+ * @author James
+ *
+ */
 public class StealthSim implements Runnable {
 	private Bridge bridge;
 	private SplitTask splitTask = new SplitTask();
@@ -22,49 +29,105 @@ public class StealthSim implements Runnable {
 	private ArrayList<Float> fitnHist = new ArrayList<Float>();
 
 	/**
+	 * <h1>StealthSim</h1>Class which manages the simulation. Handles
+	 * multi-threading, creation of cells etc.. <br>
+	 * Input as String[] must be as follows:
 	 * <ul>
-	 * <li>0) synch (bool)</li>
-	 * <li>1) taurus (bool)</li>
-	 * <li>2) dyn top (bool)</li>
-	 * <li>3) cellQ (int)</li>
-	 * <li>4) threads (int)</li>
-	 * <li>5) distance (int)</li>
-	 * <li>6) gens (int)</li>
-	 * <li>7) iterations (int)</li>
-	 * <li>8) save every (int)</li>
-	 * <li>9) max nodes (int)</li>
-	 * <li>10) cell type (int)</li>
-	 * <li>11) T (Float)</li>
-	 * <li>12) R (Float)</li>
-	 * <li>13) P (Float)</li>
-	 * <li>14) S (Float)</li>
-	 * <li>15) mutation (Float)</li>
-	 * <li>16) save location (String)</li>
-	 * <li>17) start top (String)</li>
+	 * <li>0) synch (bool) - true/false</li>
+	 * <li>1) taurus (bool) - true/false</li>
+	 * <li>2) dyn top (bool) - true/false</li>
+	 * <li>3) cellQ (int) - numbers, no letters, no decimals</li>
+	 * <li>4) threads (int) - numbers, no letters, no decimals</li>
+	 * <li>5) distance (int) - numbers, no letters, no decimals</li>
+	 * <li>6) gens (int) - numbers, no letters, no decimals</li>
+	 * <li>7) iterations (int) - numbers, no letters, no decimals</li>
+	 * <li>8) save every (int) - numbers, no letters, no decimals</li>
+	 * <li>9) max nodes (int) - numbers, no letters, no decimals</li>
+	 * <li>10) cell type (int) - numbers, no letters, no decimals</li>
+	 * <li>11) T (Float) - numbers, no letters</li>
+	 * <li>12) R (Float) - numbers, no letters</li>
+	 * <li>13) P (Float) - numbers, no letters</li>
+	 * <li>14) S (Float) - numbers, no letters</li>
+	 * <li>15) mutation (Float) - numbers, no letters</li>
+	 * <li>16) save location (String) - save path use / or \ it doesn't matter
+	 * in this context</li>
+	 * <li>17) start top (String) - topologies must be formatted as follows;
+	 * number of nodes on the layer seperated by '-' to signal a new layer, the
+	 * output layer is not to be specified. For example: 6-2</li>
 	 * </ul>
 	 * 
-	 * @param settings
+	 * @param args
+	 *            (String[])
+	 * @see {@link CLI.MainCommand Launcher}
 	 */
 	public StealthSim(String[] settings) {
 		bridge = new Bridge();
+		bridge.setNn_Topology(extrapolateTopology(settings[17]));
+		bridge.setNn_DynTop(Boolean.parseBoolean(settings[2]));
 		bridge.setUp(getInt(settings[3]), 0, getInt(settings[7]), getInt(settings[6]), getInt(settings[5]),
 				Float.valueOf(settings[15]), Float.valueOf(settings[11]), Float.valueOf(settings[12]),
-				Float.valueOf(settings[13]), Float.valueOf(settings[14]), Boolean.valueOf(settings[1]),
+				Float.valueOf(settings[13]), Float.valueOf(settings[14]), Boolean.parseBoolean(settings[1]),
 				getInt(settings[9]), true, settings[16], getInt(settings[8]), getInt(settings[4]), 0, 0, 0);
 		bridge.setCell_ArrayList(makeCells(bridge.getCell_Quantity(), bridge, getInt(settings[10])));
-		String[] top = settings[17].split("-");
-		Integer[] topology = new Integer[top.length];
-		for(int i = 0; i < top.length; i++)
-		{
-			topology[i] = getInt(top[i]);
-		}
-		bridge.setNn_Topology(topology);
 		splitTask.splitTasks(bridge.getCell_ArrayList(), bridge.getSim_Threads());
 		cells = bridge.getCell_ArrayList();
-		Thread t = new Thread(this);
-		t.start();
+		// Thread t = new Thread(this);
+		// t.start();
+		doIt();
 	}
 
+	/**
+	 * <h1>extrapolateTopology</h1>Takes in a string formatted according to
+	 * required input and returns an Integer[] which represents the starting
+	 * topology.
+	 * 
+	 * @param s (String)
+	 * @return Integer[]
+	 */
+	private Integer[] extrapolateTopology(String s) {
+		String[] ss = s.split("-");
+		Integer[] top = new Integer[ss.length];
+		for (int i = 0; i < ss.length; i++) {
+			top[i] = Integer.parseInt(ss[i]);
+		}
+
+		return top;
+	}
+
+	/**
+	 * <h1>doIt</h1>Runs cells through their required states. Manages threading
+	 * of cell activity and synchronous state management.
+	 * 
+	 * @see {@link Scenario.StealthSim#run() run} - secondary version of this
+	 *      method.
+	 */
+	private void doIt() {
+		bridge.setSim_CurGen(0);
+		for (Cell ce : bridge.getCell_ArrayList()) {
+			ce.doNeighboors();
+		}
+
+		// Specific amount of generations
+		for (int i = 0; i < bridge.getCell_MaxGen(); i++) {
+			simulate();
+		}
+
+		// Check if unlimitted
+		if (bridge.getCell_MaxGen() == 0) {
+			// Unlimitted
+			while (bridge.getSim_Running()) {
+				simulate();
+			}
+		}
+		if (bridge.getSim_Save()) {
+			writeOut(coopHist, fitnHist);
+		}
+	}
+
+	/**
+	 * <h1>run</h1>Is the same method as {@link Scenario.StealthSim#doIt()
+	 * doIt()} but runs on its own thread.
+	 */
 	@Override
 	public void run() {
 		bridge.setSim_CurGen(0);
@@ -89,6 +152,9 @@ public class StealthSim implements Runnable {
 		}
 	}
 
+	/**
+	 * <h1>simulate</h1>
+	 */
 	private void simulate() {
 		if (bridge.getSim_Threads() < 2) {
 			singleThread();

@@ -50,6 +50,12 @@ public class Network implements Serializable {
 		doCons();
 	}
 
+	/**
+	 * <h1>setUp</h1>Sets up the network using the suggested topology.
+	 * 
+	 * @param size
+	 *            (Integer[])
+	 */
 	public void setUp(Integer[] size) {
 		outputNode = new Part();
 
@@ -72,6 +78,13 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>think</h1>Performs neural net logic and calculates the response.
+	 * 
+	 * @param memory
+	 *            (ArrayList<Float>)
+	 * @return Float
+	 */
 	public Float think(ArrayList<Float> memory) {
 		ArrayList<Float> temp = new ArrayList<Float>();
 		for (int i = 0; i < memory.size(); i++) {
@@ -94,7 +107,24 @@ public class Network implements Serializable {
 		return res;
 	}
 
-	// A complicated method to use
+	/**
+	 * <h1>mutate</h1>Mutates the network.
+	 * 
+	 * @param mutationChance
+	 *            (Float)
+	 * @param muationAmount
+	 *            (Float)
+	 * @param conWeightAllowance
+	 *            (Float)
+	 * @param nodeChangeChance
+	 *            (Float)
+	 * @param layerChangeChance
+	 *            (Float)
+	 * @param dynTop
+	 *            (Boolean)
+	 * @param maxNodes
+	 *            (int)
+	 */
 	public void mutate(Float mutationChance, Float muationAmount, Float conWeightAllowance, Float nodeChangeChance,
 			Float layerChangeChance, Boolean dynTop, int maxNodes) {
 		// All initialized the same way, this is the difference
@@ -108,23 +138,6 @@ public class Network implements Serializable {
 		if (dynTop && fabric.size() > 1) {
 			dynTopLogic(nodeChangeChance, layerChangeChance);
 		}
-		/*
-		if (false) {
-			for (int i = 1; i < fabric.size() - 1; i++) {
-				if (fabric.get(i).size() < maxNodes) {
-					if (Math.random() < nodeChangeChance) {
-						addNodeHot(i);
-					}
-				}
-			}
-			if(Math.random() < nodeChangeChance && fabric.size() > 1)
-			{
-				addNode(fabric.size()-1);
-			}
-			if (Math.random() < layerChangeChance) {
-				addLayer();
-			}
-		}*/
 
 		// Biases
 		Random r = new Random();
@@ -141,22 +154,26 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>dynTopLogic</h1>Handles the dynamic topology mutation.
+	 * 
+	 * @param nodeChangeChance
+	 *            (Float)
+	 * @param layerChangeChance
+	 *            (Float)
+	 */
 	private void dynTopLogic(Float nodeChangeChance, Float layerChangeChance) {
-		int end = fabric.size()-1;
-		for(int i = 1; i < end; i++)
-		{
-			if(Math.random() < nodeChangeChance)
-			{
+		int end = fabric.size() - 1;
+		for (int i = 1; i < end; i++) {
+			if (Math.random() < nodeChangeChance) {
 				addNodeHot(i);
 			}
 		}
-		if(Math.random() < nodeChangeChance)
-		{
+		if (Math.random() < nodeChangeChance) {
 			addNodeEnd(end);
 		}
-		if(Math.random() < layerChangeChance)
-		{
-			//addLayerAlt();
+		if (Math.random() < layerChangeChance) {
+			// addLayerAlt();
 		}
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		ArrayList<Part> toBeRemovedLayer = new ArrayList<Part>();
@@ -174,26 +191,29 @@ public class Network implements Serializable {
 			}
 		}
 		removeNodes(toBeRemoved);
-		//removeLayers(toBeRemovedLayer);
+		// removeLayers(toBeRemovedLayer);
 	}
-	
-	private void addLayerAlt()
-	{
+
+	/**
+	 * <h1>addLayerAlt</h1>Alternate method for adding a layer.
+	 */
+	private void addLayerAlt() {
 		Part part = new Part();
-		for(Part p : fabric.get(fabric.size()-1))
-		{
+		for (Part p : fabric.get(fabric.size() - 1)) {
 			p.removeNode(outputNode);
 		}
 		ArrayList<Part> newLayer = new ArrayList<Part>();
 		newLayer.add(part);
 		fabric.add(newLayer);
-		for(Part p : fabric.get(fabric.size()-2))
-		{
+		for (Part p : fabric.get(fabric.size() - 2)) {
 			p.addNode(part);
 		}
 		part.addNode(outputNode);
 	}
 
+	/**
+	 * <h1>addLayer</h1>Adds a layer.
+	 */
 	private void addLayer() {
 		for (Part p : fabric.get(fabric.size() - 1)) {
 			p.removeNode(outputNode);
@@ -202,6 +222,13 @@ public class Network implements Serializable {
 		addNodeEnd(fabric.size() - 1);
 	}
 
+	/**
+	 * <h1>removeNodes</h1>Removes multiple nodes from the network. Fixes
+	 * concurrency errors.
+	 * 
+	 * @param parts
+	 *            (ArrayList<Part>)
+	 */
 	private void removeNodes(ArrayList<Part> parts) {
 		for (int i = parts.size() - 1; i > -1; i--) {
 			Part pa = parts.get(i);
@@ -210,6 +237,13 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>removeLayers</h1>Removes multiple layers at once. Fixes concurrency
+	 * errors.
+	 * 
+	 * @param parts
+	 *            (ArrayList<Part>)
+	 */
 	private void removeLayers(ArrayList<Part> parts) {
 		for (int i = parts.size() - 1; i > -1; i--) {
 			Part pa = parts.get(i);
@@ -231,6 +265,12 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>topState</h1>Returns a string containing information about cell
+	 * topology.
+	 * 
+	 * @return String
+	 */
 	private String topState() {
 		String top = "";
 		for (int i = 0; i < fabric.size(); i++) {
@@ -239,6 +279,10 @@ public class Network implements Serializable {
 		return top;
 	}
 
+	/**
+	 * <h1>verify</h1>Performs inner logic to verify certain variables come in
+	 * pairs as intended.
+	 */
 	private void verify() {
 		ArrayList<Integer> layersToFix = new ArrayList<Integer>();
 		for (int i = 1; i < fabric.size(); i++) {
@@ -249,6 +293,12 @@ public class Network implements Serializable {
 		fabric.removeAll(layersToFix);
 	}
 
+	/**
+	 * <h1>removeNodes</h1>Removes multiple nodes.
+	 * 
+	 * @param parts
+	 * @param j
+	 */
 	private void removeNodes(ArrayList<Part> parts, int j) {
 		for (int i = 0; i < parts.size(); i++) {
 			Part pa = parts.get(i);
@@ -257,6 +307,12 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>removeLayer</h1>Removes a layer.
+	 * 
+	 * @param i
+	 *            (int)
+	 */
 	private void removeLayer(int i) {
 		ArrayList<Part> toBeRemoved = new ArrayList<Part>();
 		for (Part p : fabric.get(i)) {
@@ -280,19 +336,29 @@ public class Network implements Serializable {
 		}
 	}
 
-	private void addNodeHot(int i)
-	{
+	/**
+	 * <h1>addNodeHot</h1>Adds a node inside the center of the network.
+	 * 
+	 * @param i
+	 *            (int)
+	 */
+	private void addNodeHot(int i) {
 		Part ppp = new Part();
 		fabric.get(i).add(ppp);
 		for (Part p : fabric.get(i - 1)) {
 			p.addNode(ppp);
 		}
-		for(Part p : fabric.get(i+1))
-		{
+		for (Part p : fabric.get(i + 1)) {
 			ppp.addNode(p);
 		}
 	}
-	
+
+	/**
+	 * <h1>addNodeEnd</h1>Adds a node which is in contact with the output node.
+	 * 
+	 * @param i
+	 *            (int)
+	 */
 	private void addNodeEnd(int i) {
 		Part ppp = new Part();
 		fabric.get(i).add(ppp);
@@ -302,6 +368,12 @@ public class Network implements Serializable {
 		ppp.addNode(outputNode);
 	}
 
+	/**
+	 * <h1>removeNode</h1>
+	 * 
+	 * @param i
+	 * @param p
+	 */
 	private void removeNode(int i, Part p) {
 		for (Part previousP : fabric.get(i - 1)) {
 			previousP.removeNode(p);
@@ -309,6 +381,11 @@ public class Network implements Serializable {
 		fabric.get(i).remove(p);
 	}
 
+	/**
+	 * <h1>makeCopy</h1>Makes an identical, independant copy of this network.
+	 * 
+	 * @return Network
+	 */
 	public Network makeCopy() {
 		// Part 1
 		// Create new Fabric
@@ -329,6 +406,9 @@ public class Network implements Serializable {
 		return network;
 	}
 
+	/**
+	 * <h1>doCons</h1>Recreates the network's connections.
+	 */
 	public void doCons() {
 		outputNode = new Part();
 		for (int i = 0; i < fabric.size() - 1; i++) {
@@ -341,6 +421,11 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>getTop</h1>Returns a string containing topology information.
+	 * 
+	 * @return
+	 */
 	public String getTop() {
 		String temp = "";
 
@@ -351,6 +436,9 @@ public class Network implements Serializable {
 		return temp;
 	}
 
+	/**
+	 * <h1>showCons</h1>Shoes connection weights.
+	 */
 	public void showCons() {
 		System.out.println("=====================================network");
 		for (ArrayList<Part> layer : fabric) {
@@ -366,6 +454,11 @@ public class Network implements Serializable {
 		}
 	}
 
+	/**
+	 * <h1>defect</h1>Sets all connection weights to -1. This does not
+	 * necessarily make the network defect a more intricate algorithm is
+	 * necessary for this.
+	 */
 	public void defect() {
 		for (ArrayList<Part> layer : fabric) {
 			for (Part p : layer) {
