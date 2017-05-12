@@ -14,6 +14,7 @@ import NetworkFinal.Remember;
  * extends {@link Cells.Cellular Cell}.
  *
  * @see {@link Cells.Cellular super class}
+ * @author James F. Taylor
  */
 public class Cell_NN extends Cell
 {
@@ -21,6 +22,8 @@ public class Cell_NN extends Cell
 	private Float accepted = 0f;
 	private Float total = 0f;
 	private int coopHist = 0;
+
+	private ArrayList<Cell_NN> cells_Local = new ArrayList<Cell_NN>();
 
 	// NN Vars
 	private Network nextGenNet;
@@ -45,7 +48,17 @@ public class Cell_NN extends Cell
 		super.Initialize(hc_R, pos_X, pos_Y, bridge);
 		network = new Network(getBridge().getNn_Topology());
 		memory = new Remember(getBridge().getNn_Topology()[0] / 2);
-		network.defect();
+		// network.defect();
+	}
+
+	@Override
+	public void doNeighboors()
+	{
+		super.doNeighboors();
+		for (Cell ce : getCell_Neighboors())
+		{
+			cells_Local.add((Cell_NN) ce);
+		}
 	}
 
 	@Override
@@ -54,8 +67,7 @@ public class Cell_NN extends Cell
 		setPd_Fitness(0f);
 		coopHist = 0;
 		temporaryFitness = 0f;
-		//validate();
-		for (Cell ce : getCell_Neighboors())
+		for (Cell_NN ce : cells_Local)
 		{
 			memory.reset();
 			ce.resetMemory();
@@ -63,9 +75,7 @@ public class Cell_NN extends Cell
 			{
 				decisionOP = ce.makeDecision();
 				decisionME = network.think(memory.getMem());
-				memory.save(decisionME);
-				memory.saveOP(decisionOP);
-				memory.normalize();
+				saveAll(decisionME, decisionOP);
 				ce.handleMemory(decisionOP, decisionME);
 				temporaryFitness += (-0.75f * decisionME) + (1.75f * decisionOP) + 2.5f;
 				if (decisionME > 0)
@@ -77,27 +87,12 @@ public class Cell_NN extends Cell
 		setPd_Fitness(temporaryFitness);
 	}
 
-	private void validate()
-	{
-		ArrayList<Float> checker = new ArrayList<Float>();
-		for (int i = 0; i < memory.getMem().size(); i++)
-		{
-			checker.add(new Float(Math.random()));
-		}
-		Float check = network.think(checker);
-		System.out.println("Checked " + check);
-		if (check == 0f)
-		{
-			getNetwork().showCons();
-		}
-	}
-
 	@Override
 	public void doNewGeneration()
 	{
 		setCell_PotentialParents(new ArrayList<Cell>());
 		temporaryFitness = getPd_Fitness();
-		for (Cell ce : getCell_Neighboors())
+		for (Cell_NN ce : cells_Local)
 		{
 			if (ce.getPd_Fitness() > temporaryFitness)
 			{
@@ -112,9 +107,9 @@ public class Cell_NN extends Cell
 		if (getCell_PotentialParents().size() > 0)
 		{
 			int choose = (int) (Math.random() * (getCell_PotentialParents().size()));
-			// nextGenNet =
 			// getCell_PotentialParents().get(choose).getNetwork().deepClone();
-			nextGenNet = getCell_PotentialParents().get(choose).getNetwork().makeCopy();
+			Cell_NN tempCell = (Cell_NN) getCell_PotentialParents().get(choose);
+			nextGenNet = tempCell.getNetwork().makeCopy();
 			occured = true;
 		} else
 		{
@@ -158,7 +153,6 @@ public class Cell_NN extends Cell
 			}
 			occured = false;
 		}
-		//getNetwork().showCons();
 	}
 
 	@Override
@@ -170,36 +164,30 @@ public class Cell_NN extends Cell
 				getBridge().getNn_LayerRAChance(), getBridge().getNn_DynTop(), getBridge().getNn_MaxNodes());
 	}
 
-	@Override
+	/**
+	 * <h1>Reset Memory</h1>Resets a cell's memory. Do not implement if cell has
+	 * no memory.
+	 */
 	public void resetMemory()
 	{
 		memory.reset();
 	}
 
-	@Override
+	/**
+	 * <h1>handleMemory</h1>Handles memory for the cell, should save both input
+	 * Floats as memories of the previous interaction. Logic may be necessary
+	 * for complex memory systems.
+	 * 
+	 * @param decisionOP (Float)
+	 *            represents the opponent's decision.
+	 * @param decisionME (Float)
+	 *            represents the cell's decision.
+	 */
 	public void handleMemory(Float decisionME, Float decisionOP)
 	{
 		memory.save(decisionME);
 		memory.saveOP(decisionOP);
 		memory.normalize();
-	}
-
-	@Override
-	public Float makeDecision()
-	{
-		return network.think(memory.getMem());
-	}
-
-	@Override
-	public Network getNetwork()
-	{
-		return network;
-	}
-
-	@Override
-	public void drawNet()
-	{
-		System.out.println(network.getTop());
 	}
 
 	@Override
@@ -211,23 +199,29 @@ public class Cell_NN extends Cell
 		output = output + getPos_X() + "/";
 		output = output + getPos_Y() + "/";
 		output = output + network.getTop();
-
+		
 		return output;
+	}
+
+	@Override
+	public int getCoopHist()
+	{
+		return coopHist;
 	}
 
 	// Private Methods
 	private void color1()
 	{
-		accepted = getBridge().getCell_ItPerGen()*5f*getCell_Neighboors().size();
-		total = new Float(getPd_Fitness()/accepted);
+		accepted = getBridge().getCell_ItPerGen() * 5f * getCell_Neighboors().size();
+		total = new Float(getPd_Fitness() / accepted);
 		Float temp = total * 255;
-		int col = (int) (temp*1);
+		int col = (int) (temp * 1);
 		try
 		{
-			c1 = new Color(col,col,col);
-		}catch(Exception e)
+			c1 = new Color(col, col, col);
+		} catch (Exception e)
 		{
-			System.out.println("Incorrect value: "+col+" >> "+getPd_Fitness()+" >> "+accepted);
+			System.out.println("Incorrect value: " + col + " >> " + getPd_Fitness() + " >> " + accepted);
 			c1 = Color.red;
 		}
 	}
@@ -239,10 +233,70 @@ public class Cell_NN extends Cell
 		int iii = (int) (nei * 1);
 		c2 = new Color(iii, iii, iii);
 	}
-	
-	@Override
-	public int getCoopHist()
+
+	// Public communication
+	/**
+	 * <h1>saveAll</h1>Saves cell's own decision and opponents decision in
+	 * memory.
+	 * 
+	 * @param decisionME
+	 *            (Float)
+	 * @param decisionOP
+	 *            (Float)
+	 */
+	public void saveAll(Float decisionME, Float decisionOP)
 	{
-		return coopHist;
+		memory.save(decisionME);
+		memory.saveOP(decisionOP);
+		memory.normalize();
+	}
+
+	/**
+	 * <h1>Make Decision</h1>Tells a cell to decide what its next move will be.
+	 * 
+	 * @return Float representing the cell's move.
+	 */
+	public Float makeDecision()
+	{
+		return network.think(memory.getMem());
+	}
+
+	/**
+	 * <h1>getNetwork</h1>A getter for network however this is more complex than
+	 * the average getter. Extensive logic may be necessary to return the
+	 * correct network.
+	 * 
+	 * @return Network, a copy of the cell's network.
+	 */
+	public Network getNetwork()
+	{
+		return network;
+	}
+
+	/**
+	 * <h1>drawNet</h1>A troubleshooting method, used for bug fixing and
+	 * ensuring neural networks work correctly after a change.
+	 */
+	public void drawNet()
+	{
+		System.out.println(network.getTop());
+	}
+
+	/**
+	 * <h1>validate</h1>
+	 */
+	private void validate()
+	{
+		ArrayList<Float> checker = new ArrayList<Float>();
+		for (int i = 0; i < memory.getMem().size(); i++)
+		{
+			checker.add(new Float(Math.random()));
+		}
+		Float check = network.think(checker);
+		System.out.println("Checked " + check);
+		if (check == 0f)
+		{
+			getNetwork().showCons();
+		}
 	}
 }

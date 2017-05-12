@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import Cells.Cell;
 
 /**
- * @author hoijf
+ * @author James F. Taylor
  *         <h1>Bridge</h1>The bridge controls all the data running between
  *         threads. This allows for each part of the system to communicate with
  *         one another. In this manner everything is accessible from anywhere.

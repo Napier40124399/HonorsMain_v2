@@ -2,12 +2,17 @@ package Components;
 
 import java.util.ArrayList;
 
-public class ToolTipWindow
-{
+/**
+ * <h1>ToolTipWindow</h1>Currently a work in progress. Will be used to display
+ * guidelines.
+ * 
+ * @author James F. Taylor
+ *
+ */
+public class ToolTipWindow {
 	private ArrayList<String> guideLines = new ArrayList<String>();
-	
-	public ToolTipWindow()
-	{
+
+	public ToolTipWindow() {
 		guideLines.add("");
 		guideLines.add("");
 		guideLines.add("");
@@ -23,9 +28,8 @@ public class ToolTipWindow
 		guideLines.add("");
 		guideLines.add("");
 	}
-	
-	public void getTooltip(int index)
-	{
-		
+
+	public void getTooltip(int index) {
+
 	}
 }

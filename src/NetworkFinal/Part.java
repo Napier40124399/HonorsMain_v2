@@ -5,6 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * <h1>Part</h1>Class represents nodes in the neural network.
+ * @author James F. Taylor
+ *
+ */
 @SuppressWarnings("serial")
 public class Part implements Serializable {
 	private ArrayList<Part> next = new ArrayList<Part>();

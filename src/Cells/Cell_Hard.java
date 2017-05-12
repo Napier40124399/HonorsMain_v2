@@ -16,6 +16,7 @@ import CellStrategies.Update_Hard;
  * extends {@link Cells.Cellular Cell}.
  *
  * @see {@link Cells.Cellular super class}
+ * @author James F. Taylor
  */
 public class Cell_Hard extends Cell
 {

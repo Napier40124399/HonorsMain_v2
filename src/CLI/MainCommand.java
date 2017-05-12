@@ -2,14 +2,41 @@ package CLI;
 
 import Scenario.StealthSim;
 
+/**
+ * <h1>MainCommand</h1>Class used as launcher for command line interface
+ * distribution.
+ * 
+ * @author James F. Taylor
+ *
+ */
 public class MainCommand {
 
 	private static StealthSim sim;
-	private static String[] temp = { "true", "true", "false", "100", "8", "1", "150", "51", "100", "10", "0", "1.5",
-			"1", "0", "0", "0.03", "C:\\Users\\James\\Documents\\SimulationResults\\dump", "6-2" };
+	private static String[] temp =
+		{ 
+			"true",
+			"true",
+			"false",
+			"80",
+			"8",
+			"1",
+			"50",
+			"51",
+			"5",
+			"10",
+			"2",
+			"1.5",
+			"1",
+			"0",
+			"0",
+			"0.03",
+			"C:\\Users\\James\\Documents\\Testing",
+			"6-2"
+		};
 
 	/**
-	 * <h1>Main</h1>Launcher for command interface. Takes in simulation parameters as follows:
+	 * <h1>Main</h1>Launcher for command interface. Takes in simulation
+	 * parameters as follows:
 	 * <ul>
 	 * <li>0) synch (bool) - true/false</li>
 	 * <li>1) taurus (bool) - true/false</li>

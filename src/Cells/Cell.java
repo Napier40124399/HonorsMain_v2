@@ -29,6 +29,8 @@ import NetworkFinal.Network;
  * @see Color
  * @see Point2D
  * @see Runnable
+ * 
+ * @author James F. Taylor
  */
 public class Cell {
 	// Positions
@@ -356,46 +358,6 @@ public class Cell {
 
 	// Public methods
 	/**
-	 * <h1>Reset Memory</h1>Resets a cell's memory. Do not implement if cell has
-	 * no memory.
-	 */
-	public void resetMemory() {
-	}
-
-	/**
-	 * <h1>Make Decision</h1>Tells a cell to decide what its next move will be.
-	 * 
-	 * @return Float representing the cell's move.
-	 */
-	public Float makeDecision() {
-		return 0f;
-	}
-
-	/**
-	 * <h1>handleMemory</h1>Handles memory for the cell, should save both input
-	 * Floats as memories of the previous interaction. Logic may be necessary
-	 * for complex memory systems.
-	 * 
-	 * @param decisionOP
-	 *            represents the opponent's decision.
-	 * @param decisionME
-	 *            represents the cell's decision.
-	 */
-	public void handleMemory(Float decisionOP, Float decisionME) {
-	}
-
-	/**
-	 * <h1>getNetwork</h1>A getter for network however this is more complex than
-	 * the average getter. Extensive logic may be necessary to return the
-	 * correct network.
-	 * 
-	 * @return Network, a copy of the cell's network.
-	 */
-	public Network getNetwork() {
-		return null;
-	}
-
-	/**
 	 * <h1>serialize</h1>Gather important cell information and concatenate it
 	 * into a String.
 	 * 
@@ -404,14 +366,7 @@ public class Cell {
 	public String serialize() {
 		return "";
 	}
-
-	/**
-	 * <h1>drawNet</h1>A troubleshooting method, used for bug fixing and
-	 * ensuring neural networks work correctly after a change.
-	 */
-	public void drawNet() {
-	}
-
+	
 	// GETTERS AND SETTERS
 	/**
 	 * <h1>getPos_X</h1>Simple getter for the pos_X variable.
@@ -605,7 +560,9 @@ public class Cell {
 	}
 
 	/**
-	 * <h1>getHc_NextGenR</h1>Getter for {@link Cells.Cell#hc_NextGenR hc_NextGenR}.
+	 * <h1>getHc_NextGenR</h1>Getter for {@link Cells.Cell#hc_NextGenR
+	 * hc_NextGenR}.
+	 * 
 	 * @return Boolean
 	 */
 	public Boolean getHc_NextGenR() {
@@ -613,8 +570,11 @@ public class Cell {
 	}
 
 	/**
-	 * <h1>setHc_NextGenR</h1>Setter for {@link Cells.Cell#hc_NextGenR hc_NextGenR}.
-	 * @param {@link Cells.Cell#hc_NextGenR hc_NextGenR} (Boolean)
+	 * <h1>setHc_NextGenR</h1>Setter for {@link Cells.Cell#hc_NextGenR
+	 * hc_NextGenR}.
+	 * 
+	 * @param {@link
+	 * 			Cells.Cell#hc_NextGenR hc_NextGenR} (Boolean)
 	 */
 	public void setHc_NextGenR(Boolean hc_NextGenR) {
 		this.hc_NextGenR = hc_NextGenR;
@@ -622,6 +582,7 @@ public class Cell {
 
 	/**
 	 * <h1>getCoopHist</h1>Getter for cooperation history.
+	 * 
 	 * @return int
 	 */
 	public int getCoopHist() {
@@ -630,6 +591,7 @@ public class Cell {
 
 	/**
 	 * <h1>getType</h1>Getter for type.
+	 * 
 	 * @return int
 	 */
 	public int getType() {
@@ -638,6 +600,7 @@ public class Cell {
 
 	/**
 	 * <h1>setType</h1>Setter for type (int).
+	 * 
 	 * @param int
 	 */
 	public void setType(int type) {

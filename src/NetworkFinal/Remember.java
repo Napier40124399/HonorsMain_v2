@@ -2,6 +2,11 @@ package NetworkFinal;
 
 import java.util.ArrayList;
 
+/**
+ * <h1>Remember</h1>Class handles memory management.
+ * @author James F. Taylor
+ *
+ */
 public class Remember {
 	private ArrayList<Float> memory = new ArrayList<Float>();
 	private ArrayList<Float> memCur = new ArrayList<Float>();

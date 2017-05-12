@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import Cells.Cell;
+import Cells.CellFactory;
 import Cells.Cell_Hard;
 import Cells.Cell_NN;
 import Cells.Cell_TitTat;
@@ -207,24 +208,12 @@ public class StealthSim implements Runnable {
 		splitTask.threadTask(3);
 	}
 
-	private Cell getCell(int type) {
-		switch (type) {
-		case 0:
-			return new Cell_Hard();
-		case 1:
-			return new Cell_TitTat();
-		case 2:
-			return new Cell_NN();
-		default:
-			return null;
-		}
-	}
-
 	private ArrayList<Cell> makeCells(int quantity, Bridge bridge, int type) {
 		ArrayList<Cell> cells = new ArrayList<Cell>();
+		CellFactory factory = new CellFactory();
 		for (int i = 0; i < quantity; i++) {
 			for (int j = 0; j < quantity; j++) {
-				cells.add(getCell(type));
+				cells.add(factory.getCell(type));
 
 				if (Math.random() > 0.5) {
 					cells.get(cells.size() - 1).Initialize(false, i, j, bridge);

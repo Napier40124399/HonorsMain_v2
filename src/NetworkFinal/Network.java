@@ -11,6 +11,12 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+/**
+ * <h1>Network</h1>Handles all neural network logic.
+ * 
+ * @author James F. Taylor
+ *
+ */
 @SuppressWarnings("serial")
 public class Network implements Serializable {
 	private ArrayList<Part> parts;

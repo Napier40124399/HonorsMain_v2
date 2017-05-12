@@ -1,6 +1,7 @@
 package Cells;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import CellStrategies.Fitness_TitTat;
 import CellStrategies.Mutation_TitTat;
@@ -16,6 +17,8 @@ import CellStrategies.Update_TitTat;
  * extends {@link Cells.Cellular Cell}.
  *
  * @see {@link Cells.Cellular super class}
+ * 
+ * @author James F. Taylor
  */
 public class Cell_TitTat extends Cell
 {
@@ -28,6 +31,8 @@ public class Cell_TitTat extends Cell
 	private StratParent sp = new Parent_TitTat();
 	private StratUpdate su = new Update_TitTat();
 	private StratMutation sm = new Mutation_TitTat();
+
+	private ArrayList<Cell_TitTat> cells_Local = new ArrayList<Cell_TitTat>();
 
 	@Override
 	public void doFitness()
@@ -118,7 +123,6 @@ public class Cell_TitTat extends Cell
 		this.type = type;
 	}
 
-	@Override
 	public void resetMemory()
 	{
 		memory = true;

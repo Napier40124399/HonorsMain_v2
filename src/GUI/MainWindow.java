@@ -32,10 +32,14 @@ import javax.swing.table.TableModel;
 import Components.Colors;
 import Components.CompBuilder;
 import Components.FileChooser;
-import FileIO.LoadDefaults;
 
-public class MainWindow
-{
+/**
+ * <h1>MainWindow</h1>Class serves as launcher for GUI.
+ * 
+ * @author James F. Taylor
+ *
+ */
+public class MainWindow {
 	// Components
 	private JFrame frame;
 	private JButton btnStart;
@@ -78,8 +82,7 @@ public class MainWindow
 	private ArrayList<JLabel> labels = new ArrayList<JLabel>();
 	// Table variables
 	private int ID;
-	private String[] cols =
-	{ "ID", "Gen", "State", "Threads" };
+	private String[] cols = { "ID", "Gen", "State", "Threads" };
 	private String[][] rows = null;
 	private TableModel model;
 	private SimulationWindow selectedSim = null;
@@ -87,38 +90,30 @@ public class MainWindow
 	private CompBuilder build;
 	private Colors c = new Colors();
 	private ArrayList<SimulationWindow> simulations = new ArrayList<SimulationWindow>();
-	private LoadDefaults load = new LoadDefaults();
 	private SettingsWindow settingsWindow;
-	//Timers
+	// Timers
 	private Timer timer;
 
-	public static void main(String[] args)
-	{
-		EventQueue.invokeLater(new Runnable()
-		{
-			public void run()
-			{
-				try
-				{
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
 					MainWindow window = new MainWindow();
 					window.frame.setVisible(true);
-				} catch (Exception e)
-				{
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		});
 	}
 
-	public MainWindow()
-	{
+	public MainWindow() {
 		build = new CompBuilder();
 		settingsWindow = new SettingsWindow();
 		initialize();
 	}
 
-	private void initialize()
-	{
+	private void initialize() {
 		frame = new JFrame();
 		frame.setBounds(100, 100, 850, 1130);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -258,8 +253,7 @@ public class MainWindow
 		labels.get(15).setToolTipText(
 				"Set starting topology. Enter number of nodes per layer, use '-' delimiter to signal new layer: 6-2-4-2");
 
-		for (JLabel lbl : labels)
-		{
+		for (JLabel lbl : labels) {
 			build.buildLabel(lbl, frame);
 		}
 
@@ -274,8 +268,7 @@ public class MainWindow
 		actionListeners();
 	}
 
-	private void sidePanel()
-	{
+	private void sidePanel() {
 		JPanel separator4 = new JPanel();
 		build.buildSeparator(separator4, frame);
 
@@ -297,7 +290,7 @@ public class MainWindow
 		area.setEditable(false);
 		area.setFocusable(false);
 		build.buildArea(area, frame);
-		
+
 		btnPlay = new JButton();
 		btnPlay.setBorder(BorderFactory.createEmptyBorder());
 		btnPlay.setContentAreaFilled(false);
@@ -322,22 +315,17 @@ public class MainWindow
 		boxVisi = new JCheckBox();
 		build.buildCheckBox(boxVisi, false, frame);
 		boxVisi.setEnabled(false);
-		
-		timer = new Timer(60000, new ActionListener()
-		{
+
+		timer = new Timer(60000, new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if(simulations.size() > 0)
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (simulations.size() > 0) {
 					ArrayList<String[]> dets = new ArrayList<String[]>();
-					for(int i = 0; i < simulations.size(); i++)
-					{
+					for (int i = 0; i < simulations.size(); i++) {
 						dets.add(simulations.get(i).getVals());
 					}
 					String[][] newRows = new String[simulations.size()][4];
-					for(int i = 0; i < simulations.size(); i++)
-					{
+					for (int i = 0; i < simulations.size(); i++) {
 						newRows[i] = dets.get(i);
 					}
 					refreshTable();
@@ -357,66 +345,52 @@ public class MainWindow
 		btnStop.setBounds(640, 1010, 40, 40);
 		boxVisi.setBounds(680, 1010, 80, 40);
 	}
-	
-	private void check(String[] vals)
-	{
-		
+
+	private void check(String[] vals) {
+
 	}
 
-	private void newRow(String[] settings)
-	{
-		String[] row =
-		{ "" + (simulations.size() - 1), "" + simulations.get(simulations.size() - 1).getGen(),
+	private void newRow(String[] settings) {
+		String[] row = { "" + (simulations.size() - 1), "" + simulations.get(simulations.size() - 1).getGen(),
 				simulations.get(simulations.size() - 1).getState(),
 				"" + simulations.get(simulations.size() - 1).getThreads() };
-		if (tblSims.getRowCount() > 0)
-		{
+		if (tblSims.getRowCount() > 0) {
 			String[][] newRows = new String[rows.length + 1][4];
 			newRows[0] = row;
-			for (int i = 0; i < rows.length; i++)
-			{
+			for (int i = 0; i < rows.length; i++) {
 				newRows[i + 1] = rows[i];
 			}
 			rows = newRows;
-		} else
-		{
+		} else {
 			rows = new String[1][4];
 			rows[0] = row;
 		}
 		refreshTable();
 	}
 
-	private void refreshTable()
-	{
-		model = new DefaultTableModel(rows, cols)
-		{
+	private void refreshTable() {
+		model = new DefaultTableModel(rows, cols) {
 
-		    @Override
-		    public boolean isCellEditable(int row, int column) {
-		        return false;
-		    }
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
 		};
 		tblSims.setModel(model);
 		tblSims.repaint();
 	}
 
-	private void actionListeners()
-	{
-		boxSerialize.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent arg0)
-			{
+	private void actionListeners() {
+		boxSerialize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				FileChooser fc = new FileChooser();
 				txtSerializePath.setText(fc.getFolder("").getPath());
 			}
 		});
 
-		btnStart.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if (validate())
-				{
+		btnStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (validate()) {
 					String[] settings = new String[16];
 					settings[0] = comboType.getSelectedIndex() + "";
 					settings[1] = txtCellQ.getText();
@@ -443,24 +417,19 @@ public class MainWindow
 		});
 
 		// Menu
-		mntmSettings.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
+		mntmSettings.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				settingsWindow.setVisible(true, new Point(frame.getX() + frame.getWidth(), frame.getY()));
 			}
 		});
 
-		tblSims.addMouseListener(new MouseAdapter()
-		{
+		tblSims.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e)
-			{
-				ID = Integer.parseInt((String)tblSims.getModel().getValueAt(tblSims.getSelectedRow(), 0));
+			public void mouseClicked(MouseEvent e) {
+				ID = Integer.parseInt((String) tblSims.getModel().getValueAt(tblSims.getSelectedRow(), 0));
 				selectedSim = simulations.get(ID);
 				area.setText("");
-				for (String s : selectedSim.getDetails())
-				{
+				for (String s : selectedSim.getDetails()) {
 					area.append(s);
 					area.append("\n");
 				}
@@ -469,83 +438,63 @@ public class MainWindow
 				boxVisi.setSelected(selectedSim.isVisible());
 			}
 		});
-		btnPlay.addActionListener(new ActionListener()
-		{
+		btnPlay.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!selectedSim.equals(null))
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (!selectedSim.equals(null)) {
 					selectedSim.play();
 				}
 			}
 		});
-		btnPause.addActionListener(new ActionListener()
-		{
+		btnPause.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!selectedSim.equals(null))
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (!selectedSim.equals(null)) {
 					selectedSim.pause();
 				}
 			}
 		});
-		btnStop.addActionListener(new ActionListener()
-		{
+		btnStop.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!selectedSim.equals(null))
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (!selectedSim.equals(null)) {
 					selectedSim.stop();
 				}
 			}
 		});
-		boxVisi.addActionListener(new ActionListener()
-		{
+		boxVisi.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				if(!selectedSim.equals(null))
-				{
+			public void actionPerformed(ActionEvent e) {
+				if (!selectedSim.equals(null)) {
 					selectedSim.toggleVisible(boxVisi.isSelected());
 				}
 			}
 		});
 	}
 
-	private Boolean validate()
-	{
+	private Boolean validate() {
 		String message = "";
-		if (numbersOnly(txtCellQ.getText()))
-		{
+		if (numbersOnly(txtCellQ.getText())) {
 			message += "Cell Quantity can only be numbers.\n";
 		}
-		if (Integer.parseInt(txtCellQ.getText()) > 2500 || Integer.parseInt(txtCellQ.getText()) < 5)
-		{
+		if (Integer.parseInt(txtCellQ.getText()) > 2500 || Integer.parseInt(txtCellQ.getText()) < 5) {
 			message += "Cell Quantity out of bounds. (5 < Q < 2500)\n";
 		}
-		if (Integer.parseInt(txtTop.getText().split("-")[0]) % 2 != 0)
-		{
-			//return false;
+		if (Integer.parseInt(txtTop.getText().split("-")[0]) % 2 != 0) {
+			// return false;
 		}
 		return true;
 	}
 
-	private Boolean numbersOnly(String s)
-	{
-		if (s.matches("\\d+"))
-		{
+	private Boolean numbersOnly(String s) {
+		if (s.matches("\\d+")) {
 			return true;
-		} else
-		{
+		} else {
 			return false;
 		}
 	}
 
-	private void placeHolders()
-	{
+	private void placeHolders() {
 		comboType.setSelectedIndex(2);
 		txtCellQ.setText("100");
 		txtMutation.setText("0.01");
@@ -561,21 +510,18 @@ public class MainWindow
 		txtTop.setText("6-2");
 	}
 
-	private void place()
-	{
+	private void place() {
 		int left = 200;
 		int pos = 60;
 		int skip = 50;
 		int width = 220;
 		int height = 40;
 		int verify = 0;
-		for (JLabel lbl : labels)
-		{
+		for (JLabel lbl : labels) {
 			lbl.setBounds(20, pos, 160, 40);
 			pos += skip;
 			verify++;
-			if (verify == 9 || verify == 11 || verify == 14)
-			{
+			if (verify == 9 || verify == 11 || verify == 14) {
 				pos += skip;
 			}
 		}
